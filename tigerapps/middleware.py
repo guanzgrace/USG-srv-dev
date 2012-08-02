@@ -35,9 +35,7 @@ class SubdomainsMiddleware:
         settings.SITE_DOMAIN = url_prefix+request.subdomain+'.'+request.domain
 
         # set the right urlconf
-        if request.subdomain != 'www':
-            request.urlconf = request.subdomain + ".urls"
-        
+        request.urlconf = request.subdomain + ".urls"
 
 
         ### INTRODUCING....

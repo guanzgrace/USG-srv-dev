@@ -9,7 +9,7 @@ admin.autodiscover()
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^/?', direct_to_template, {'template': 'index/index.html'}),
+    url(r'^/?', direct_to_template, {'template': 'www/index.html'}),
 
     (r'^admin/', include(admin.site.urls)),
 )
