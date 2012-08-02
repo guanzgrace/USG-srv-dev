@@ -33,6 +33,12 @@ class DropoffPickupTime(models.Model):
                                                             self.pickup_time_start.strftime("%I:%M").lstrip('0'),
                                                             self.pickup_time_end.strftime("%I:%M%p").lstrip('0'))
 
+
+class UnpaidEmailManager(models.Manager):
+    def all(self):
+        ordered_users = set(order.user.username for order in Order.objects.all())
+        return set(obj.user.username+'@princeton.edu' for obj in self.model.objects.all() if obj.user.username not in ordered_users)
+
 class UnpaidOrder(models.Model):
     '''
     All info describing a student's order; not paid for yet (student can have multiple of these orders)
@@ -50,10 +56,17 @@ class UnpaidOrder(models.Model):
     invoice_id = models.CharField("Invoice ID", max_length=36, unique=True)
     timestamp = models.DateTimeField("Timestamp", auto_now_add=True)
     signature = models.CharField("Signature", max_length=50)
+    
+    emails = UnpaidEmailManager()
+    objects = models.Manager()
 
     def __unicode__(self):
         return self.user.username
 
+
+class PaidEmailManager(models.Manager):
+    def all(self):
+        return set(obj.user.username+'@princeton.edu' for obj in self.model.objects.all())
 
 class Order(models.Model):
     '''
@@ -81,5 +94,8 @@ class Order(models.Model):
     n_boxes_dropped = models.IntegerField("# Dropped Off", max_length=2, blank=True, default=0)
     n_boxes_picked = models.IntegerField("# Picked Up", max_length=2, blank=True, default=0)
     
+    emails = PaidEmailManager()
+    objects = models.Manager()
+
     def __unicode__(self):
         return self.user.username

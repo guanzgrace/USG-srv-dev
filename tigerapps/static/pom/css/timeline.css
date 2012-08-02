@@ -1,0 +1,77 @@
+.jtl-tl {
+	width:150px;
+	overflow: hidden;
+	/*
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	*/
+}
+
+.jtl-day {
+	width: 150px;
+	position:absolute;
+}
+
+.jtl-date {
+	-webkit-transform: rotate(90deg); 
+	-moz-transform: rotate(90deg);	
+	height: 15px;
+	position: absolute;
+	
+	text-align:center;
+	padding-top: 1px;
+	font-size: 12px;
+	color: #666666;
+}
+
+.jtl-tick-box {
+	width:100px;
+	position: absolute;
+	left: 35px;
+	border-top: 3px solid #888888;
+}
+.jtl-tick-box-inactive {
+	background-color: #e8e8e8;
+}
+
+.jtl-tick {
+	position:relative;
+}
+.jtl-tick-border {
+	border-top: 1px dotted #aaaaaa;
+}
+
+.jtl-time {
+	height:12px;
+	width: 33px;
+	position: absolute;
+	right: 102px;
+	
+	text-align:right;
+	font-size: 10px;
+	color: #666666;
+}
+.jtl-tick-first .jtl-time { top: -9px; }
+.jtl-tick-border .jtl-time { top: -8px; }
+
+.jtl-mark {
+	background-color: orange;
+	border: 1px solid black;
+	height: 6px;
+	width: 6px;
+	position: absolute;
+	top: -5px;
+}
+.jtl-mark-hover {
+	background-color: #E56717;
+	border: 1px solid black;
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	top: -6px;
+}
+

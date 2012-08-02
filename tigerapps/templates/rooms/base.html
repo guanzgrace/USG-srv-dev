@@ -8,7 +8,7 @@
   <!-- Styles -->
   <link type="text/css" href="/static/rooms/reset.css" rel="Stylesheet" />
   <link type="text/css" href="/static/rooms/styles.css" rel="Stylesheet" />
-  <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+<!--  <link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'> -->
   <link type="text/css" href="/static/rooms/css/custom-theme/jquery-ui-1.8.18.custom.css" rel="Stylesheet" />
   <link rel="stylesheet" href="/static/rooms/themes/blue/style.css" type="text/css" media="print, projection, screen" />
   <script type="text/javascript"
@@ -26,12 +26,37 @@
     <!-- Draggable Queue -->
   <script type="text/javascript" src="/static/rooms/js/queue.js"></script>
 
+    <!-- fancybox -->
+    <link rel="stylesheet" href="/static/rooms/fancybox/source/jquery.fancybox.css?v=2.0.6" type="text/css" media="screen" />
+    <script type="text/javascript" src="/static/rooms/fancybox/source/jquery.fancybox.pack.js?v=2.0.6"></script>
+
   <script type="text/javascript" src="/static/rooms/js/pdfnames.js"></script>
   <script type="text/javascript" src="/static/rooms/js/floorplan.js"></script>
   <script type="text/javascript" src="/static/rooms/js/floorplancoords.js"></script>
   <script type="text/javascript" src="/static/rooms/js/roomnames.js"></script>
   <script type="text/javascript" src="/static/rooms/js/jquery.tablesorter.js"></script>
   <script type="text/javascript" src="/static/rooms/js/picnet.table.filter.min.js"></script>
+    <script type="text/javascript">
+	$(document).ready(function() 
+        {
+        $(".various").fancybox(
+        {
+        fitToView: true
+        }
+        );
+        $(".fancyroom").fancybox(
+        {
+        maxWidth: 500,
+        autoSize: true
+        });
+        $("#settings").fancybox(
+        {
+        fitToView: true,
+        maxHeight: 293,
+        maxWidth: 400
+        });
+	});
+    </script>
   <script type="text/javascript">
   $(function() {
   $("#drawtable").tablesorter({headers: { 0: { sorter: false}}});
@@ -46,41 +71,56 @@
 
 <body onload="initialize()">
   {% include "main/jquery.html" %}
-  <div id="wrapper1">
-    <div id="wrapper2">
-      <div id="mainColumn">  
-	<div id="top_half">  
-	  <div id="map_canvas"></div>
-	  <div id="floorplan_canvas"></div>
-	  <div id="top_right">
-	    <div id="greeting">
-	      <h1>Hello, {{ user.netid }} {{ user.puclassyear }}.</h1>
+    <div id="wrapper1">
+        <div id="wrapper2">
+            <div id="map_canvas"></div>
+            <div id="floorplan_canvas"></div>
+            <div id="fp_nav">
+                <div id="fp_nav_whitebackground">
+                <span class="fp_button" id="fp_back_button">&#8592; </span>
+                <h1 id="fp_title"></h1>
+                <br>
+                <br>
+                Floors:
+                <div class="fp_button" id="fp_floordown_button"></div>
+                <div class="fp_button" id="fp_floorup_button"></div>
+                Zoom:
+                <div class="fp_button" id="fp_zoomout_button"></div>
+                <div class="fp_button" id="fp_zoomin_button"></div>
+                </div>
             </div>
-	    <div id="settings"><h1><a href="/usersettings.html">Settings</a></h1></div>
-            <div id="queues">
-            <!--ul id="list_queues"-->
-                <h1 id="queuehead"> Queue</h1>
-                <div id="room_queue" class="queue_drag"></div>
-            <!--/ul-->
-            <div class="clearfloat"></div>
-	    </div>
-	  </div>
-	</div>
-	<div id="middle_buffer"></div>
-	<div id="dataPanel"> 
-	  <div id="roomListWrapper">
-	    {% block dataPanel %}
-            Room / Building Information & Queue
-            {% endblock dataPanel %}
-	  </div>
-          <div id="room_view">
-            {% block room_view %}
-            {% endblock room_view %}
-          </div>
-	</div>
-      </div>
-    </div>
-  </div>
 
+            <div id="queues_wrapper">
+                <div id="queues">
+                    <a id="settings" title="User Settings" class="various" data-fancybox-type="iframe" href="/user_settings.html"></a>
+                    <div id="queue">
+                        <h1 id="queuehead"></h1>
+                        <br>
+                        <div id="managequeues"><a class="various" data-fancybox-type="iframe" href="/manage_queues.html">Edit Members</a></div>
+                        <div id="queue_note" style="padding-top: 3px;font-weight: bold"></div>
+                        <div id="room_queue"></div>
+                        <div class="clearfloat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="roomListWrapperBigger">
+                <div id="roomListWrapper">
+                    {% block dataPanel %}
+                    {% endblock dataPanel %}
+                </div>
+            </div>
+
+            <!- is this even being used? ->
+            <div id="room_view">
+                {% block room_view %}
+                {% endblock room_view %}
+            </div>
+        
+        </div> <!-- wrapper2 -->
+    </div> <!-- wrapper1 -->
+
+    <!-- used for dynamically calling fancybox through floorplan.js -->
+    <a id="hiddenclicker" data-fancybox-type="iframe" class="fancyroom" href="filler" title="Room Overview"></a>
 </body>
 </html>

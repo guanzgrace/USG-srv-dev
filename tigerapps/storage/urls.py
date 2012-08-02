@@ -9,10 +9,13 @@ urlpatterns = patterns('',
     url(r'^/?$', 'storage.views.home'),
     url(r'^register/?$', 'storage.views.register'),
     url(r'^register/complete/?$', 'storage.views.register_complete'),
+    url(r'^register/closed/?$', direct_to_template, {'template':'storage/registration_closed.html'}),
     url(r'^order/?$', 'storage.views.order'),
     
     (r'^login/?$', 'django_cas.views.login'),
     (r'^logout/?$', 'django_cas.views.logout'),
+    (r'^emails/?$', 'storage.views.admin_emails'),
+    (r'^emails/send/?$', 'storage.views.admin_send_emails'),
     
     (r'^paypal/ipntesturl123/?$', 'storage.views.my_ipn'),
 

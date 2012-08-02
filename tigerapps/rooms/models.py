@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+import time
 
 photopath = 'photo'
 
@@ -73,12 +74,22 @@ class User(models.Model):
     phone = models.CharField(max_length=12, blank=True)
     do_text = models.BooleanField(default=False)
     carrier = models.ForeignKey('Carrier', null=True)
-    
+    confirmed = models.BooleanField('Confirmed', default=False) #whether or not has confirmed phone number
+
     def __unicode__(self):
         return self.netid
 
 # queues
 class Queue(models.Model):
+    @staticmethod
+    def make(draw, user=None):
+        queue = Queue(draw=draw)
+        queue.save()
+        if user:
+            QueueUpdate(queue=queue, timestamp=int(time.time()), kind=QueueUpdate.MERGE,
+                        kind_id=queue.id).save()
+        return queue
+
     draw = models.ForeignKey('Draw')
     def __unicode__(self):
         return self.draw.name
@@ -89,13 +100,65 @@ class QueueToRoom(models.Model):
     room = models.ForeignKey('Room')
     ranking = models.IntegerField()
 
+
+# An update to a queue
+class QueueUpdate(models.Model):
+    EDIT = 0
+    MERGE = 1
+    UPDATE_KINDS = (
+        (EDIT, 'EDIT'),
+        (MERGE, 'MERGE'),
+        )
+    queue = models.ForeignKey('Queue')
+    timestamp = models.IntegerField()
+    kind = models.IntegerField(choices=UPDATE_KINDS) #either edit or merge
+    kind_id = models.IntegerField() # If merge, new queue id, otherwise edit user id
+
+# An invitation to a the queue owned by a user
+class QueueInvite(models.Model):
+    sender = models.ForeignKey('User', related_name='q_sent_set')
+    receiver = models.ForeignKey('User', related_name='q_received_set')
+    draw = models.ForeignKey('Draw')
+    # UNIX timestamp
+    timestamp = models.IntegerField()
+
+    def __unicode__(self):
+        return "%s->%s %s" % (self.sender.netid, self.receiver.netid, self.draw.name)
+
+    # Accept the invitation, merging queues
+    def accept(self):
+        q1 = self.sender.queues.get(draw=self.draw)
+        q2 = self.receiver.queues.get(draw=self.draw)
+        # Check whether queues are same
+        if q1.id == q2.id:
+            self.delete()
+            return None
+        rooms1 = q1.queuetoroom_set.all()
+        rooms2 = q2.queuetoroom_set.all()
+        ranking = len(rooms1)
+        for qtr in rooms2:
+            if qtr in rooms1:
+                continue
+            qtr.ranking = ranking
+            qtr.queue = q1
+            qtr.save()
+            ranking += 1
+        self.receiver.queues.remove(q2)
+        self.receiver.queues.add(q1)
+        q2.delete()
+        self.delete()
+        return q1
+
+    def deny(self):
+        self.delete()
+        
 # room review
 class Review(models.Model):
 
     RATINGS = ( (i, i) for i in range(6) )
     
     room = models.ForeignKey('Room')
-    summary = models.CharField(max_length=30)
+    summary = models.CharField(max_length=80)
     date = models.DateField(auto_now_add=True)
     content = models.TextField()
     rating = models.IntegerField(choices=RATINGS)
@@ -151,10 +214,6 @@ class Carrier(models.Model):
     address = models.CharField(max_length=30)
     def __unicode__(self):
         return self.name
-
-
-
-
 
 
 
