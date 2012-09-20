@@ -8,7 +8,8 @@ class Command(BaseCommand):
     help = 'Update the html cache of the Django template toolbar'
 
     def handle(self, *args, **options):
-        f = open(os.path.join(settings.CURRENT_DIR, 'templates', 'main', '_autogen.html'), 'w')
+        fname = os.path.join(settings.CURRENT_DIR, 'templates', 'main', '_autogen.html')
+        f = open(fname, 'w')
         f.write(render_to_string('main/jquery.html'))
         f.close()
 
