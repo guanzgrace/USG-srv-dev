@@ -11,6 +11,10 @@ body {
     height: 300px;
 }
 .app-list-img {
-    height: 32px;
-    width: 32px;
+    height: 50px;
+    /* width: 50px;*/
+}
+.row-fluid .span6 a {
+	color: orange;
+	font-size: 18px;
 }
