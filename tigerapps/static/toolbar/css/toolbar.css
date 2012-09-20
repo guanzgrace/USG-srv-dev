@@ -1,78 +1,72 @@
-html, body
-{
-    margin: 0;
-    padding: 0;
-}
-
-#toolbar
-{
-    font-family: Helvetica, sans-serif;
-    font-size: 13px;
+#toolbar {
     display: block;
-    height: 28px;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #262626), color-stop(1, #020202));
-    background: -moz-linear-gradient(top, #262626, #020202);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #262626), color-stop(1, #020202));
-    background-color: black;
-    border-top: 1px solid #3C3C3C;
-    border-bottom: 1px solid #1C1C1C;
-    opacity: 1;
+    height: 30px;
     position: absolute;
     top: 0;
     width: 100%;
     min-width: 950px;
     z-index: 990;
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
     line-height: 1;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #262626), color-stop(1, #020202));
+    background: -moz-linear-gradient(top, #262626, #020202);
+    background-color: black;
+    opacity: 1;
     /*box-shadow: -4px 2px 4px rgba(255, 255, 255, 0.8);
     -moz-box-shadow: -4px 2px 4px rgba(255, 255, 255, 0.8);
     -webkit-box-shadow: -4px 2px 4px rgba(255, 255, 255, 0.8);*/
 }
-
-a img {
-    border: none;
-}
-
-.toolbar-text {
-    color:white;
-    font-size:12px;
-    margin:0;
-    padding:6px 0;
-    display:inline-block;
-}
-
-.toolbar-text a, .toolbar-text a:visited
-{
-    text-decoration: none;
-    color: #FFBE24;
-}
-
-.toolbar-text a:hover
-{
-    text-decoration: underline;
-}
-
-ul.sf-menu
-{
-    margin: 0;
-    padding: 0;
-    float: left;
-    display: inline;
-}
-
-ul.sf-menu img#usg_logo
-{
-    display: inline;
-    float: left;
-    margin: 0px;
-    padding: 0px;
-    margin-top: -12px;
-}
-
-#toolbar:after
-{
+#toolbar:after {
     content: ".";
     display: block;
     height: 0;
     clear: both;
     visibility: hidden;
 }
+#toolbar div {
+	display:inline-block;
+}
+
+.toolbar-right {
+	float:right;
+	height:28px;
+	padding:1px 2px 1px 12px;
+    background: -webkit-gradient(linear, right top, left bottom, color-stop(0, #555), color-stop(1, #2d2d2d));
+    background: -moz-linear-gradient(top, #555, #333);
+	background-color:#363636;
+}
+
+.toolbar-app {
+    padding: 8px 8px;
+}
+.toolbar-app a, .toolbar-app a:visited {
+    text-decoration: none;
+    font-weight:bold;
+    color: #b2b2b2;
+}
+.toolbar-app a:hover {
+    text-decoration: underline;
+}
+
+.toolbar-text {
+    color:white;
+    font-size:12px;
+	padding-top:8px;
+	padding-bottom:8px;
+}
+.toolbar-text a, .toolbar-text a:visited {
+    text-decoration: none;
+    color: #FFBE24;
+}
+.toolbar-text a:hover {
+    text-decoration: underline;
+}
+
+ul.sf-menu, ul.sf-menu li {
+    margin: 0;
+    padding: 0;
+    float: left;
+    display: inline;
+}
+

@@ -5,14 +5,14 @@
     font-size: 13px;
 }
 
-#subMenusContainer a, #ul-toolbar li li a{
+#subMenusContainer a, .sf-menu li li a{
 	text-align:left;
 	text-decoration: none;
     color: white;
 }
 
 /* All menu links on hover or focus */
-#ul-toolbar a:hover, #ul-toolbar a:focus, #subMenusContainer a:hover, #subMenusContainer a:focus, #ul-toolbar a.mainMenuParentBtnFocused, #subMenusContainer a.subMenuParentBtnFocused{
+.sf-menu a:hover, .sf-menu a:focus, #subMenusContainer a:hover, #subMenusContainer a:focus, .sf-menu a.mainMenuParentBtnFocused, #subMenusContainer a.subMenuParentBtnFocused{
 	background-color:transparent;
 	color:#FFF;
 }
@@ -20,10 +20,10 @@
 /* sub menu links on hover or focus */
 #subMenusContainer a:hover, 
 #subMenusContainer a:focus, 
-#ul-toolbar a.mainMenuParentBtnFocused, 
+.sf-menu a.mainMenuParentBtnFocused, 
 #subMenusContainer a.subMenuParentBtnFocused,
-#ul-toolbar li a:hover,
-#ul-toolbar li a:focus{
+.sf-menu li a:hover,
+.sf-menu li a:focus{
 	background-color: #424242;
 	color:#FFF;
 }
@@ -70,7 +70,7 @@
 
 
 /* All ULs and OLs */
-#ul-toolbar, #ul-toolbar ul, #ul-toolbar ol, #subMenusContainer ul, #subMenusContainer ol { 
+.sf-menu, .sf-menu ul, .sf-menu ol, #subMenusContainer ul, #subMenusContainer ol { 
 	padding: 0;
 	margin: 0;
 	list-style: none;
@@ -78,7 +78,7 @@
 }
 
 /* All submenu OLs and ULs */
-#ul-toolbar ol, #ul-toolbar ul, #subMenusContainer ul, #subMenusContainer ol {	
+.sf-menu ol, .sf-menu ul, #subMenusContainer ul, #subMenusContainer ol {	
 	background: #424242;
 	border:1px solid black;
 	left:0;
@@ -95,14 +95,14 @@
 
 
 /* --------------------------[ The below is just for non-javscript users ]--------------------------*/
-#ul-toolbar li li{	float:none; }
+.sf-menu li li{	float:none; }
 
-#ul-toolbar li li a{ /* Just submenu links*/	
+.sf-menu li li a{ /* Just submenu links*/	
 	position:relative;
 	float:none;
 }
 
-#ul-toolbar li ul { /* second-level lists */
+.sf-menu li ul { /* second-level lists */
 	position: absolute;
 	width: 10em;
 	margin-left: -1000em; /* using left instead of display to hide menus because display: none isn't read by screen readers */
@@ -110,17 +110,17 @@
 }
 
 /* third-and-above-level lists */
-#ul-toolbar li ul ul { margin: -1em 0 0 -1000em; }
-#ul-toolbar li:hover ul ul {	margin-left: -1000em; }
+.sf-menu li ul ul { margin: -1em 0 0 -1000em; }
+.sf-menu li:hover ul ul {	margin-left: -1000em; }
 
  /* lists nested under hovered list items */
-#ul-toolbar li:hover ul{	margin-left: 0; }
-#ul-toolbar li li:hover ul {	margin-left: 10em; margin-top:-2.5em;}
+.sf-menu li:hover ul{	margin-left: 0; }
+.sf-menu li li:hover ul {	margin-left: 10em; margin-top:-2.5em;}
 
 /* extra positioning rules for limited noscript keyboard accessibility */
-#ul-toolbar li a:focus + ul {  margin-left: 0; margin-top:2.2em; }
-#ul-toolbar li li a:focus + ul { left:0; margin-left: 1010em; margin-top:-2.2em;}
-#ul-toolbar li li a:focus {left:0;  margin-left:1000em; width:10em;  margin-top:0;}
-#ul-toolbar li li li a:focus {left:0; margin-left: 2010em; width: 10em;  margin-top:-1em;}
-#ul-toolbar li:hover a:focus{ margin-left: 0; }
-#ul-toolbar li li:hover a:focus + ul { margin-left: 10em; }
+.sf-menu li a:focus + ul {  margin-left: 0; margin-top:2.2em; }
+.sf-menu li li a:focus + ul { left:0; margin-left: 1010em; margin-top:-2.2em;}
+.sf-menu li li a:focus {left:0;  margin-left:1000em; width:10em;  margin-top:0;}
+.sf-menu li li li a:focus {left:0; margin-left: 2010em; width: 10em;  margin-top:-1em;}
+.sf-menu li:hover a:focus{ margin-left: 0; }
+.sf-menu li li:hover a:focus + ul { margin-left: 10em; }
