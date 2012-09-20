@@ -25,6 +25,15 @@ CACHE_MIDDLEWARE_SECONDS = 60*5
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, '/'.join(CURRENT_DIR.split('/')[:-1]))
 
+CURRENT_HOST = socket.gethostname()
+if socket.gethostname() == "USGDev":
+    CURRENT_HOST_PREFIX = "dev."
+    CURRENT_HOME = "http://dev.tigerapps.org"
+else:
+    CURRENT_HOST_PREFIX = ""
+    CURRENT_HOME = "http://www.tigerapps.org"
+
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -110,6 +119,7 @@ INSTALLED_APPS = (
     'apps.students',
     'apps.reviews',
     'apps.elearn',
+    'utils'
 )
 
 ROOT_URLCONF = 'urls'

@@ -1,0 +1,20 @@
+body {
+}
+#wrapper {
+    margin: 20px auto 40px;
+    width: 80%;
+}
+
+#app-panels {
+    width: 625px;
+    margin: 0 auto;
+    height: 300px;
+}
+.app-list-img {
+    height: 50px;
+    /* width: 50px;*/
+}
+.row-fluid .span6 a {
+	color: orange;
+	font-size: 18px;
+}

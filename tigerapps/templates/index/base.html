@@ -15,18 +15,16 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/static/index/js/app_slider.js"></script>
 
 
     {% block header %}{% endblock %}
 
-    {% include "main/head.html" %}    
 </head>
 
 
 </head>
 <body>
-{% include "main/links.html" %}
+{% include "toolbar/jquery.html" %}
 
 <div id="wrapper">
     {% block content %}{% endblock %}

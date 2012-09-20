@@ -1,0 +1,114 @@
+{% load value_from_settings %}
+<div id="toolbar">
+	<div style="padding-left:16px;">
+	    <div class="toolbar-app"><a href="http://www.tigerapps.org/">Tigerapps Home</a></div>
+	    <div class="toolbar-app"><a href="http://ice.tigerapps.org/">ICE</a></div>
+	    <div class="toolbar-app"><a href="http://scg.tigerapps.org/">SCG</a></div>
+	    <div class="toolbar-app"><a href="http://ptx.tigerapps.org/">PTX</a></div>
+	    <div class="toolbar-app"><a href="http://cal.tigerapps.org/">Cal</a></div>
+	    <div class="toolbar-app"><a href="http://pam.tigerapps.org/">PAM</a></div>
+    </div>
+
+    <div class="toolbar-right">
+	    <div class="toolbar-text" id="tigerapps-feedback" style="font-weight:bold;float:left;padding-right:8px;">
+	    	<a href="http://www.surveygizmo.com/s3/623136/TigerApps-Feedback">Feedback</a>
+		</div>
+    	<a id="princeton-icon" href="http://princeton.edu"><img id="usg_logo" src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/princeton-shield.png" alt="Princeton" style="height:25px;width:25px;"/></a>
+		<a id="usg-icon" href="http://usg.princeton.edu"><img id="usg_logo" src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/usglogoless.png" alt="USG" style="height:25px;width:25px;"/></a>
+		<a id="twitter-icon" href="http://twitter.com/#!/princetonusg"><img src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/icon-twitter.png" alt="twitter" style="height:25px;width:25px;"/></a>
+		<a id="facebook-icon" href="https://www.facebook.com/princetonusg"><img src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/icon-facebook.png" alt="facebook" style="height:23px;width:23px;border:1px solid transparent;"/></a>
+    </div>
+
+    <div class="toolbar-text" id="tigerapps-announcement" style="float:right;padding-right:16px;margin-top:1px;">
+        {% include "main/announcement.html" %}
+	</div>
+</div>
+<div style="height: 30px; width: 100%; display: block;"></div>
+
+<!--
+    <div style="margin:1px 4px;float:right;">
+	<ul class="sf-menu" id="ul-toolbar">
+		<li class="left"> 
+			<a href="http://tigerapps.org"><img id="usg_logo" src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/tigerapps-medium.png" height="31" width="35" alt="Princeton" /></a>
+			<ul>
+				<li><a href="http://pam.tigerapps.org" class="submenlink"> Prospect Avenue Map</a></li>
+				<li><a href="http://ice.tigerapps.org" class="submenlink">ICE</a></li>
+				<li><a href="http://deals.tigerapps.org" class="submenlink">TigerDeals</a></li>
+				<li><a href="http://cal.tigerapps.org" class="submenlink">Events Calendar</a></li>
+				<li><a href="http://ttrade.tigerapps.org" class="submenlink">TigerTrade</a></li>
+				<li><a href="http://ptx.tigerapps.org" class="submenlink">Textbook Exchange</a></li>
+				<li><a href="http://scg.tigerapps.org" class="submenlink">Student Course Guide</a></li>
+				<li><a href="http://join.tigerapps.org" class="submenlink">Join USG</a></li>
+				<li><a href="http://dvd.tigerapps.org" class="submenlink">USG DVD</a></li>
+				<li><a href="http://princeton2015.com" class="submenlink">Princeton 2015</a></li>
+				<li><a href="http://elections.tigerapps.org" class="submenlink">Elections Registration</a></li>
+				<li><a href="http://ccc.tigerapps.org" class="submenlink">Campus Community Challenge</a></li>
+			</ul>
+		</li>
+		<li class="left"> 
+			<a href="http://princeton.edu"><img id="usg_logo" src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/princeton-shield.png" height=31 width=35 alt="Princeton" /></a>
+			<ul>
+				<li><a href="http://webmail.princeton.edu/" class="submenlink">Webmail</a></li>
+				<li><a href="http://blackboard.princeton.edu" class="submenlink">Blackboard</a></li>
+				<li><a href="http://registrar.princeton.edu/score" class="submenlink">SCORE</a></li>
+				<li><a href="http://registrar.princeton.edu" class="submenlink">Registrar</a></li>
+				<li><a href="http://library.princeton.edu" class="submenlink">Library</a></li>
+				<li><a href="http://registrar.princeton.edu/academic-calendar/" class="submenlink">Academic Calendar</a></li>
+				<li><a href="http://etcweb.princeton.edu/pumap/" class="submenlink">Campus Map</a></li>
+				<li><a href="http://helpdesk.princeton.edu/kb/search.plx" class="submenlink">OIT Help</a></li>
+			</ul>
+		</li>
+	<li class="left"> 
+		<a href="http://usg.princeton.edu"><img id="usg_logo" src="{% value_from_settings CURRENT_HOME %}/static/toolbar/images/usglogoless.png" height="31" width="35" alt="USG"/></a>
+		<ul>
+			<li><a href="http://usg.princeton.edu/usg-senate/senate-profiles.html" class="submenlink">Senate</a>
+				<ul>
+					<li><a href="http://usg.princeton.edu/usg-senate/senate-meeting-schedule.html" class="submenlink">Meeting Schedule</a></li>
+					<li><a href="http://usg.princeton.edu/usg-senate/minutes.html" class="submenlink">Meeting Minutes</a></li>
+					<li><a href="http://usg.princeton.edu/usg-senate/elections-center.html" class="submenlink">Elections Center</a>
+						<ul>
+							<li><a href="http://usg.princeton.edu/usg-senate/elections-center/helios-headquarters.html" class="submenlink">Helios Headquarters</a></li>
+							<li><a href="http://usg.princeton.edu/usg-senate/elections-center/guide-to-helios.html" class="submenlink">Guide to Helios</a></li>
+							<li><a href="http://usg.princeton.edu/usg-senate/elections-center/helios-feedback.html" class="submenlink">Helios Feedback</a></li>
+							<li><a href="http://usg.princeton.edu/usg-senate/elections-center/election-reform-blog.html" class="submenlink">Elections Reform Blog</a></li>
+						</ul>
+					</li>
+					<li><a href="http://usg.princeton.edu/usg-senate/attendance.html" class="submenlink">Attendance</a></li>
+					<li><a href="http://usg.princeton.edu/usg-senate/senate-ethics-code.html" class="submenlink">Ethics Code</a></li>
+					<li><a href="http://usg.princeton.edu/usg-senate/senate-pledge.html" class="submenlink">Senate Pledge</a></li>
+					<li><a href="http://usg.princeton.edu/usg-senate/reports.html" class="submenlink">Reports</a></li>
+				</ul>
+			</li>
+			<li><a href="http://usg.princeton.edu/class-government.html" class="submenlink">Class Government</a></li>
+			<li><a href="http://usg.princeton.edu/services/links.html" class="submenlink">Subsidiaries and Services</a>
+				<ul>
+					<li><a href="http://usg.princeton.edu/services/projects-board.html" class="submenlink">Projects Board</a></li>
+					<li><a href="http://usg.princeton.edu/services/sgrc-home.html" class="submenlink">Student Groups Recognition Committee</a></li>
+					<li><a href="http://usg.princeton.edu/services/princeton-plus.html" class="submenlink">Princeton Plus</a></li>
+					<li><a href="http://usg.princeton.edu/services/usg-office-amenities.html" class="submenlink">USG Office Amenities</a></li>
+					<li><a href="http://projectalta.wordpress.com/" class="submenlink">ALTA</a></li>
+				</ul>
+			</li>
+			<li><a href="http://usg.princeton.edu/about/info.html" class="submenlink">About</a>
+				<ul>
+					<li><a href="http://usg.princeton.edu/about/info.html" class="submenlink">About the USG</a></li>
+					<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/usgconstitution.html" class="submenlink">Constitution and Charters</a>
+						<ul>
+							<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/usgconstitution.html" class="submenlink">USG Constitution</a></li>
+							<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/projects-board-charter.html" class="submenlink">Projects Board Charter</a></li>
+							<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/projects-board-charter.html" class="submenlink">Honor Code Consitution</a></li>
+							<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/undergraduate-film-organization-charter.html" class="submenlink">Undergraduate Film Organization Charter</a></li>
+							<li><a href="http://usg.princeton.edu/about/constitutions-and-charters/student-groups-recognition-committee-charter.html" class="submenlink">Student Groups Recognition Charter</a></li>
+						</ul>
+					</li>
+					<li><a href="http://usg.princeton.edu/about/get-involved.html" class="submenlink">Get Involved</a></li>
+					<li><a href="http://usg.princeton.edu/about/monthly-projects.html" class="submenlink">Monthly Projects</a></li>
+					<li><a href="http://usg.princeton.edu/about/identity.html" class="submenlink">Identity</a></li>
+					<li><a href="http://usg.princeton.edu/about/endorsements.html" class="submenlink">Endorsements</a></li>
+				</ul>
+			</li>
+			<li><a href="http://usg.princeton.edu/contact.html" class="submenlink">Contact</a></li>
+		</ul>
+	</li>
+	</ul>
+	</div>-->
