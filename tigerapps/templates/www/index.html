@@ -3,8 +3,6 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/static/index/css/styles.css" />
-    <link rel="stylesheet" type="text/css" href="/static/index/css/style.css" />
-    
     <link rel="stylesheet" type="text/css" href="/static/index/css/bootstrap.css" />
     <link href="/static/index/css/bootstrap-responsive.css" rel="stylesheet">
     
@@ -20,6 +18,7 @@
 </div>
 
     <body>
+        <div id="main_body_container">
         <script>
           $(document).ready( function() {
               tigerapps.initializeTigerapps();
@@ -44,7 +43,7 @@
         </div>
 </div>
 
-<div id="app-list">
+<div id="app_list">
     
     <h2>TigerApps</h2>
     <div class="row-fluid">
@@ -102,6 +101,7 @@
         <p>Access your bookmarks and starred items</p>
       </div>
     </div>      
+</div>
 </div>
 
 {% endblock %}
