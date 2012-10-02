@@ -1,34 +1,16 @@
-#slideshow_container {
+#main_body_container {
     position:absolute;
+    height:100%;
+    width:100%;
+}
+
+#slideshow_container {
+    position:relative;
     top:5px;
-    left:5px;
+    left:50%;
+    margin-left:-400px;
     height:300px;
     width:800px;
-}
-#slideshow_sidebar {
-    position:absolute;
-    top:0px;
-    height:300px;
-    width:200px;
-    left:600px;
-}
-
-#slideshow_main_picture {
-    position:absolute;
-    top:0px;
-    left:0px;
-    height:300px;
-    width:600px;
-    overflow:hidden;
-}
-
-#photo_row {
-    height:300px;
-    width:3000px;
-    left:0px;
-    top:0px;
-    position:absolute;
-    overflow:none;
 }
 
 .main_picture_container {
@@ -90,13 +72,6 @@
 body {
 }
 
-#slideshow_container {
-    position:relative;
-    top:5px;
-    left:5px;
-    height:300px;
-    width:800px;
-}
 #slideshow_sidebar {
     position:absolute;
     top:0px;
@@ -123,20 +98,6 @@ body {
     overflow:none;
 }
 
-.main_picture_container {
-    height:300px;
-    width:600px;
-    float:left;
-    position:relative;
-}
-
-.main_picture {
-    height:300px;
-    width:600px;
-    float:left;
-    top:0px;
-}
-
 .top_left_rounded_corner {
     -webkit-border-top-left-radius: 10px;
     -khtml-border-radius-topleft: 10px; 
@@ -150,6 +111,9 @@ body {
 
 #app_list {
     position:relative;
+    width:800px;
+    left:50%;
+    margin-left:-400px;
 }
 
 #app-panels {
@@ -164,4 +128,8 @@ body {
 .row-fluid .span6 a {
 	color: orange;
 	font-size: 18px;
+}
+
+.app_in_list {
+    padding:20px;
 }
