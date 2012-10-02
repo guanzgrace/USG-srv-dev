@@ -1,139 +1,33 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-<head>
-    <!-- TigerApps is a service of the Princeton Undergraduate Student Government (USG)-->
-    <!-- The USG's web address is: http://usg.princeton.edu-->
-    <!-- Website Copyright 2012 USG -->
-    <!-- All rights reserved.-->
-    <title>Princeton TigerApps</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="author" content="Princeton USG">
-    <meta name="keywords" content="Princeton,TigerApps,Tiger,Apps">
-
-    <link rel="icon" type="image/ico" href="favicon.ico"/>
-
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-
-
-    {% block header %}{% endblock %}
-
-</head>
-
-
-</head>
-<body>
-{% include "toolbar/jquery.html" %}
-
-<div id="wrapper">
-    {% block content %}{% endblock %}
-</div>
-
-
-
-<!-- we probably don't need this lol -->
-
-    <div id="maia-signature"></div>
-
-    <div id="maia-footer" class="maia-footer">
-      <div id="maia-footer-local">
-        <div class="maia-aux">
-          <ul class="corp-footer-local maia-aux">
-            
-            <li>
-            
-            <a href="../../about/company/">Company</a>
-            <span>
-            <ul>
-<li><a href="/about/company/facts/">Who we are</a></li>
-<li><a href="/about/company/philosophy/">What we believe</a></li>
-<li><a href="/about/company/products/">What we do</a></li>
-</ul>
-            
-            </span>
-            
-            </li>
-            
-            
-            
-            <li>
-            
-            <a href="../../press/">News</a>
-            <span>
-            <ul>
-<li><a href="/press/images.html">Images and B-roll</a></li>
-<li><a href="/press/blog-directory.html">Blog directory</a></li>
-<li><a href="/press/google-directory.html">Google+ directory</a></li>
-<li><a href="/press/twitter-directory.html">Twitter directory</a></li>
-<li><a href="/press/facebook-directory.html">Facebook directory</a></li>
-<li><a href="/press/youtube-directory.html">YouTube directory</a></li>
-</ul>
-            
-            </span>
-            
-            </li>
-            
-
-            
-            <li>
-            
-            <a href="../../jobs/">Jobs</a>
-            <span>
-            <ul>
-<li><a href="/jobs/joininggoogle/">Joining Google</a></li>
-<li><a href="/jobs/lifeatgoogle/">Life at Google</a></li>
-<li><a href="/jobs/locations/">Office locations</a></li>
-</ul>
-            
-            </span>
-            
-            </li>
-            
-           
-            
-            <li>
-            
-            <a href="//investor.google.com/">Investor relations</a>
-            <span>
-            <ul>
-<li><a href="//investor.google.com/releases.html">News and events</a></li>
-<li><a href="//investor.google.com/earnings.html">Financial information</a></li>
-<li><a href="//investor.google.com/corporate/message.html">Corporate governance</a></li>
-</ul>
-            
-            </span>
-            
-            </li>
-            
-            
-            
-            <li>
-            
-            <a href="../../contact/">Contact us</a>
-            <span>
-            
-            
-            </span>
-            
-            </li>
-            
-          </ul>
+    <head>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/index/css/style.css" />
+        <script type="text/javascript" src="/static/index/js/main.js"></script>
+        <script type="text/javascript" src="/static/index/js/jquery.color.js"></script>
+    </head>
+    <body>
+        <script>
+        $(document).ready( function() {
+            tigerapps.initializeTigerapps();
+        });
+        </script>
+        <div id="slideshow_container">
+        <div id="slideshow_main_picture">
+            <div id="photo_row">
+                <div id="main_picture_0" class="main_picture_container"><img src="/static/images/app_screenshots/ICE.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
+                <div id="main_picture_1" class="main_picture_conatiner"><img src="/static/images/app_screenshots/PAM.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
+                <div id="main_picture_2" class="main_picture_container"><img src="/static/images/app_screenshots/SCG.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
+                <div id="main_picture_3" class="main_picture_container"><img src="/static/images/app_screenshots/ICE.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
+                <div id="main_picture_4" class="main_picture_container"><img src="/static/images/app_screenshots/PAM.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
+            </div>
         </div>
-      </div>
-
-      <div id="maia-footer-global">
-        <div class="maia-aux">
-        <ul>
-          <li><a href="/">Google</a></li>
-          <li> <a href="/intl/en/policies/">Privacy &amp; Terms</a></li>
-        </ul>
+        <div id="slideshow_sidebar">
+            <div id="app_preview_0" class="app_preview top_right_rounded_corner" onclick="tigerapps.userSelectFeaturedApp(0)" >ICE</div>
+            <div id="app_preview_1" class="app_preview" onclick="tigerapps.userSelectFeaturedApp(1)">PAM</div>
+            <div id="app_preview_2" class="app_preview" onclick="tigerapps.userSelectFeaturedApp(2)">SCG</div>
+            <div id="app_preview_3" class="app_preview" onclick="tigerapps.userSelectFeaturedApp(3)">ICE</div>
+            <div id="app_preview_4" class="app_preview bottom_right_rounded_corner" onclick="tigerapps.userSelectFeaturedApp(4)">PAM</div>
         </div>
-      </div>
-
-    </div>
-    
-</div>
-    
-</body>
+        </div>
+    </body>
 </html>
