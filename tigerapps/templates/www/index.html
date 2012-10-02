@@ -1,4 +1,5 @@
 {% block header %}
+   {% include 'toolbar/jquery.html' %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/static/index/css/styles.css" />
@@ -13,18 +14,19 @@
 {% endblock %}
 
 {% block content %}
+
 <div id="header">
     <h1>TigerApps</h1>
 </div>
 
     <body>
         <script>
-        $(document).ready( function() {
-            tigerapps.initializeTigerapps();
-        });
+          $(document).ready( function() {
+              tigerapps.initializeTigerapps();
+          });
         </script>
         <div id="slideshow_container">
-        <div id="slideshow_main_picture">
+          <div id="slideshow_main_picture">
             <div id="photo_row">
                 <div id="main_picture_0" class="main_picture_container"><img src="/static/images/app_screenshots/ICE.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
                 <div id="main_picture_1" class="main_picture_conatiner"><img src="/static/images/app_screenshots/PAM.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
@@ -32,7 +34,7 @@
                 <div id="main_picture_3" class="main_picture_container"><img src="/static/images/app_screenshots/ICE.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
                 <div id="main_picture_4" class="main_picture_container"><img src="/static/images/app_screenshots/PAM.png" class="main_picture top_left_rounded_corner bottom_left_rounded_corner" ></div>
             </div>
-        </div>
+          </div>
         <div id="slideshow_sidebar">
             <div id="app_preview_0" class="app_preview top_right_rounded_corner" onclick="tigerapps.userSelectFeaturedApp(0)" >ICE</div>
             <div id="app_preview_1" class="app_preview" onclick="tigerapps.userSelectFeaturedApp(1)">PAM</div>
@@ -40,7 +42,7 @@
             <div id="app_preview_3" class="app_preview" onclick="tigerapps.userSelectFeaturedApp(3)">ICE</div>
             <div id="app_preview_4" class="app_preview bottom_right_rounded_corner" onclick="tigerapps.userSelectFeaturedApp(4)">PAM</div>
         </div>
-        </div>
+</div>
 
 <div id="app-list">
     
