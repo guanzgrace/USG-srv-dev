@@ -72,3 +72,12 @@ ul.sf-menu, ul.sf-menu li {
     display: inline;
 }
 
+/*
+hide the tip on small screens
+width is hardcoded for now :(
+*/
+@media (max-width: 1150px) {
+#tigerapps-announcement {
+    visibility: hidden;
+}
+}
