@@ -26,9 +26,9 @@ tigerapps = {
 
     setFeaturedApp: function(feature_number) { 
         $(".app_preview").each(function () {
-            $(this).css("background-color", "yellow");
+            $(this).css("background-color", "#707070");
         });
-        $("#app_preview_" + feature_number.toString()).css("background-color", "green"); 
+        $("#app_preview_" + feature_number.toString()).css("background-color", "#202020"); 
         $("#photo_row").animate({"left": (feature_number*-600).toString() + "px"}, 1000); 
         
     }
