@@ -39,10 +39,10 @@
 .toolbar-app {
     padding: 8px 10px;
     font-size: 13px;
+    font-weight:bold;
 }
 .toolbar-app a, .toolbar-app a:visited {
     text-decoration: none;
-    font-weight:bold;
     color: #FFBE24;
 }
 .toolbar-app a:hover {
@@ -62,6 +62,7 @@
 }
 .toolbar-text a:hover {
     text-decoration: underline;
+    color: #FFBE24;
 }
 
 ul.sf-menu, ul.sf-menu li {
