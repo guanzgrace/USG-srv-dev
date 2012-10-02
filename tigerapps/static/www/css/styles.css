@@ -3,6 +3,17 @@ body {
     background:repeat:repeat;
 }
 
+#app_list .span6 {
+    padding:5px;
+}
+
+#big_white_box {
+    background-color:white;
+    padding-top:100px;
+    width:1000px;
+    margin:auto;
+}
+
 #main_body_container {
     position:absolute;
     height:100%;
@@ -11,8 +22,6 @@ body {
 
 #slideshow_container {
     position:relative;
-    top:0px;
-    margin-top:90px;
     left:50%;
     margin-left:-400px;
     height:300px;
