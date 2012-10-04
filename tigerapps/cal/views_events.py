@@ -525,13 +525,13 @@ def events_forwardtocampusevents(request):
 			return go_back(request,'You are not authorized to submit this.',0)
 	else:
 		return go_back(request,'Invalid request.',0)
-		
+
+
 @login_required
 def events_add(request):
    user = current_user(request)
-
-   
    EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
+
    if request.method == 'POST':
        formset = EventFormSet(request.POST, request.FILES)
        clusterForm = EventClusterForm(request.POST, request.FILES)
@@ -549,8 +549,8 @@ def events_add(request):
                new_event.save()
                email_creator(user,new_event)
 
-	       # Added for interfacing with Student Groups
-           if 'post_groups' in request.POST:
+           # Added for interfacing with Student Groups
+           if 'post_groups' in request.POST and request.POST['post_groups']:
                group = Group.objects.get(id=request.POST['post_groups'])
                entry = Entry(title=new_cluster.cluster_title,text='',event=new_event,group=group)
                entry.save()
@@ -583,12 +583,13 @@ def events_add(request):
 
    return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group})
 
+
 @login_required
 def events_add_another(request, event_id):
    base_event = Event.objects.get(event_id = event_id)
    base_cluster = base_event.event_cluster
-
    EventFormSet = formset_factory(EventForm, extra=0, formset=RequiredFormSet)
+
    if request.method == 'POST':
       formset = EventFormSet(request.POST)
       user = request.session.get('user_data',None)

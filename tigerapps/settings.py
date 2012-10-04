@@ -10,7 +10,7 @@ except ImportError, exp:
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, '/'.join(CURRENT_DIR.split('/')[:-1]))
-#os.environ['PYTHON_EGG_CACHE'] = '/srv/tigerapps/eggs' 
+
 
 CURRENT_HOST = socket.gethostname()
 if socket.gethostname() == "USGDev":
@@ -131,8 +131,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-
-ROOT_URLCONF = 'urls'
+#APPEND_SLASH = True #TODO, we probably want this when ready to canonicalize the urls
+#We get an error if we don't define a ROOT_URLCONF, even though we override it in SubdomainsMiddleware...
+ROOT_URLCONF = 'www.urls'
 
 TEMPLATE_DIRS = (
     CURRENT_DIR + '/templates',
