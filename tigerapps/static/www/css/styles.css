@@ -1,34 +1,94 @@
-body { 
-    background: url(/static/index/images/wood_tile.png);
-    background:repeat:repeat;
+html, body {
+	height: 100%;
 }
 
-.app_category {
-    font: 400 40px/1.5 'Pacifico', Helvetica, sans-serif;
+body { 
+    background-color: #222;
+    overflow:hidden;
+}
+
+#surround {
+	max-width:1200px;
+	max-height:600px;
+	width:80%;
+	height:100%;
+	margin:60px auto;
+	position:relative;
+	
+	background-color:white;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px; 
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#col1-out {
+	margin:0;
+	padding:0;
+	position:relative;
+	float:left;
+	width:35%;
+	
+	overflow:hidden;
+	background-color:#666;
+	height:100%;
+}
+#col2-out {
+	margin:0;
+	padding:0;
+	position:relative;
+	float:left;
+	width:65%;
+	
+	overflow-x:hidden;
+	overflow-y:scroll;
+	background-color:#eee;
+	height:100%;
+}
+
+#col1-in {
+    padding:12px 12px;
+}
+#col2-in {
+    padding:24px 24px;
+}
+
+
+/*************/
+/* App list */
+/*************/
+
+.cat-heading {
+    font: 400 36px/1.2 'Pacifico', Helvetica, sans-serif;
     color: #2b2b2b;
     text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
+    margin:8px 0 6px;
+}
+
+.app-row {
+	margin-left:8px;
+}
+.app-row .span6 div {
+	float:left;
+	margin:0 4px;
+}
+.app-icon {
+    max-height: 40px;
+}
+.app-row .span6 {
+	padding: 4px 0 4px;
+}
+.app-row .span6 a {
+	color: orange;
+	font-size: 16px;
 }
 
 
 
-#app_list .span6 {
-    padding:5px;
-}
 
-#big_white_box {
-    background-color:#FFFDFA;
-    padding-top:100px;
-    width:1000px;
-    margin:auto;
-    opacity:.95;
-}
-
-#main_body_container {
-    position:absolute;
-    height:100%;
-    width:100%;
-}
-
+/*************/
+/* Slideshow */
+/*************/
 #slideshow_container {
     position:relative;
     left:50%;
@@ -39,14 +99,12 @@ body {
     border-color:black;
     border-width:10px;
 }
-
 .main_picture_container {
     height:300px;
     width:600px;
     float:left;
     position:relative;
 }
-
 .main_picture {
     height:300px;
     width:600px;
@@ -111,8 +169,6 @@ body {
 #app_preview_0 {
     background-color:#202020;
 }
-body {
-}
 
 #slideshow_sidebar {
     position:absolute;
@@ -140,32 +196,30 @@ body {
     overflow:none;
 }
 
-#wrapper {
-    margin: 20px auto 40px;
-    width: 80%;
-}
 
-#app_list {
-    position:relative;
-    width:800px;
-    left:50%;
-    margin-left:-400px;
+/*************/
+/* Scrollbar */
+/*************/
+::-webkit-scrollbar {
+    width: 10px;
 }
-
-#app-panels {
-    width: 625px;
-    margin: 0 auto;
-    height: 300px;
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 2px;
+    -moz-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
-.app-list-img {
-    height: 50px;
-    /* width: 50px;*/
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background: rgba(200,200,200,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    -moz-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
-.row-fluid .span6 a {
-	color: orange;
-	font-size: 18px;
-}
-
-.app_in_list {
-    padding:20px;
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(200,200,200,0.4); 
 }
