@@ -2,7 +2,7 @@ tigerapps = {
 
     initializeTigerapps: function() {
         console.log("up and running");
-        setInterval(tigerapps.cycleFeaturedApp, 2000);
+        setInterval(tigerapps.cycleFeaturedApp, 4000);
 
     },
 
