@@ -7,21 +7,15 @@
 
 {% block headercss %}
 <style type="text/css">
-
     .add-row {
         padding-left:18px;
-
         background:url(/static/cal/css/img/add.png) no-repeat left center;
-
     }
 
     .delete-row {
         padding-left:18px;
-
         background:url(/static/cal/css/img/delete.png) no-repeat left center;
-
     }
-    
 </style>
 <link rel="stylesheet" type="text/css" href="/static/cal/css/anytime.css" />
 {% endblock %}
@@ -92,7 +86,7 @@ $(document).ready(function(){
    //$("input[name*='event_date_rsvp_deadline']").AnyTime_picker(
    //{ format: "%m/%d/%y" } );
    rsvpfield = $("input[name*='event_date_rsvp_deadline']");
-   rsvpfield.after("<a href=\"javascript:NewCssCal('" + rsvpfield.attr('id') + "', 'MMddyyyy', 'Arrow', 'false', '12', 'true')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
+   rsvpfield.after("<a href=\"javascript:NewCssCal('" + rsvpfield.attr('id') + "', 'MMddyyyy', 'Arrow')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
    
    {% if clusterForm %}
    $('#id_form-0-event_subtitle').hide();
