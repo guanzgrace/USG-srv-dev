@@ -6,7 +6,7 @@ class Category (models.Model):
     index = models.IntegerField()
     
     def __unicode__(self):
-        return u'%s %s' %(self.name, self.id)
+        return unicode(self.name)
 
     class Meta:
         verbose_name_plural = 'categories'
