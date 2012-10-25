@@ -53,7 +53,6 @@ body {
     padding:24px 24px;
 }
 
-
 /*************/
 /* App list */
 /*************/
@@ -63,6 +62,11 @@ body {
     color: #2b2b2b;
     text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);
     margin:8px 0 6px;
+#big_white_box {
+    background-color:#FFFDFA;
+    padding-top:100px;
+    width:1000px;
+    margin:auto;
 }
 
 .app-row {
