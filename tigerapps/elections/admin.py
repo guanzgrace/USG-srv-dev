@@ -19,6 +19,7 @@ class OfficeAdmin(admin.ModelAdmin):
     ]
 
     search_fields = ['name']
+    ordering = ('name',)
     
 class ElectionAdmin(admin.ModelAdmin):
     fieldsets = [
