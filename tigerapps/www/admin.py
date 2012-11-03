@@ -1,10 +1,23 @@
 from django.contrib import admin
+from models import Category, App
 
-from models import App
-admin.site.register(App)
+class CategoryAdmin(admin.ModelAdmin):
+    readonly_fields = ('index',)
+    list_display = ('id', 'name', 'index',)
+    
+    def save_model(self, request, obj, form, change):
+        obj.index = Category.objects.all().count()
+        obj.save()
 
-from models import Category
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 
-from models import Slideshow
-admin.site.register(Slideshow)
+class AppAdmin(admin.ModelAdmin):
+    readonly_fields = ('slideshow_index', 'category_index',)
+    list_display = ('id', 'title', 'category', 'category_index', 'slideshow_index',)
+    list_filter = ('category',)
+
+    def save_model(self, request, obj, form, change):
+        obj.category_index = App.objects.filter(category=obj.category).count()
+        obj.save()
+
+admin.site.register(App, AppAdmin)
