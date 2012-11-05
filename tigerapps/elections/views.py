@@ -84,13 +84,17 @@ def signup(request, election):
         elif elapsed.days < 365*2:
             year = 'SO'
             officeSet = election.offices.filter(sophomore_eligible=True)
-        else:
+        elif elapsed.days < 365*3:
             year = 'JU'
             officeSet = election.offices.filter(junior_eligible=True)
+        else:
+            year = 'SE'
+            officeSet = election.offices.none()
 
         if request.user.is_superuser == True:
             #I put this after the if block above so that the superuser will have a year set
             officeSet = election.offices.all()
+        officeSet = officeSet.order_by('name')
     except KeyError: # For USG account
         return render_to_response('elections/nope.html')
 
