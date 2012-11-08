@@ -21,7 +21,7 @@ function word_count(field, count) {
 
 {% block content %}
 <div class="content">
-	<h1>Register for the USG Election!</h1>
+	<h1>Register for the {{election.name}}!</h1>
 	{% if changes %} <strong style="color: red;">Your changes have been saved. </strong><br/>{% else %}{% if register %} <strong style="color: red;"> You have successfully been registered! </strong><br/> {% endif %}{% endif %}
 	
 	{% if candidate %}
