@@ -58,6 +58,7 @@ tmp/
 *.sql
 *.sqlite
 *_log
+*migrations/
 
 # OS generated files #
 ######################
