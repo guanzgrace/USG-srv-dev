@@ -24,16 +24,15 @@ class App(Sortable):
     abbr_name = models.CharField(max_length=10, blank=True, null=True)
     url = models.CharField(max_length=1000)
     icon = models.ImageField(upload_to='icons', blank=True, null=True)
-    description = models.TextField()a
+    description = models.TextField()
 
-    category = models.ForeignKey(Category)
-    category_index = models.IntegerField()
+    category = SortableForeignKey(Category)
     slideshow_picture = models.ImageField(upload_to='slideshow', blank=True, null=True)
-    slideshow_index = models.IntegerField(blank=True, null=True)
+    slideshow_index = models.IntegerField(blank=True, null=True, choices=SLIDESHOW_INDICES, unique=True)
     n_views = models.IntegerField(default=0)
 
     class Meta(Sortable.Meta):
         ordering = ['category__order', 'order']
     
     def __unicode__(self):
-        return unicode(self.title)
+        return unicode(self.name)

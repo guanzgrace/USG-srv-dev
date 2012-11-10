@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.staticfiles',
     'paypal.standard.ipn',
+    'stdimage',
     'utils',
     'www',
     'cal',
