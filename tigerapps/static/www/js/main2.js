@@ -1,0 +1,6 @@
+tigerapps = {
+
+    initializeTigerapps: function() {
+
+    },
+};
