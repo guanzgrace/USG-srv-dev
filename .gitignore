@@ -30,6 +30,8 @@ local_settings.py
 apache2.conf
 tigerapps/card/*.txt
 tigerapps/card/cronjobs/archive/
+*migrations/
+tigerapps/media/
 
 # Temp files #
 ##############
@@ -58,7 +60,6 @@ tmp/
 *.sql
 *.sqlite
 *_log
-*migrations/
 
 # OS generated files #
 ######################
