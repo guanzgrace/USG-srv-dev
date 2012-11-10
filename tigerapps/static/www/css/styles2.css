@@ -1,0 +1,52 @@
+.tile_box {
+    position:absolute;
+    width:160px;
+    height:160px;
+    box-shadow: 0 0 5px 5px #DDDDDD;
+}
+
+.tile_box:hover {
+    cursor:pointer;
+    box-shadow: 0 0 5px 5px #999999;
+}
+
+.rounded_corners {
+     -moz-border-radius: 5px;
+     -webkit-border-radius: 5px;
+     -khtml-border-radius: 5px;
+     border-radius: 5px;
+}
+
+.tile_photo {
+    position:relative;
+    left:5px;
+    top:5px;
+    width: 150px;
+    height:115px;
+}
+
+.image_wrapper {
+    position:relative;
+    text-align:center;
+    top:25px;
+    position:relative;
+    left:35px;
+    width: 90px;
+    height:90px;
+}
+
+.tile_image {
+    height:100%;
+    width:100%;
+}
+
+.tile_label {
+    text-align:center;
+    position:relative;
+    height:25px;
+    width:150px;
+    font-size:16px;
+    left:5px;
+    top:35px;
+
+}
