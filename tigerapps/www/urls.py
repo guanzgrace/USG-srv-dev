@@ -10,6 +10,7 @@ admin.autodiscover()
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^adam/?', direct_to_template, {'template': 'www/adam_box.html'}),
     url(r'^suggestions/?', direct_to_template, {'template': 'www/suggestions.html'}),
     url(r'^/?', direct_to_template, {'template': 'www/index.html'}),
 
