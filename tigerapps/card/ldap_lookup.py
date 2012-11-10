@@ -88,7 +88,7 @@ def getPuidInfo(puid):
 		
         # create search string
         #filter = '(universityid=%s)' % (puid,) # puid passed as str
-        filter = '(uid="atrippe")' # puid passed as str
+        filter = '(uid="rmenezes")' # puid passed as str
         #return filter
         # bind
         base_dn = "o=Princeton University,c=US";
