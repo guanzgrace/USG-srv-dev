@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^suggestions/?', direct_to_template, {'template': 'www/suggestions.html'}),
     url(r'^/?', direct_to_template, {'template': 'www/index.html'}),
 
+    url(r'^josh/?', direct_to_template, {'template': 'www/josh.html'}),
+
     (r'^admin/', include(admin.site.urls)),
 )
 
