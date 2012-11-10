@@ -41,36 +41,44 @@ html, body {
     border-radius: 10px;
 }
 
-#col1-out {
-	margin:0;
-	padding:0;
-	position:relative;
-	float:left;
-	width:35%;
-	
-	overflow:hidden;
-	background-color:#666;
-	height:100%;
-}
-#col2-out {
-	margin:0;
-	padding:0;
-	position:relative;
-	float:left;
-	width:65%;
-	
-	overflow-x:hidden;
-	overflow-y:scroll;
-	background-color:#eee;
-	height:100%;
+
+/*************/
+/* Tile Boxes*/
+/*************/
+
+.tile_box {
+    width:160px;
+    height:160px;
+    box-shadow: 0 0 5px 5px #DDDDDD;
 }
 
-#col1-in {
-    padding:12px 12px;
+.tile_box:hover {
+    cursor:pointer;
+    box-shadow: 0 0 5px 5px #999999;
 }
-#col2-in {
-    padding:24px 24px;
+
+.rounded_corners {
+     -moz-border-radius: 5px;
+     -webkit-border-radius: 5px;
+     -khtml-border-radius: 5px;
+     border-radius: 5px;
 }
+
+.tile_image {
+    text-align:center;
+    margin-top:25px;
+    height:90px;
+    width:90px;
+}
+
+.tile_label {
+    text-align:center;
+    margin-top:35px;
+    height:25px;
+    width:150px;
+    font-size:16px;
+}
+
 
 /*************/
 /* App list */
