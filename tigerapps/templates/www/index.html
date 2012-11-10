@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<OCTYPE html>
 <html>
 <head>
    {% include 'toolbar/jquery.html' %}
@@ -17,15 +17,24 @@
 </head>
 
 <body>
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span8">
-      {% include 'www/apps.html' %}
+<div class="container">
+    <div class="row">
+        <div id="title">
+        TigerApps
+        </div>
     </div>
-    <div class="span4">
-      {% include 'www/desc.html' %}
+    <div class="row">
+        <div class="span8">
+            <div id="apps">
+            {% include 'www/apps.html' %}
+            </div>      
+        </div>
+        <div class="span4">
+            <div id="desc">
+            {% include 'www/desc.html' %}
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>

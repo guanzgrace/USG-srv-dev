@@ -2,6 +2,7 @@ from django.conf.urls.defaults import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic.simple import direct_to_template
 from django.contrib import admin
+
 admin.autodiscover()
 
 # Uncomment the next two lines to enable the admin:
@@ -15,7 +16,9 @@ urlpatterns = patterns('',
 
     url(r'^josh/?', direct_to_template, {'template': 'www/josh.html'}),
 
-    (r'^admin/', include(admin.site.urls)),
+    # Admin
+    url(r'^admin/?$', 'django_cas.views.login', kwargs={'next_page': '/djadmin/'}),
+    (r'^djadmin/', include(admin.site.urls)),
 )
 
 urlpatterns += staticfiles_urlpatterns()

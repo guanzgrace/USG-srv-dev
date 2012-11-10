@@ -1,17 +1,38 @@
 html, body {
 	height: 100%;
 }
+#title {
+    line-height: 100px;
+    margin-left: 50px;
+    font-size: 50px;
+    overflow:hidden;
+}
 
-body { 
-    background-color: #222;
+#apps { 
+    background-color: silver;
+    padding: 50px;
+    margin-left: 50px;
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 400px;
+    overflow:hidden;
+}
+
+#desc {
+    background-color: black;
+    padding: 50px;
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 400px;
     overflow:hidden;
 }
 
 #container {
 	max-width:1200px;
 	max-height:600px;
-	width:80%;
-	height:100%;
+	width:1200px;
+	height:600px;
 	margin:60px auto;
 	position:relative;
 	
