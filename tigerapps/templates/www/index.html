@@ -24,52 +24,37 @@
 
 <body>
 <div class="container">
-    <div class="row">
-        <div class="span4">
-            <div id="title">
-            <a href="http://www.tigerapps.org">
-            TigerApps
-            </a>
-            </div>
+<div class="row">
+    <div class="span4"><div id="title">
+        <a href="http://www.tigerapps.org">TigerApps</a>
+    </div></div>
+</div>
+
+
+<div class="row">
+    <div class="span8"><div id="tiles">
+        {% for category,apps in grouped_apps %}{% for app in apps %}
+        <div id="tile-{{app.id}}" class="tile-app rounded-corners">
+            <img class="tile-icon" src="http://dev.tigerapps.org{{app.icon.url}}"/>
+            <div class="tile-label">{{app.abbr_name}}</div>
         </div>
-    </div>
-    <div class="row">
-        <div class="span8">
-            <div id="apps">
-                <div class="tile_box rounded_corners">
-                    <img class="tile_image" src="http://news.princeton.edu/uploads/261/image/iPrinceton-icon80.jpg"/>
-                    <div class="tile_label">
-                    Title Goes Here
-                    </div>
-                </div>
-            </div>
+        {% endfor %}{% endfor %}
+    </div></div>
+
+    <div class="span4"><div id="desc">
+        {% for category,apps in grouped_apps %}{% for app in apps %}
+        <div id="desc-{{app.id}}" class="desc-app">
+            <h2>{{app.name}}</h2>
         </div>
-        <div class="span4">
-            <div id="desc">
-                {% for category,apps in grouped_apps %}{% for app in apps %}
-                <div id="app-{{app.id}}" class="desc-app">
-                    {{app.name}}
-                </div>
-                {% endfor %}{% endfor %}
-            </div>
-        </div>
+        {% endfor %}{% endfor %}
     </div>
 </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 <div style="background-color:black;height:30px;width:20px;" class="desc-app">
 </div>
 
 <div style="background-color:blue;height:30px;width:20px;" class="desc-app">
 </div>
 
-=======
->>>>>>> parent of 023303f... renaming of css stuff
-=======
->>>>>>> parent of 023303f... renaming of css stuff
-=======
->>>>>>> parent of 023303f... renaming of css stuff
 </body>
 </html>
