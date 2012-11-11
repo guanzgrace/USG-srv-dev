@@ -37,7 +37,7 @@ html, body {
 
 
 /*************/
-/* Tile Boxes*/
+/* Tile Boxes */
 /*************/
 
 .tile_box {
@@ -70,6 +70,17 @@ html, body {
     line-height:1;
     padding:12px 0 0 0;
 }
+
+
+/*************/
+/* Descriptions */
+/*************/
+
+.desc-app {
+    display:none;
+}
+
+
 
 
 /*************/
