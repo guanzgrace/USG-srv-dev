@@ -12,6 +12,7 @@
     <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:800,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js?ver=1.3.2"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
@@ -42,7 +43,7 @@
             {% for app in apps %}
             <div id="tile-{{app.id}}" class="tile-app rounded-corners">
                 <img class="tile-icon" src="{% value_from_settings CURRENT_HOME %}{{app.icon.url}}"/>
-                <div class="tile-label">{{app.abbr_name}}</div>
+                <div class="tile-label">{{app.name}}</div>
             </div>
             {% endfor %}
         </div>
@@ -57,10 +58,11 @@
 
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
-            <h2>{{app.name}}</h2>
+            <a href ="{{app.url}}"><h2>{{app.name}}</h2></a>
             {% autoescape off %}
             <div>{{app.description}}</div>
             {% endautoescape %}
+            <a href ="{{app.url}}">Link to {{app.name}}</a>
         </div>
         {% endfor %}{% endfor %}
     </div>

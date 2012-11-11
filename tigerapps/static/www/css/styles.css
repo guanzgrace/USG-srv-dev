@@ -1,5 +1,6 @@
 html, body {
 	height: 100%;
+    font-family: 'Arvo', serif;
 }
 
 hr {
@@ -12,6 +13,15 @@ h2 {
     font-family: 'Open Sans', sans-serif;
 }
 
+a {
+    color:#000000;
+    text-decoration:none;
+}
+
+a:hover {
+    color:#999999;
+    cursor:pointer;
+}
 
 /*************/
 /* Layout */
@@ -33,10 +43,10 @@ h2 {
 }
 #title a {
     color:#333333;
-    text-decoration:none;
 }
 #title a:hover {
     color:#111111;
+    text-decoration:none;
 }
 
 #tiles { 
@@ -77,13 +87,12 @@ h2 {
     box-shadow: 0 0 5px 2px #ddd;
     border: 1px solid #bbb;
     text-align:center;
-    padding:12px 10px 10px;
+    padding:10px 10px 10px;
     margin:14px;
 }
-
 .tile-app:hover {
-    cursor:pointer;
     box-shadow: 0 0 5px 2px #aaa;
+    cursor:pointer;
 }
 
 .rounded-corners {
@@ -100,10 +109,12 @@ h2 {
 
 .tile-label {
     font-size:16px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight:bold;
     line-height:1;
-    padding:12px 0 0 0;
+    padding:10px 0 0 0;
+    height:32px;
 }
-
 
 /*************/
 /* Descriptions */
