@@ -2,6 +2,16 @@ html, body {
 	height: 100%;
 }
 
+hr {
+    margin-top:0px;
+}
+
+h2 {
+    margin-bottom:0px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
 #container {
 	width:1200px;
 	margin:60px auto;
@@ -13,8 +23,17 @@ html, body {
     height:80px;
     line-height: 75px;
     font-size: 50px;
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    font-family: 'Open Sans', sans-serif;
     overflow:hidden;
+}
+
+#title a {
+    color:#333333;
+    text-decoration:none;
+}
+
+#title a:hover {
+    color:#111111;
 }
 
 #tiles { 
@@ -55,8 +74,8 @@ html, body {
     box-shadow: 0 0 5px 2px #ddd;
     border: 1px solid #bbb;
     text-align:center;
-    padding:22px 20px 18px;
-    margin:20px;
+    padding:12px 10px 10px;
+    margin:16px;
 }
 
 .tile-app:hover {
@@ -72,8 +91,8 @@ html, body {
 }
 
 .tile-icon {
-    height:90px;
-    width:90px;
+    height:80px;
+    width:80px;
 }
 
 .tile-label {
