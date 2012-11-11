@@ -10,20 +10,14 @@ html, body {
 
 #apps { 
     background-color: silver;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 400px;
     overflow:hidden;
 }
 
 #desc {
-    background-color: black;
+    background-color: silver;
+    overflow:hidden;
     padding: 50px;
     margin-right: 50px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 400px;
-    overflow:hidden;
 }
 
 #container {
@@ -47,9 +41,11 @@ html, body {
 /*************/
 
 .tile_box {
-    width:160px;
-    height:160px;
+    width:120px;
+    height:120px;
     box-shadow: 0 0 5px 5px #DDDDDD;
+    text-align:center;
+    padding:22px 20px 18px;
 }
 
 .tile_box:hover {
@@ -65,18 +61,13 @@ html, body {
 }
 
 .tile_image {
-    text-align:center;
-    margin-top:25px;
     height:90px;
     width:90px;
 }
 
 .tile_label {
-    text-align:center;
-    margin-top:35px;
-    height:25px;
-    width:150px;
     font-size:16px;
+    padding:12px 0 0 0;
 }
 
 
