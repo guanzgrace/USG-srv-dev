@@ -50,7 +50,9 @@
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
             <h2>{{app.name}}</h2>
-            <p>{{app.description}}</p>
+            {% autoescape off %}
+            <div>{{app.description}}</div>
+            {% endautoescape %}
         </div>
         {% endfor %}{% endfor %}
     </div>
