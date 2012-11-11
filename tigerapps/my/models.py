@@ -1,5 +1,5 @@
 from django.db import models
-from stdimage import StdImageField
+from utils.stdimage import StdImageField
 from django.http import Http404
 
 MYAPP_CATEGORIES = (

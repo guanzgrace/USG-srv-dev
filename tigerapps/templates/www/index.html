@@ -31,10 +31,15 @@
         </div>
         <div class="span4">
             <div id="desc">
-            {% include 'www/desc.html' %}
+                {% for category,apps in grouped_apps %}{% for app in apps %}
+                <div id="app-{{app.id}}" class="desc-app">
+                    {{app.name}}
+                </div>
+                {% endfor %}{% endfor %}
             </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>

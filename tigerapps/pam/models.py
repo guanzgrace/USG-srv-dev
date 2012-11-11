@@ -1,5 +1,5 @@
 from django.db import models
-from stdimage import StdImageField
+from utils.stdimage import StdImageField
 
 class SocUser(models.Model):
     netid = models.CharField("netid", max_length=8)

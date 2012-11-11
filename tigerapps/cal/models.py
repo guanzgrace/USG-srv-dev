@@ -10,7 +10,7 @@
 
 from django.db import models
 from datetime import datetime, date, timedelta
-from stdimage import StdImageField
+from utils.stdimage import StdImageField
 from globalsettings import SITE_ADMINS, dtdeleteflag, our_site
 from pom.bldg_info import BLDG_CODE
 
