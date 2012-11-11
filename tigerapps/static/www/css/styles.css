@@ -6,12 +6,7 @@ html, body {
 	width:1200px;
 	margin:60px auto;
 	position:relative;
-	
 	background-color:white;
-    -webkit-border-radius: 10px;
-    -khtml-border-radius: 10px; 
-    -moz-border-radius: 10px;
-    border-radius: 10px;
 }
 
 #title {
@@ -26,14 +21,13 @@ html, body {
     width:60%;
 }
 
+
 #desc {
     position:fixed;
     left:50%;
     top:140px;
     width:400px;
     margin-left:40px;
-
-      
 
     padding: 50px;
     background-color: #cccccc;
@@ -58,7 +52,8 @@ html, body {
     float:left;
     width:120px;
     height:120px;
-    box-shadow: 0 0 5px 5px #DDDDDD;
+    box-shadow: 0 0 5px 2px #ddd;
+    border: 1px solid #bbb;
     text-align:center;
     padding:22px 20px 18px;
     margin:20px;
@@ -66,7 +61,7 @@ html, body {
 
 .tile-app:hover {
     cursor:pointer;
-    box-shadow: 0 0 5px 5px #999999;
+    box-shadow: 0 0 5px 2px #aaa;
 }
 
 .rounded-corners {
