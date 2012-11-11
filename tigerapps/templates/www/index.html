@@ -33,12 +33,17 @@
 
 <div class="row">
     <div class="span8"><div id="tiles">
-        {% for category,apps in grouped_apps %}{% for app in apps %}
+        {% for category,apps in grouped_apps %} 
+        <div class="category-type">
+        {{category}}
+        </div>
+        {% for app in apps %}
         <div id="tile-{{app.id}}" class="tile-app rounded-corners">
             <img class="tile-icon" src="http://dev.tigerapps.org{{app.icon.url}}"/>
             <div class="tile-label">{{app.abbr_name}}</div>
         </div>
-        {% endfor %}{% endfor %}
+        {% endfor %}
+        {% endfor %}
     </div></div>
 
     <div class="span4"><div id="desc">
