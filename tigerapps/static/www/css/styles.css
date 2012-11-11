@@ -73,6 +73,23 @@ a:hover {
     padding-top:8px;
 }
 
+.screen_shot_container {
+    
+    background-color:white;
+    height:200px;
+    width:400px;
+    margin: 10px 0px 10px 0px;
+    border-style:solid;
+    border-color:black;
+    border-width:3px;
+}
+
+.screen_shot_pic {
+    height:200px;
+    width:400px;
+}
+
+
 /*************/
 /* Tile Boxes */
 /*************/
