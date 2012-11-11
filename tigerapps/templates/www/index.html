@@ -30,10 +30,8 @@
     <div class="span8"><div id="tiles">
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="tile-{{app.id}}" class="tile-app rounded-corners">
-            <img class="tile-image" src="http://news.princeton.edu/uploads/261/image/iPrinceton-icon80.jpg"/>
-            <div class="tile-label">
-            Title Goes Here
-            </div>
+            <img class="tile-icon" src="{{app.icon.url}}"/>
+            <div class="tile-label">{{app.abbr_name}}</div>
         </div>
         {% endfor %}{% endfor %}
     </div></div>
