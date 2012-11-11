@@ -11,5 +11,8 @@ def index(request):
     for category in categories:
         apps = App.objects.filter(category=category)
         grouped_apps.append((category, apps))
-    return render_to_response('www/index.html', {'grouped_apps': grouped_apps})
+    return render_to_response(
+            'www/index.html',
+            {'grouped_apps': grouped_apps},
+            RequestContext(request))
 

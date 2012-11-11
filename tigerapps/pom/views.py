@@ -19,7 +19,7 @@ from django.core.mail import send_mail
 
 # not used due to direct_to_template in urls.py
 def index(request, offset):
-    return render_to_response('pom/index.html', {}, RequestContext(context))
+    return render_to_response('pom/index.html', {}, RequestContext(request))
 
 
 def get_bldg_names_json(request):
