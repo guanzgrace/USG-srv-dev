@@ -39,7 +39,7 @@
     <div class="span4"><div id="desc">
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
-            {{app.name}}
+            <h2>{{app.name}}</h2>
         </div>
         {% endfor %}{% endfor %}
     </div></div>
