@@ -52,13 +52,13 @@
 
     <div id="desc" class="rounded-corners">
         <div id="desc-0" class="desc-app">
-            <h2>TigerApps</h2>
+            <h2 class="desc-title">TigerApps</h2>
                <p>The TigerApps are a suite of student-built, student-maintained apps designed to improve your campus experience. Our goal is to be a central portal for campus information. The apps on this site managed by the Princeton USG.</p>
         </div>
 
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
-            <a href ="{{app.url}}"><h2>{{app.name}}</h2></a>
+            <a href ="{{app.url}}"><h2 class="desc-title">{{app.name}}</h2></a>
             {% autoescape off %}
             <div>{{app.description}}</div>
             {% endautoescape %}

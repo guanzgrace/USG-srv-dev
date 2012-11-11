@@ -68,6 +68,9 @@ a:hover {
     overflow-y:auto;
     border:1px solid #aaa;
 }
+.desc-title {
+    margin-bottom:5px;
+}
 
 .desc-app p:first {
     padding-top:8px;
@@ -78,7 +81,7 @@ a:hover {
     background-color:white;
     height:200px;
     width:400px;
-    margin: 10px 0px 10px 0px;
+    margin: 15px 0px 15px 0px;
     border-style:solid;
     border-color:black;
     border-width:3px;
