@@ -13,7 +13,7 @@ tigerapps = {
                 desc_apps.each(function () {
                    $(this).hide();
                 });
-                var desc_id = $(this).attr("id").substring(5);
+                var desc_id = "desc-" + $(this).attr("id").substring(5);
                 console.log("SHOWING :" + desc_id);
                 $("#" + desc_id).show();
             });
