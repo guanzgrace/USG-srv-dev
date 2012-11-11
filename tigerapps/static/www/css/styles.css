@@ -8,7 +8,7 @@ html, body {
     overflow:hidden;
 }
 
-#apps { 
+#tiles { 
     background-color: silver;
     overflow:hidden;
 }
@@ -40,7 +40,7 @@ html, body {
 /* Tile Boxes */
 /*************/
 
-.tile_box {
+.tile-app {
     width:120px;
     height:120px;
     box-shadow: 0 0 5px 5px #DDDDDD;
@@ -48,24 +48,24 @@ html, body {
     padding:22px 20px 18px;
 }
 
-.tile_box:hover {
+.tile-app:hover {
     cursor:pointer;
     box-shadow: 0 0 5px 5px #999999;
 }
 
-.rounded_corners {
+.rounded-corners {
      -moz-border-radius: 5px;
      -webkit-border-radius: 5px;
      -khtml-border-radius: 5px;
      border-radius: 5px;
 }
 
-.tile_image {
+.tile-icon {
     height:90px;
     width:90px;
 }
 
-.tile_label {
+.tile-label {
     font-size:16px;
     line-height:1;
     padding:12px 0 0 0;
