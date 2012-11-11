@@ -45,14 +45,9 @@ a:hover {
 }
 
 .content {
-    /* if you change these, change them in the formula below */
-    min-width: 800px;
-    max-width: 1250px;
-
-    margin: 0 10%;
+    padding:20px;
     text-align: left;
     height: auto;
-    padding: 20px;
     background: white;
 }
 
@@ -180,6 +175,12 @@ td {
     vertical-align: top;
 }
 
+#container {
+    max-width:1290px;
+    min-width:840px;
+    margin: 0 auto;
+}
+
 /****************************
 * The header
 *****************************/
@@ -188,12 +189,8 @@ td {
     background-image: url('/media/images/header-bg.png');
     background-color: #f9a40f;
     background-repeat: repeat-x;
-
-    width: 80%;
-    /* 840 = 800 (.content#width) + 40 (2 * .content#margin-left) */
-    min-width: 840px;
     border-collapse: collapse;
-    margin: 0 10%;
+    width:100%;
 }
 
 .header td {
