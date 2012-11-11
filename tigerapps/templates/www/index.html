@@ -1,4 +1,4 @@
-<OCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
    {% include 'toolbar/jquery.html' %}
@@ -19,15 +19,24 @@
 <body>
 <div class="container">
     <div class="row">
-        <div id="title">
-        TigerApps
+        <div class="span4">
+            <div id="title">
+            <a href="http://www.tigerapps.org">
+            TigerApps
+            </a>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="span8">
             <div id="apps">
-            {% include 'www/apps.html' %}
-            </div>      
+                <div class="tile_box rounded_corners">
+                    <img class="tile_image" src="http://news.princeton.edu/uploads/261/image/iPrinceton-icon80.jpg"/>
+                    <div class="tile_label">
+                    Title Goes Here
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="span4">
             <div id="desc">
