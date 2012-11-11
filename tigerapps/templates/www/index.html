@@ -64,7 +64,7 @@
             {% endautoescape %}
             {% if app.slideshow_picture %}
             <div class="screen_shot_container rounded-corners">
-               <a href ="{{app.url}}"><img class="screen_shot_pic" src="{{app.slideshow_picture.url}}" /></a>
+               <a href ="{{app.url}}"><img class="screen_shot_pic" src="{% value_from_settings CURRENT_HOME %}{{app.slideshow_picture.url}}" /></a>
             </div>
             {% endif %}
             <a href ="{{app.url}}">Link to {{app.name}}</a>
