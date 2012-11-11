@@ -28,7 +28,7 @@ a:hover {
 /*************/
 
 #container {
-	width:1200px;
+	max-width:1200px;
 	margin:60px auto;
     padding:0;
 	position:relative;
@@ -130,7 +130,7 @@ a:hover {
     font-family: 'Open Sans', sans-serif;
     font-weight:bold;
     line-height:1;
-    padding:10px 0 0 0;
+    padding:8px 0 0 0;
     height:32px;
 }
 

@@ -27,7 +27,7 @@ class App(Sortable):
     description = models.TextField()
 
     category = SortableForeignKey(Category)
-    slideshow_picture = models.ImageField(upload_to='slideshow', blank=True, null=True)
+    slideshow_picture = models.ImageField(upload_to='www/slideshow', blank=True, null=True)
     slideshow_index = models.IntegerField(blank=True, null=True, choices=SLIDESHOW_INDICES, unique=True)
     n_views = models.IntegerField(default=0)
 
