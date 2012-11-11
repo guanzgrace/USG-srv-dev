@@ -1,30 +1,9 @@
 html, body {
 	height: 100%;
 }
-#title {
-    line-height: 75px;
-    font-size: 50px;
-    font-family: 'Palatino Linotype?', 'Book Antiquaâ', Palatino, serif;
-    overflow:hidden;
-}
-
-#tiles { 
-    //background-color: silver;
-    overflow:hidden;
-}
-
-#desc {
-    background-color: black;
-    overflow:hidden;
-    padding: 50px;
-    margin-right: 50px;
-}
 
 #container {
-	max-width:1200px;
-	max-height:600px;
 	width:1200px;
-	height:600px;
 	margin:60px auto;
 	position:relative;
 	
@@ -34,6 +13,34 @@ html, body {
     -moz-border-radius: 10px;
     border-radius: 10px;
 }
+
+#title {
+    height:80px;
+    line-height: 75px;
+    font-size: 50px;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    overflow:hidden;
+}
+
+#tiles { 
+    width:60%;
+}
+
+#desc {
+    position:fixed;
+    left:50%;
+    top:140px;
+    width:400px;
+    margin-left:40px;
+
+      
+
+    padding: 50px;
+    background-color: #cccccc;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
 
 
 /*************/
@@ -246,10 +253,11 @@ html, body {
 /*************/
 /* Scrollbar */
 /*************/
+/*
 ::-webkit-scrollbar {
     width: 10px;
 }
-/* Track */
+
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
     -webkit-border-radius: 2px;
@@ -257,7 +265,7 @@ html, body {
     -moz-border-radius: 2px;
     border-radius: 2px;
 }
-/* Handle */
+
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -269,3 +277,4 @@ html, body {
 ::-webkit-scrollbar-thumb:window-inactive {
 	background: rgba(200,200,200,0.4); 
 }
+*/

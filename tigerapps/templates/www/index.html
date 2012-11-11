@@ -31,8 +31,8 @@
 </div>
 
 
-<div class="row">
-    <div class="span8"><div id="tiles">
+<div class="row" id="main">
+    <div id="tiles">
         {% for category,apps in grouped_apps %} 
         <div class="category-type">
             <h2>{{category}}</h2>
@@ -44,9 +44,9 @@
             {% endfor %}
         </div>
         {% endfor %}
-    </div></div>
+    </div>
 
-    <div class="span4"><div id="desc">
+    <div id="desc" class="rounded-corners">
         <div id="desc-0" class="desc-app">
             <h2>Tigerapps</h2>
             <p>The Tigerapps are a suite of student-built, student-maintained apps designed to improve your campus experience. Our goal is to be a central portal for campus information. The apps on this site managed by the Princeton USG.</p>
