@@ -7,12 +7,15 @@ tigerapps = {
     
     setAppSelection : function() {
         var desc_apps = $(".desc-app");
-        desc_apps.each(function (){
+        var tile_apps = $(".tile-app");
+        tile_apps.each(function (){
             $(this).click(function () {
                 desc_apps.each(function () {
                    $(this).hide();
                 });
-                $(this).show();
+                var desc_id = $(this).attr("id").substring(5);
+                console.log("SHOWING :" + desc_id);
+                $("#" + desc_id).show();
             });
         });
 
