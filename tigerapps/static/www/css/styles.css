@@ -14,7 +14,7 @@ html, body {
 }
 
 #desc {
-    background-color: silver;
+    background-color: black;
     overflow:hidden;
     padding: 50px;
     margin-right: 50px;
@@ -39,13 +39,22 @@ html, body {
 /*************/
 /* Tile Boxes*/
 /*************/
+.category-type {
+    line-height: 50px;
+    margin: 20px 20px 0px;
+    font-size: 50px;
+    font-family: 'Palatino Linotype?', 'Book Antiquaâ', Palatino, serif;
+    overflow:hidden; 
+}
 
 .tile-app {
+    float:left;
     width:120px;
     height:120px;
     box-shadow: 0 0 5px 5px #DDDDDD;
     text-align:center;
     padding:22px 20px 18px;
+    margin:20px;
 }
 
 .tile-app:hover {
