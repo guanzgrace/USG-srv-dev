@@ -7,6 +7,7 @@ html, body {
     height: 30px;
     position: absolute;
     top: 0;
+    left:0;
     width: 100%;
     min-width: 950px;
     z-index: 990;
