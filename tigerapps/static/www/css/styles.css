@@ -58,17 +58,20 @@ a:hover {
     position:fixed;
     left:50%;
     top:140px;
+    bottom:100px;
     width:400px;
     margin-left:40px;
 
     padding:40px;
-    background-color:#FCA23C;
+    background-color:#ddd;
     overflow-x:hidden;
-    border-style:solid;
-    border-width:3px;
-    border-color:black;
+    overflow-y:auto;
+    border:1px solid #aaa;
 }
 
+.desc-app p:first {
+    padding-top:8px;
+}
 
 /*************/
 /* Tile Boxes */
