@@ -21,9 +21,9 @@ class App(Sortable):
     )
     
     name = models.CharField(max_length=100)
-    abbr_name = models.CharField(max_length=10, blank=True, null=True)
+    abbr_name = models.CharField(max_length=16)
     url = models.CharField(max_length=1000)
-    icon = models.ImageField(upload_to='www/icons', blank=True, null=True)
+    icon = models.ImageField(upload_to='www/icons')
     description = models.TextField()
 
     category = SortableForeignKey(Category)
