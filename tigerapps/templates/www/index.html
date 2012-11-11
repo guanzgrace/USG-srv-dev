@@ -14,11 +14,16 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js?ver=1.3.2"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/index/js/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            tigerapps.initializeTigerapps();
+        });
+    </script>
+
 </head>
 
 <body>
 <div class="container">
-
 <div class="row">
     <div class="span4"><div id="title">
         <a href="http://www.tigerapps.org">TigerApps</a>
@@ -34,24 +39,26 @@
         </div>
         {% for app in apps %}
         <div id="tile-{{app.id}}" class="tile-app rounded-corners">
-            <img class="tile-image" src="http://news.princeton.edu/uploads/261/image/iPrinceton-icon80.jpg"/>
-            <div class="tile-label">
-            Title Goes Here
-            </div>
+            <img class="tile-icon" src="http://dev.tigerapps.org{{app.icon.url}}"/>
+            <div class="tile-label">{{app.abbr_name}}</div>
         </div>
         {% endfor %}
         {% endfor %}
     </div></div>
 
     <div class="span4"><div id="desc">
+        <div id="desc-0" class="desc-app">
+            <h2>Tigerapps</h2>
+            <p>The Tigerapps are a suite of student-built, student-maintained apps designed to improve your campus experience. Our goal is to be a central portal for campus information. The apps on this site managed by the Princeton USG.</p>
+        </div>
+
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
-            {{app.name}}
+            <h2>{{app.name}}</h2>
+            <p>{{app.description}}</p>
         </div>
         {% endfor %}{% endfor %}
-    </div></div>
-</div>
-
+    </div>
 </div>
 </body>
 </html>
