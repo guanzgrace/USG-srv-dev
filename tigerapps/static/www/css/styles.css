@@ -62,9 +62,11 @@ a:hover {
     margin-left:40px;
 
     padding:40px;
-    background-color: #cccccc;
-    overflow-y:auto;
+    background-color:#FCA23C;
     overflow-x:hidden;
+    border-style:solid;
+    border-width:3px;
+    border-color:black;
 }
 
 
