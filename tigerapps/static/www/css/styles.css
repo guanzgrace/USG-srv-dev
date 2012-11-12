@@ -62,8 +62,8 @@ body {
 
 #desc {
     position:fixed;
-    top:80px;
-    bottom:100px;
+    top:90px;
+    bottom:90px;
     left:50%;
     width:480px;
     margin-left:40px;
@@ -112,9 +112,9 @@ body {
 .tile-app {
     float:left;
     width:120px;
-    height:120px;
+    height:130px;
     text-align:center;
-    padding:10px;
+    padding:5px 10px;
     margin:14px;
 	display:table;
 
@@ -143,8 +143,8 @@ body {
 }
 
 .tile-icon {
-    max-height:80px;
-    max-width:80px;
+    max-height:76px;
+    max-width:76px;
 }
 
 .tile-label {
