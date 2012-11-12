@@ -31,7 +31,7 @@ class SubdomainsMiddleware:
             url_prefix = "http://"
             request.subdomain = 'www'
         else:
-            raise Exception('Bad domain')
+            raise Exception('Bad hostname')
         settings.SITE_DOMAIN = url_prefix+request.subdomain+'.'+request.domain
 
         # set the right urlconf
@@ -39,9 +39,8 @@ class SubdomainsMiddleware:
 
 
         ### INTRODUCING....
-        ###
         ### A CONVULTED, HORRIBLE MESS
-        ### TEMPORARY (I hope)
+        ### TEMPORARY (I hope) --rmenezes
         if request.subdomain == 'ttrade':
             settings.AUTHENTICATION_BACKENDS += (
                 'ttrade.casBackend.CASBackend',

@@ -30,6 +30,7 @@
 <div class="row">
     <div id="title">
         <a href="/">TigerApps</a>
+        <img src="/static/www/images/icons.png"/ style="max-height:90px;padding:0 10px;">
     </div>
 </div>
 
@@ -42,35 +43,49 @@
             <hr/>
             {% for app in apps %}
             <div id="tile-{{app.id}}" class="tile-app rounded-corners">
+                <div class="tile-inside">
                 <img class="tile-icon" src="{% value_from_settings CURRENT_HOME %}{{app.icon.url}}"/>
                 <div class="tile-label">{{app.name}}</div>
+                </div>
             </div>
             {% endfor %}
         </div>
         {% endfor %}
     </div>
 
-    <div id="desc" class="rounded-corners">
+    <div id="desc" class="rounded-corners"><div id="desc-inside">
         <div id="desc-0" class="desc-app">
-            <h2 class="desc-title">TigerApps</h2>
-               <p>The TigerApps are a suite of student-built, student-maintained apps designed to improve your campus experience. Our goal is to be a central portal for campus information. The apps on this site managed by the Princeton USG.</p>
+            <h2 class="desc-name">TigerApps</h2>
+            <div class="desc-desc">
+                <p>The TigerApps are a suite of student-built, student-maintained apps built over the years, and designed to improve your campus experience. Our aim is to be a central portal for campus information. Please click around and see what we have to offer!</p>
+                <p>The apps listed on this page are managed and maintained by the Princeton USG IT Committee. If you have any questions or comments, or are even interested in joining, please contact <a href="mailto:joshchen[-AT-]princeton[-DOT-].edu">Josh Chen '14</a>!</p>
+            </div>
         </div>
 
         {% for category,apps in grouped_apps %}{% for app in apps %}
         <div id="desc-{{app.id}}" class="desc-app">
-            <a href ="{{app.url}}"><h2 class="desc-title">{{app.name}}</h2></a>
-            {% autoescape off %}
-            <div>{{app.description}}</div>
-            {% endautoescape %}
-            {% if app.slideshow_picture %}
-            <div class="screen_shot_container rounded-corners">
-               <a href ="{{app.url}}"><img class="screen_shot_pic" src="{% value_from_settings CURRENT_HOME %}{{app.slideshow_picture.url}}" /></a>
+            <a href="{{app.url}}"><h2 class="desc-name">{{app.name}}</h2></a>
+            <div class="desc-desc">
+                {% autoescape off %}
+                {{app.description}}
+                {% endautoescape %}
+            </div>
+            {% if app.screenshot %}
+            <div class="desc-ss-out rounded-corners">
+               <a href="{{app.url}}"><img class="desc-ss-pic" src="{% value_from_settings CURRENT_HOME %}{{app.screenshot.url}}" /></a>
             </div>
             {% endif %}
-            <a href ="{{app.url}}">Link to {{app.name}}</a>
+            {% if app.founder_description %}
+            <div class="desc-founder">
+                {% autoescape off %}
+                {{app.founder_description}}
+                {% endautoescape %}
+            </div>
+            {% endif %}
+            <p><a href="{{app.url}}">Link to {{app.name}} {% if app.abbr_name %}({{app.abbr_name}}){% endif %}</a></p>
         </div>
         {% endfor %}{% endfor %}
-    </div>
+    </div></div>
 </div>
 </body>
 </html>
