@@ -182,7 +182,6 @@ def email_clubs(ARPATH):
             msg.send()
         except:
             print '  ERROR: unable to send email for %s'%club.name
-        break
 
 #very simple: clear meals
 def empty_tables():
