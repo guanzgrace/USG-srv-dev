@@ -1,6 +1,0 @@
-tigerapps = {
-
-    initializeTigerapps: function() {
-
-    },
-};

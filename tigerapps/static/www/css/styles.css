@@ -87,6 +87,7 @@ body {
     padding:0 30px 30px;
     overflow-x:hidden;
     overflow-y:auto;
+ 
 }
 
 .desc-app {
@@ -340,3 +341,27 @@ body {
 	background: rgba(200,200,200,0.4); 
 }
 */
+@media(max-width:480px){
+.container{
+padding:0 20px;
+}
+#desc{
+    visibility:hidden;
+}
+#tiles{
+width:100%;
+padding:0px;
+
+}
+#title{
+    padding:0px;
+}
+.tile-app{
+    margin-left:20%;
+}
+#title img{
+    display:block;
+    margin-top:30px;
+    margin:30px auto 0 auto;
+}
+}
