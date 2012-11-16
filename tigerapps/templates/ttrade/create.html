@@ -11,8 +11,9 @@
 			<input type="radio" name="listingType" value="rental" /> Offer to Rent <br />
 			<input type="radio" name="listingType" value="exchange" /> Offer to Exchange <br />
 			<input type="radio" name="listingType" value="sale" /> Item for Sale
-			<div id="more" style="display: none; visibility: hidden;">
-			{{ form.non_field_errors }}
+
+			<div id="more" style="display:block;margin:20px 6px;">
+			{{ listingForm.non_field_errors }}
 			<table class="formTable">
 				<tbody>
 					{% for field in listingForm %}

@@ -14,14 +14,14 @@ class CategoryAdmin(SortableAdmin):
 class AppAdmin(SortableAdmin):
     fieldsets = [
         (None, {
-            'fields': ('name', 'abbr_name', 'url', 'icon', 'description',)
+            'fields': ('name', 'abbr_name', 'url', 'icon', 'category', 'featured_index',),
         }),
-        ('Placement', {
-            'fields': ('category', 'slideshow_picture', 'slideshow_index',)
+        ('Description', {
+            'fields': ('description', 'screenshot', 'founder_description',),
         }),
     ]
-    list_display = ('name', 'category', 'slideshow_index',)
-    list_editable = ('slideshow_index',)
+    list_display = ('name', 'category', 'featured_index',)
+    list_editable = ('featured_index',)
     list_filter = ('category',)
     ordering = ['category__order', 'order']
 

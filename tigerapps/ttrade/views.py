@@ -49,6 +49,7 @@ def create(request):
     
     return render_to_response('ttrade/create.html', {'logged_in': True, 'listingForm': listingForm, 'hide': True})
 
+
 def item(request, listingID):
     listing = get_object_or_404(Listing, listingID=listingID)
     
@@ -110,6 +111,7 @@ def item(request, listingID):
     # If method is anything else (where you make an offer) (this includes requests to buy)
     return render_to_response('ttrade/claim.html', {'edit': edit, 'messages': messages, 'logged_in': logged_in, 'listing': listing, 'expired': expired, 'offers': offers})
  
+
 # Does all the buying
 @login_required   
 def confirm(request):
@@ -152,11 +154,13 @@ def confirm(request):
     else:
         return HttpResponseRedirect('/')
  
+
 # Lulzy method
 def notYourListing(request):
     title = "Error"
     body = "Er... This isn't your listing. You can't change it."
     return render_to_response('ttrade/confirm.html', {'title': title, 'body': body, 'logged_in': True})
+
 
 # Change the expiration of a listing  
 @login_required  
@@ -172,6 +176,7 @@ def expiration(request, listingID):
         return HttpResponseRedirect('/item/' + str(listing.listingID) + '?expiration=True')
     # Blank form
     return render_to_response('ttrade/expiration.html', {'listing': listing, 'logged_in': True})
+
     
 @login_required  
 def edit(request, listingID):
@@ -188,6 +193,7 @@ def edit(request, listingID):
     # Make blank form
     listingForm = ListingForm(instance=listing)
     return render_to_response('ttrade/edit.html', {'listingID': listing.listingID, 'logged_in': True, 'listingForm': listingForm, 'listingType': listing.listingType})
+  
     
 def terms(request):
     if request.user.is_authenticated():
@@ -196,6 +202,7 @@ def terms(request):
         logged_in = False
     return render_to_response('ttrade/terms.html', {'logged_in': logged_in})
   
+
 # Generic view that does yourListings and index  
 def showListings(request, listing_set, template, extension="", list_title="All Listings"):
     # Check if logged in

@@ -21,15 +21,17 @@ class App(Sortable):
     )
     
     name = models.CharField(max_length=100)
-    abbr_name = models.CharField(max_length=16)
+    abbr_name = models.CharField(max_length=16, blank=True, null=True)
     url = models.CharField(max_length=1000)
     icon = models.ImageField(upload_to='www/icons')
-    description = models.TextField()
-
     category = SortableForeignKey(Category)
-    slideshow_picture = models.ImageField(upload_to='www/slideshow', blank=True, null=True)
-    slideshow_index = models.IntegerField(blank=True, null=True, choices=SLIDESHOW_INDICES, unique=True)
+
+    featured_index = models.IntegerField(blank=True, null=True, choices=SLIDESHOW_INDICES, unique=True)
     n_views = models.IntegerField(default=0)
+
+    description = models.TextField()
+    screenshot = models.ImageField(upload_to='www/screenshot', blank=True, null=True)
+    founder_description = models.TextField(blank=True, null=True)
 
     class Meta(Sortable.Meta):
         ordering = ['category__order', 'order']

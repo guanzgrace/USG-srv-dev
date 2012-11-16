@@ -55,7 +55,7 @@ CATEGORY_CHOICES = (
     (u'Se', u'Services'),
     (u'Sp', u'Sporting Equipment'),
     (u'Ti', u'Tickets'),
-    )
+)
   
 # I figure making this a choice is only slightly less efficient than a boolean and it's A)
 # easier for forms and B) easier to adapt later.  
