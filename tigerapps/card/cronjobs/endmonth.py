@@ -28,6 +28,7 @@ else:
     lastmonth_m = today.month - 1
     lastmonth_y = today.year
 thismonth = datetime.date(today.year, today.month, 1)
+lastmonth = datetime.date(lastmonth_y, lastmonth_m, 1)
 
 #absolute path to place to folder in which to put archives
 ARPATH = '/srv/tigerapps/card/cronjobs/archive/'
@@ -40,7 +41,7 @@ def main():
     print ''
     print 'Calling create_archive ( %s )'%ARPATH
 
-#    create_archive(ARPATH)
+    create_archive(ARPATH)
     
     print 'return from create_archive'
     print ''
@@ -52,7 +53,7 @@ def main():
     print ''
     print 'Calling empty_tables()'
 
-#    empty_tables()
+    empty_tables()
 
     print 'return from empty_tables'
     print ''
@@ -90,7 +91,7 @@ def create_archive(ARPATH):
         currow = 1
         for ex in mealsout:
             date = ex.meal_1.date
-            if (date >= thismonth):
+            if date >= thismonth or date < lastmonth:
                 continue
             sheet.write(r=currow,c=0,label="%d/%d/%d" % (date.month, date.day, date.year))
             sheet.write(r=currow,c=1,label=ex.meal_1.guest.full_name)
@@ -126,7 +127,7 @@ def create_archive(ARPATH):
         currow = 1
         for ex in mealsin:
             date = ex.meal_1.date
-            if (date >= thismonth):
+            if date >= thismonth or date < lastmonth:
                 continue
             sheet.write(r=currow,c=0,label="%d/%d/%d" % (date.month, date.day, date.year))
             sheet.write(r=currow,c=1,label=ex.meal_1.host.full_name)
@@ -160,7 +161,7 @@ def email_clubs(ARPATH):
         mealsout = Exchange.objects.filter(meal_2=None).filter(meal_1__guest__club=club)
         #guests hosted at this club without reciprocating
         mealsin = Exchange.objects.filter(meal_2=None).filter(meal_1__host__club=club)
-        to_address = 'joshchen@princeton.edu'#to_address = club.account.email
+        to_address = club.account.email
         print 'Email: %s'%to_address
 
         print '  rendering email msg'
@@ -185,10 +186,9 @@ def email_clubs(ARPATH):
 
 #very simple: clear meals
 def empty_tables():
-    meals = Meal.objects.filter(date__lt=thismonth)
+    meals = Meal.objects.filter(date__lt=thismonth, date__gte=lastmonth)
     count = 0
     for meal in meals:
-        #print meal.host #debugging
         meal.delete()
         count += 1
     print '  removed %d meals for %d/%d' % (count, lastmonth_m, lastmonth_y)
