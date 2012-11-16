@@ -1,3 +1,4 @@
+"""
 from django.core.mail import send_mail, BadHeaderError
 
 def sendNotice(noticeList, dvd):
@@ -13,3 +14,4 @@ def sendNotice(noticeList, dvd):
         send_mail(subject, message, from_email, to_email)
     except BadHeaderError:
         pass
+"""
