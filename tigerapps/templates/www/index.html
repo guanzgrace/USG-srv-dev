@@ -42,12 +42,14 @@
             <h2>{{category}}</h2>
             <hr/>
             {% for app in apps %}
+	    <a href = "{{app.url}}" title="{{app.name}}">
             <div id="tile-{{app.id}}" class="tile-app rounded-corners">
                 <div class="tile-inside">
                 <img class="tile-icon" src="{% value_from_settings CURRENT_HOME %}{{app.icon.url}}"/>
                 <div class="tile-label">{{app.name}}</div>
                 </div>
             </div>
+	    </a>
             {% endfor %}
         </div>
         {% endfor %}
