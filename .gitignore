@@ -32,6 +32,7 @@ tigerapps/card/*.txt
 tigerapps/card/cronjobs/archive/
 *migrations/
 tigerapps/media/
+_autogen.html
 
 # Temp files #
 ##############
