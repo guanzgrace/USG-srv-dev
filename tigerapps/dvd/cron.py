@@ -10,7 +10,6 @@ from django.core.mail import send_mail, BadHeaderError
 from dvd.models import *
 import datetime, sys
 
-'''
 def reminder():
     if True:#settings.REMINDER_EMAILS:
         now = datetime.datetime.now()
@@ -36,9 +35,7 @@ def reminder():
             print "failure"
             #send_mail("USG DVD email error", "Notification to " + rental.netid +  " has failed.", "DO_NOT_REPLY@tigerapps.org", ['AS1193@aol.com'], fail_silently=False)
             
-reminder()
-'''
-"""
+
 def notice():
     # who to send notices to about what which dvd
     notices = Notice.objects.filter()
@@ -74,5 +71,6 @@ def notice():
                     send_mail("USG DVD email error", "Notification to " + rental.netid +  " has failed.", "DO_NOT_REPLY@tigerapps.org", ['AS1193@aol.com'], fail_silently=False)
                     #print "fail"
  
-notice()
-"""
+if __name__ == "__main__":
+    reminder()
+    notice()
