@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from dvd.emails import *
 from dvd.models import *
-from dvd.dsml import *
+from dvd.dsml import gdi
+from dvd import cron
 import datetime
 
 
@@ -96,6 +97,7 @@ def checkin_user(request):
             dvd.amountLeft += 1
             dvd.save()
             checked_list.append(dvd)
+        cron.notice()
         return render_to_response('dvd/checkinuser_complete.html', {'checked_list': checked_list, 'netid': netid}, RequestContext(request))
     
     if 'netid' not in request.GET:
@@ -146,6 +148,7 @@ def checkin_dvd(request):
                 #checkin DVD
                 dvd.amountLeft += 1
                 dvd.save()
+        cron.notice()
         return render_to_response('dvd/checkindvd_complete.html', {'checked_list': checked_list}, RequestContext(request))
 
     dvd_list = DVD.objects.all()
