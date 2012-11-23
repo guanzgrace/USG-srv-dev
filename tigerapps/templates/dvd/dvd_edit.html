@@ -1,0 +1,18 @@
+{% extends "dvd/baseadmin.html" %}
+
+{% block admincontent %}
+<h1>Edit or Delete a DVD</h1>
+
+<div class="dvdlist">
+	{% if DVD_list %}
+	<table>
+        <tr><th style="text-align:center;">DVD name</th></tr>
+		{% for DVD in DVD_list %}
+			<tr><td><a href="/dvdadmin/dvd/edit/{{DVD.dvd_id}}">{{DVD.sortname}}</a></td></tr>
+		{% endfor %}
+	</table>
+	{% else %}
+	<p>No DVD's found. Something must be broke. </p>
+	{% endif %}
+</div>
+{% endblock %}

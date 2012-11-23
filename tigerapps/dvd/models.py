@@ -4,10 +4,10 @@ class DVD(models.Model):
     dvd_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     sortname = models.CharField(max_length=100)
-    amountTotal = models.IntegerField('Amount Overall')
+    amountTotal = models.IntegerField('Total amount')
     amountLeft = models.IntegerField('Amount left in the office')
     imdbID = models.CharField(max_length=20, null=True, blank=True)
-    timesRented = models.IntegerField('Times Rented')
+    timesRented = models.IntegerField('Times rented')
     
     def __unicode__(self):
         return self.name
@@ -22,10 +22,6 @@ class Rental(models.Model):
 
     def __unicode__(self):
         return self.dvd.name
-        
-class RentalCopy(models.Model):
-    rental = models.ForeignKey('Rental')
-    copy = models.IntegerField('Copy Number')
         
 class Notice(models.Model):
     netid = models.CharField(max_length=8)

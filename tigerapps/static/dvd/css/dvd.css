@@ -1,58 +1,57 @@
-.content
-{
-    margin: 0 auto;
-    padding: 20px 0 0;
-    min-height: 300px;
-    width: 95%;
-}
-
-.content a
-{
-    text-decoration: none;
-    color: #F96B02;
-}
-
-.content a:visited
-{
-    color: #7F7F7F;
-}
-
-.content a:hover
-{
-    text-decoration: underline;
-}
-
-.intro
-{
-    width: 90%;
-}
-
-.logo
-{
-    float: left;
-    margin-left: 10px;
-}
-
-.editlist
-{
-    width: 60%;
-    padding: 1% 3%;
-}
-
-.editlist ul, li
-{
+ul, li {
+    list-style: none;
     margin: 0;
     padding: 0;
 }
+ul.circle li {
+    list-style-type: circle;
+}
 
-li.admin
-{
+strong {
+    color: red;
+}
+
+.dvdlist table {
+	margin:0 auto;
+}
+.dvdlist td, .dvdlist th, .dvdlist li {
+    padding: 3px 15px 3px 3px;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    border-bottom-color: black;
+    margin: 0px;
+    text-align: left;
+}
+
+table.dvd-info {
+	position:relative;
+	left:50%;
+	margin-left: -300px;
+	width: 520px;
+}
+table.dvd-info td {
+	text-align:right;
+	padding:3px 6px;
+}
+
+.admin-header li {
+	line-height: 1.5em;
+}
+
+.admin-content h1 {
+	text-align:center;
+	margin-top:1em;
+}
+.admin-content {
+	text-align: center;
+	margin:auto;
+}
+
+li.admin {
     margin-right: 0px;
     left: 170px;
 }
-
-li.admin a
-{
+li.admin a {
     display: inline;
     text-decoration: none;
     color: white;
@@ -64,27 +63,4 @@ li.admin a
 	box-shadow: 0px 0px 6px rgba(0,0,0,0.3);
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-}
-
-ul, li {
-    list-style: none;
-}
-
-.editlist li, td
-{
-    padding: 3px;
-    border-bottom-width: 1px;
-    border-bottom-style: dotted;
-    border-bottom-color: black;
-    margin: 0px;
-}
-
-li.list
-{
-    list-style-type: circle;
-}
-
-strong
-{
-    color: red;
 }

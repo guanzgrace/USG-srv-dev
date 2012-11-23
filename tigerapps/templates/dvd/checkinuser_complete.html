@@ -1,0 +1,17 @@
+{% extends "dvd/baseadmin.html" %}
+
+{% block admincontent %}
+<h1>Check in by user - complete</h1>
+
+<p>The following DVDs have been checked in under <b>{{netid}}</b>:</p>
+{% if checked_list %}
+	<ul>{% for dvd in checked_list %}
+		<li>{{dvd.name}}</li>
+	{% endfor %}</ul>
+{% else %}
+	<strong><p>Warning: No DVDs were checked in!</p></strong>
+{% endif %}
+
+<br/>
+<p><a href="/dvdadmin/">Return to Admin Home</a></p>
+{% endblock %}

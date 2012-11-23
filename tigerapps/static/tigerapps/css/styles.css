@@ -1,0 +1,106 @@
+/* Princeton USG Generic CSS */
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+	background: none repeat scroll 0 0 #FF9C26;
+    margin: 0;
+    padding: 0;
+	font-family: "Helvetica";
+	font-size: 13px;
+}
+
+.header {
+    margin: 0 auto;
+    padding: 30px 0 0;
+    min-height: 100px;
+}
+
+.content {
+    margin: 0 auto;
+    padding: 20px 0 0;
+    min-height: 300px;
+}
+
+.wrapper {
+	width: 820px;
+    margin: 0 auto;
+    padding: 0 90px 100px;
+    background: white;
+    -moz-box-shadow: 0px 0px 12px rgba(0,0,0,0.5);
+	-khtml-box-shadow: 0px 0px 12px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0px 0px 12px rgba(0,0,0,0.5);
+	box-shadow: 0px 0px 12px rgba(0,0,0,0.5);
+}
+
+.wrapper:after {
+    clear:both;
+    content: ".";
+    display: block;
+    height: 0px;
+    visibility: hidden;
+}
+
+.footer {
+    margin: 0 auto;
+    padding: 20px 0px 40px;
+    max-width: 500px;
+    min-height: 10px;
+    text-align: center;
+    color: white;
+}
+
+
+/*
+ * Everything not having to do with structure
+ * (formatting, minor layout, etc)
+ */
+
+.wrapper a, .wrapper a:visited {
+    text-decoration: none;
+    color: #F96B02;
+}
+.wrapper a:hover {
+    text-decoration: underline;
+}
+
+.logo {
+	float: left;
+}
+.logo img {
+	vertical-align:middle;
+}
+.logo h1 {
+	font-family: "Trebuchet MS";
+	font-size: 60px;
+	vertical-align:middle;
+	margin: 0;
+	padding: 0 15px;
+	display: inline;
+}
+.logo a, .logo a:visited {
+	color: black;
+}
+.logo a:hover {
+    text-decoration: none;
+	color: #333;
+}
+
+.headerlinks {
+	float: right;
+	padding: 5px 0;
+	text-align: right;
+	line-height: 1.5em;
+}
+
+.footer a, .footer a:visited {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+.footer a:hover {
+    text-decoration: underline;
+}

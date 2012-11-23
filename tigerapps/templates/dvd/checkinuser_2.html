@@ -1,0 +1,38 @@
+{% extends "dvd/baseadmin.html" %}
+
+{% block admincontent %}
+<h1>Check in by user (step 2/2)</h1>
+
+{% if rentalList %}
+	<h2>Unreturned rentals of {{netid}}</h2>
+	<div class="dvdlist">
+	<form action="/dvdadmin/checkin/user/" method="post">
+		<input type="hidden" name="netid" value="{{netid}}" />
+		<table>
+			<tr>
+				<th>Check in</th>
+				<th>DVD name</th>
+				<th>Date rented</th>
+				<th>Date returned</th>
+				<th>Date due</th>
+			</tr>
+			{% for rental in rentalList %}
+		    <tr>
+				<td><input type="checkbox" name="rental" value="{{rental.rentalID}}" /></td>
+				<td>{{rental.dvd.name}}</td>
+				<td>{{rental.dateRented}}</td>
+				<td>{{rental.dateReturned}}</td>
+				<td>{{rental.dateDue}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<p><input type="submit" value="Check-in" /></p>
+	</form>
+	</div>
+{% else %}
+	<p>Strange - we can't find any DVDs that this user has checked out. Maybe those DVDs are already checked-in?</p>
+	<br/>
+	<p><a href="/dvdadmin/">Return to Admin Home</a></p>
+{% endif %}
+
+{% endblock %}

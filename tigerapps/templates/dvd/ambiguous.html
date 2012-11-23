@@ -1,34 +1,38 @@
 {% extends "dvd/baseadmin.html" %}
 
-{% block content %}
-<h1>Which copy?</h1>
-<p>Please fill out the copy numbers for the following DVDs:</p>
-<form id="ambiguous" action="/checkin/dvd" method="post">
-{% for dvd in  ambiguous_list %}
-<p><u>{{ dvd }}</u></p>
-Copy number: <select class="validate['required'] text-input" name="{{ dvd }}">
-	<option>--</option>
-	<option value="1">1</option>
-	<option value="2">2</option>
-	<option value="3">3</option>
-	<option value="4">4</option>
-	<option value="5">5</option>
-</select>
-<br /><br/>
-{% endfor %}
-<input type="submit" value="Submit" />
+{% block admincontent %}
+
+{% if checked_list %}
+	<h1>Mixed success!</h1>
+
+	<p>The following DVDs have been checked in:</p>
+	<ul>{% for dvd in checked_list %}
+		<li>{{dvd.name}}</li>
+	{% endfor %}</ul>
+
+	<p>However, there are multiple copies of the DVDs you selected checked out - please mark who returned the following DVDs you're checking in:</p>
+{% else %}
+	<h1>Houston, we have a problem!</h1>
+	
+	<p>There are multiple copies of the DVDs you selected checked out - please mark who returned the following DVDs you're checking in:</p>
+{% endif %}
+
+<div class="dvdlist">
+<form action="/dvdadmin/checkin/dvd/" method="post">
+	<table>
+		<tr><th>DVD name</th>
+			<th>NetID</th>
+		</tr>
+		{% for dvd,rentals in ambiguous_list %}
+		<tr><td>{{dvd.name}}</td>
+			<td><select name="dvd-{{dvd.dvd_id}}">
+				<option></option>
+				{% for rental in rentals %}<option value="{{rental.rentalID}}">{{rental.netid}}</option>{% endfor %}
+			</select></td>
+		</tr>
+		{% endfor %}
+	</table>
+	<p><input type="submit" value="Check in" /></p>
 </form>
-
-<script type="text/javascript" src="/static/ttrade/js/formcheck/lang/en.js"> </script>
-<script type="text/javascript" src="/static/ttrade/js/formcheck/formcheck-yui.js"> </script>
-<link rel="stylesheet" href="/static/ttrade/js/formcheck/theme/classic/formcheck.css" type="text/css" media="screen" />
-<script type="text/javascript">
-	window.addEvent('domready', function() 
-	{
-		new FormCheck('ambiguous');
-		
-		
-	});
-</script>
-
+</div>
 {% endblock %}
