@@ -171,10 +171,9 @@ def dvd_add(request):
             previous = "Error: %s has already been added!" % name
         except DVD.DoesNotExist:
             sortname = request.POST['sortname']
-            amountTotal = request.POST['amountTotal']
             amountLeft = request.POST['amountLeft']
             imdbID = request.POST['imdbID']
-            dvd = DVD(name=name, sortname=sortname, amountTotal=amountTotal, timesRented=0, amountLeft=amountLeft, imdbID=imdbID)
+            dvd = DVD(name=name, sortname=sortname, amountTotal=amountTotal, timesRented=0, amountLeft=amountTotal, imdbID=imdbID)
             dvd.save()
             previous = "%s was added successfully!" % name
     return render_to_response('dvd/dvd_add.html', {'previous': previous}, RequestContext(request))
@@ -196,7 +195,6 @@ def dvd_edit_single(request, dvd_id):
         dvd.name = request.POST['name']
         dvd.sortname = request.POST['sortname']
         dvd.amountTotal = request.POST['amountTotal']
-        dvd.amountLeft = request.POST['amountLeft']
         dvd.imdbID = request.POST['imdbID']
         dvd.save()
         change = True
