@@ -1,15 +1,23 @@
 {% extends "dvd/base.html" %}
 
-{% block title %}USG DVD Service{% endblock %}
+{% block dvdtitle %}Admin{% endblock %}
 
-{% block headercss %} <link rel="stylesheet" type="text/css" href="/static/dvd/css/dvd.css" />{% endblock %}
-
-{% block logo %}<a href="http://usg.princeton.edu" style="display: inline; float: left;"><img src="/static/dvd/images/usg-225-trans.png" height="100" /></a> <h1 style='float: right; font-family: "Trebuchet MS"; font-size: 60px; margin: 15px 30px 15px 0; padding: 0;'>USG DVD</h1>{% endblock %}
-
-{% block admin %}
-<div id="admin-stuff" style="text-align: right; display: block;">
-<a class="admin" href="/">Home</a>
-<a class="admin" id="admin" href="/admin">Admin Home</a>
-<a class="admin" id="logout" href="/logout">Logout</a>
+{% block content %}
+<div class="admin-header" style="text-align:center;">
+<ul>
+	<li><b>Basic tasks:</b>
+		<a href="/dvdadmin/">Admin Home</a> |
+		<a href="/dvdadmin/checkout/">Check out</a> |
+		<a href="/dvdadmin/checkin/user/">Check in by NetID</a> |
+		<a href="/dvdadmin/checkin/dvd/">Check in by DVD</a></li>
+	<li><b>Admin management:</b>
+		<a href="/dvdadmin/addadmin/">Add an admin</a></li>
+	<li><b>DVD management:</b>
+		<a href="/dvdadmin/dvd/add/">Add DVD</a> |
+		<a href="/dvdadmin/dvd/edit/">Edit/Remove DVD</a></li>
+</ul>
+</div>
+<div class="admin-content">
+{% block admincontent %}{% endblock %}
 </div>
 {% endblock %}

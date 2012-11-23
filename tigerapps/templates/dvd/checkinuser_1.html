@@ -1,0 +1,10 @@
+{% extends "dvd/baseadmin.html" %}
+
+{% block admincontent %}
+<h1>Check in by user (step 1/2)</h1>
+<form action="/dvdadmin/checkin/user/" method="get">
+	<p><label for="netid">NetID of DVD renter: </label>
+	<input type="text" name="netid" /></p>
+	<p><input type="submit" value="Next" /></p>
+</form>
+{% endblock %}

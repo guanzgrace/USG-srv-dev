@@ -1,0 +1,31 @@
+{% extends "dvd/baseadmin.html" %}
+
+{% block admincontent %}
+<h1>Add a DVD</h1>
+
+{% if previous %}
+	<strong>{{previous.name}} has already been added!</strong>
+{% endif %}
+
+<form action="/dvdadmin/dvd/add/{{dvd.dvd_id}}" method="post">
+<table class="dvd-info">
+	<tr>
+		<td><label for="name">Name</label></td>
+		<td><input type="text" name="name"/></td>
+	</tr><tr>
+		<td><label for="sortname">Sort Name<br/>(name used in alphabetical list)</label></td>
+		<td><input type="text" name="sortname"/></td>
+	</tr><tr>
+		<td><label for="amountTotal">Total amount</label></td>
+		<td><input type="text" name="amountTotal"/></td>
+	</tr><tr>
+		<td><label for="amountLeft">Amount in the office</label></td>
+		<td><input type="text" name="amountLeft"/></td>
+	</tr><tr>
+		<td><label for="imdbID">IMDB ID<br/>(Ex: tt0093779 in http://www.imdb.com/title/tt0093779/)</label></td>
+		<td><input type="text" name="imdbID"/></td>
+	</tr>
+</table>
+<p><input type="submit" value="Add DVD" /></p>
+</form>
+{% endblock %}
