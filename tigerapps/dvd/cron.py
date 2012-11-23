@@ -38,7 +38,7 @@ def reminder():
             
 reminder()
 '''
-
+"""
 def notice():
     # who to send notices to about what which dvd
     notices = Notice.objects.filter()
@@ -54,10 +54,10 @@ def notice():
         dvds_for_netid = notices.filter(netid = netid)
         dvd_strings = []
         # dvds for that netid as string
-        print netid + " WANTS: "
+        #print netid + " WANTS: "
         for dvd in dvds_for_netid:
             dvd_strings.append(str(dvd.dvd))
-            print str(dvd.dvd)
+            #print str(dvd.dvd)
         for check_dvd in dvd_strings:
             dvd = dvd_data.filter(name = check_dvd)
             if dvd and (dvd[0].amountLeft > 0):
@@ -70,9 +70,9 @@ def notice():
                          ["AS1193@aol.com"]
                         #[netid + "@princeton.edu"]
                         )
-                    return
                 except BadHeaderError:
                     send_mail("USG DVD email error", "Notification to " + rental.netid +  " has failed.", "DO_NOT_REPLY@tigerapps.org", ['AS1193@aol.com'], fail_silently=False)
-                    print "fail"
+                    #print "fail"
  
 notice()
+"""
