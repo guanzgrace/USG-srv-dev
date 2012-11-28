@@ -9,6 +9,7 @@ from dvd.emails import *
 from dvd.models import *
 from dvd.dsml import gdi
 from dvd import cron
+from dvd import permissions
 import datetime
 
 
@@ -36,19 +37,19 @@ def notify(request, dvd_id):
 #####
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def admin(request):
     rentalList = Rental.objects.filter(dateReturned=None).order_by('dateDue').reverse()
     return render_to_response('dvd/dvdadmin.html', {'rentalList': rentalList}, RequestContext(request))
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def checkout_1(request):
     return render_to_response('dvd/checkout_1.html', context_instance=RequestContext(request))
     
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def checkout_2(request):
     if request.method == 'POST':
         netid = request.POST['netid']
@@ -82,7 +83,7 @@ def checkout_2(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def checkin_user(request):
     if request.method == "POST":
         netid = request.POST['netid']
@@ -113,7 +114,7 @@ def checkin_user(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def checkin_dvd(request):
     if request.method == "POST":
         checked_list = []
@@ -161,7 +162,7 @@ def checkin_dvd(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def dvd_add(request):
     previous = None
     if request.method == 'POST':
@@ -180,13 +181,13 @@ def dvd_add(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def dvd_edit(request):
     DVD_list = DVD.objects.all().order_by('name')
     return render_to_response('dvd/dvd_edit.html', {'DVD_list': DVD_list}, RequestContext(request))
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def dvd_edit_single(request, dvd_id):
     dvd = get_object_or_404(DVD, pk=dvd_id)
     change = False
@@ -201,7 +202,7 @@ def dvd_edit_single(request, dvd_id):
     return render_to_response('dvd/dvd_edit_single.html', {'dvd': dvd, 'change': change}, RequestContext(request))
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def dvd_delete(request, dvd_id):
     dvd = get_object_or_404(DVD, pk=dvd_id)
     dvdname = dvd.name
@@ -213,11 +214,11 @@ def dvd_delete(request, dvd_id):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: permissions.in_dvdadmin_group(u))
 def addadmin(request):
+    g = permissions.get_dvdadmin_group()
     if (request.method == 'POST'):
         netid = request.POST['netid']
-        
         user_info = gdi(netid)
         if user_info is None:
             return render_to_response('dvd/user_not_found.html')
@@ -226,9 +227,10 @@ def addadmin(request):
             user = User.objects.get(username=netid)
         except User.DoesNotExist:
             user = User(username=netid, password="") #Password doesn't matter with CAS!
-        user.is_staff = True 
+        user.groups.add(g)
         user.save()
-    return render_to_response('dvd/addadmin.html', context_instance=RequestContext(request))
+    dvdadmins  = [u.username for u in g.user_set.all()] + [u.username for u in User.objects.filter(is_superuser=True)]
+    return render_to_response('dvd/addadmin.html', {'dvdadmins': dvdadmins}, context_instance=RequestContext(request))
 
 
 def forbidden(request, template_name='403.html'):
