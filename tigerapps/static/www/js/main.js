@@ -1,7 +1,5 @@
 tigerapps = {
-
     initializeTigerapps: function() {
-        console.log("up and running");
         tigerapps.setAppSelection();
     },
     
@@ -9,16 +7,13 @@ tigerapps = {
         var desc_apps = $(".desc-app");
         var tile_apps = $(".tile-app");
         tile_apps.each(function (){
-            $(this).hover(
-		function () {
-                    desc_apps.each(function () {
-			$(this).hide();
-                    });
-                    var desc_id = "desc-" + $(this).attr("id").substring(5);
-                    console.log("SHOWING :" + desc_id);
-                    $("#" + desc_id).fadeIn();
-		});
+            $(this).click(function () {
+                desc_apps.each(function () {
+                    $(this).hide();
+                });
+                var desc_id = "desc-" + $(this).attr("id").substring(5);
+                $("#" + desc_id).fadeIn();
+            });
         });
-
     }
 };
