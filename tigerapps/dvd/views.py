@@ -11,7 +11,7 @@ from dvd.dsml import gdi
 from dvd import cron
 from dvd import permissions
 import datetime
-import dvd.emails
+import dvd.emails as dvd_emails
 
 
 def home(request):
@@ -97,9 +97,9 @@ def checkin_user(request):
             #checkin DVD
             checkin_dvd = rental.dvd
             checkin_dvd.amountLeft += 1
-            chekcin_dvd.save()
+            checkin_dvd.save()
             checked_list.append(checkin_dvd)
-            dvd.emails.email_if_available(checkin_dvd)
+            dvd_emails.email_if_available(checkin_dvd)
         return render_to_response('dvd/checkinuser_complete.html', {'checked_list': checked_list, 'netid': netid}, RequestContext(request))
     
     if 'netid' not in request.GET:
@@ -136,7 +136,7 @@ def checkin_dvd(request):
                     #checkin DVD
                     checkin_dvd.amountLeft += 1
                     checkin_dvd.save()
-                dvd.emails.email_if_available(checkin_dvd)
+                dvd_emails.email_if_available(checkin_dvd)
             if ambiguous_list:
                 #This allows the person checking in the dvd to select which copy was checked in
                 return render_to_response('dvd/ambiguous.html', {'ambiguous_list': ambiguous_list, 'checked_list': checked_list}, RequestContext(request))
