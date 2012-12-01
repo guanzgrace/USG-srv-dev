@@ -4,7 +4,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
 admin.autodiscover()
-#today = date.today()
+##today = date.today()
 
 urlpatterns = patterns('',
     # Social
