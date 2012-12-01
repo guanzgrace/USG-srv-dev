@@ -21,9 +21,7 @@ def email_if_available(dvd):
                 "DO_NOT_REPLY@tigerapps.org",
                 [notice.netid + "@princeton.edu"] 
             )
-            print dvd.name + " " + notice.netid
             return
         except BadHeaderError:
             send_mail("USG DVD email error", "Notification to " + notice.netid +  " has failed.", "DO_NOT_REPLY@tigerapps.org", ['AS1193@aol.com'], fail_silently=False)
-            print dvd.name + " " + notice.netid
             return
