@@ -95,11 +95,11 @@ def checkin_user(request):
             rental.dateReturned = datetime.datetime.now()
             rental.save()
             #checkin DVD
-            dvd = rental.dvd
-            dvd.amountLeft += 1
-            dvd.save()
-            checked_list.append(dvd)
-            dvd.emails.email.email_if_available(dvd)
+            checkin_dvd = rental.dvd
+            checkin_dvd.amountLeft += 1
+            chekcin_dvd.save()
+            checked_list.append(checkin_dvd)
+            dvd.emails.email_if_available(checkin_dvd)
         return render_to_response('dvd/checkinuser_complete.html', {'checked_list': checked_list, 'netid': netid}, RequestContext(request))
     
     if 'netid' not in request.GET:
@@ -123,35 +123,35 @@ def checkin_dvd(request):
             ambiguous_list = [] # When more than one copy is checked out
             dvd_list = request.POST.getlist('dvd') #list of dvd's checked
             for dvd_id in dvd_list:
-                dvd = DVD.objects.get(pk=dvd_id)
-                if dvd.amountTotal - dvd.amountLeft > 1:
+                checkin_dvd = DVD.objects.get(pk=dvd_id)
+                if checkin_dvd.amountTotal - checkin_dvd.amountLeft > 1:
                     #if there's copies of dvd_id still checked out
-                    ambiguous_list.append((dvd, Rental.objects.filter(dateReturned=None, dvd=dvd)))
+                    ambiguous_list.append((checkin_dvd, Rental.objects.filter(dateReturned=None, dvd=checkin_dvd)))
                 else:
                     #if all of the copies of dvd_id are checked in
-                    checked_list.append(dvd)
-                    rental = Rental.objects.get(dateReturned=None, dvd=dvd)
+                    checked_list.append(checkin_dvd)
+                    rental = Rental.objects.get(dateReturned=None, dvd=checkin_dvd)
                     rental.dateReturned = datetime.datetime.now()
                     rental.save()
                     #checkin DVD
-                    dvd.amountLeft += 1
-                    dvd.save()
-                dvd.emails.email_if_available(dvd)
+                    checkin_dvd.amountLeft += 1
+                    checkin_dvd.save()
+                dvd.emails.email_if_available(checkin_dvd)
             if ambiguous_list:
                 #This allows the person checking in the dvd to select which copy was checked in
                 return render_to_response('dvd/ambiguous.html', {'ambiguous_list': ambiguous_list, 'checked_list': checked_list}, RequestContext(request))
         else:
             rental_list = [(k[4:],v) for k,v in request.POST.iteritems() if k.startswith('dvd-')]
             for dvd_id, rental_id in rental_list:
-                dvd = DVD.objects.get(pk=dvd_id)
-                checked_list.append(dvd)
+                checkin_dvd = DVD.objects.get(pk=dvd_id)
+                checked_list.append(checkin_dvd)
                 rental = Rental.objects.get(rentalID=rental_id)
                 rental.dateReturned = datetime.datetime.now()
                 rental.save()
                 #checkin DVD
-                dvd.amountLeft += 1
-                dvd.save()
-        cron.notice()
+                checkin_dvd.amountLeft += 1
+                checkin_dvd.save()
+                dvd.emails.email_if_available(checkin_dvd)
         return render_to_response('dvd/checkindvd_complete.html', {'checked_list': checked_list}, RequestContext(request))
 
     dvd_list = DVD.objects.all()
