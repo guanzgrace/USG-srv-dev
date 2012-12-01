@@ -151,6 +151,9 @@ div.error {
     color: white;
 }
 
+#account > span {
+    padding: 4px 0;
+}
 
 /* ---------- Error Pages ---------- */
 .errordoc {

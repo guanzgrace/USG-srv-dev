@@ -1,5 +1,5 @@
-/**
- *********************************************
+/*
+ ********************************************
  * Prototype of styles for horizontal CSS-menu
  * @data 30.06.2009
  *********************************************
@@ -46,13 +46,16 @@ div#menu li {
     position: relative;
     z-index: 9;
     margin: 0;
+    padding: 4px 2px;
     top: 0px;
-    padding-right: 8px;
-    padding-bottom: 7px;
     display: inline;
     float: right;
 	-moz-border-radius: 4px 4px 0 0;
 	-webkit-border-radius: 4px 4px 0 0;	    
+}
+div#menu li li {
+    padding-right: 8px;
+    padding-bottom: 7px;
 }
    
 div#menu li:hover>ul {
@@ -63,26 +66,24 @@ div#menu li div {
     list-style: none;
     float: right;
     position: absolute;
-    top: 25px;
+    top: 24px;
     right: 0px;
     /*width: 208px;*/
     z-index: 11;
     visibility: hidden;
     padding: 0 0 9px 7px;
-    _padding: 0 0 9px 3px;
 /*
     background: url(images/submenu-bottom.png) no-repeat 7px bottom;
     _background-image: url(images/submenu-bottom.gif);
 */
- 
     margin: 0 0 0 -9px;
 }
 div#menu li:hover>div {
     visibility: visible;
-    
 }
 
-div#menu li.current a {}
+div#menu li.current a {
+}
 
 /* menu::level1 */
 div#menu a {
@@ -97,14 +98,15 @@ div#menu a {
 }
 div#menu span {
     /*font: normal 12px 'Lucida Sans Unicode','Lucida Grande',Helvetica,Arial,sans-serif;*/
-
     color: #FFF;
     font-weight:bold;
     cursor: pointer;
-    background-repeat: no-repeat;		
+    background-repeat: no-repeat;
 }
-div#menu ul a:hover span {
+
+div#menu ul a:hover span  {
 }
+
 
 div#menu li { /*background: url(images/nav_separator.png) top left no-repeat;*/ }
 
@@ -153,7 +155,6 @@ div#menu ul ul {
     background: rgb(212,84,0); url(images/nav_dropdown_grad.png) right top no-repeat;
 	-moz-border-radius: 0px 0px 8px 8px;
 	-webkit-border-radius: 0px 0px 8px 8px; 
-
 /*
     margin-left:4px;
     margin-right:5px;
@@ -208,11 +209,6 @@ div#menu li.back {
 }
 div#menu li.back .left {
 }
-
-
-
-
-
 
 
 /* menu::base */
@@ -279,7 +275,7 @@ div#menu_ev li:hover>div {
     visibility: visible;
 }
 
-div#menu_ev li.current a {}
+div#menu_ev li.current a {
 
 /* menu::level1 */
 div#menu_ev a {
@@ -300,11 +296,11 @@ div#menu_ev span {
     letter-spacing: 0.05em;
     font-weight:normal;
     cursor: pointer;
-    background-repeat: no-repeat;		
-}
-div#menu_ev ul a:hover span {
-    /*color: #8D3900;*/
-}
+    background-repeat: no-repeat;	
+
+div#menu_ev ul a:hover span 
+    /*color: #8D3900;*
+
 
 div#menu_ev li { /*background: url(images/nav_separator.png) top left no-repeat;*/ }
 div#menu_ev li.last span{
@@ -379,13 +375,10 @@ div#menu_ev ul ul li {
 /* menu::level3 */
 div#menu_ev ul ul div {
     /*width: 208px;*/
-    
     margin: 0 142px 0 0 !important;
     height: auto;
-    _padding: 0 0 9px 3px;
 }
 div#menu_ev ul ul ul {
-	_padding-right:1px;
 }
 
 /* lava lamp */
