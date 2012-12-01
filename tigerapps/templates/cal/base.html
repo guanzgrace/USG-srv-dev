@@ -103,40 +103,34 @@
    <span style="float:left; padding-left: 18px; display: block;"><a style="text-decoration: none;" href="/today">Today is {% now "l, F jS Y" %}</a></span>
     <div id="menu">
      <ul class="menu">
-      {% if user_data %}
-      <li><a href="/logout"><span>Logout</span></a></li>      
-      <li><a href="/user" class="parent"><span>{{user_data.full_name}}{% if umsgs %}<span class="umsgct">{{umsgs.count}}</span>{% endif %}</span></a>
-       <div>
-        <ul>
-		 <li><a href="/user/messages" class="parent"><span>{% if umsgs %}{{umsgs.count|apnumber|capfirst}} New Message{{umsgs.count|pluralize}} {% else %}Personal Messages{% endif %}</span></a></li>
-		 <li><a href="/mycal/{{user_data.pk}}/{{user_data.user_netid}}.ics"><span>Synchronize Calendar</span></a></li>
-		 <li><a href="/user"><span>Manage Profile</span></a></li>
-        </ul>
-       </div>
-      </li>                  
-      <li><a href="/user/events" class="parent"><span>My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</span></a>
-       <div>
-        <ul>
-         <li><a href="/user/invitations" class="parent"><span>{% if my_invites.count %}{{my_invites.count|apnumber|capfirst}} New Invitation{{my_invites.count|pluralize}}{% else %}My Invitations{% endif %}</span></a>
-          <div>
-           <ul>
-           {% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
-          </ul>
-         </div>
-        </li>  
-        <li><a href="/user/events"><span>Upcoming Events</span></a></li>
-        <li><a href="/user/oldevents"><span>Previous Events</span></a></li>    
-       </ul>
-      </div>
-     </li>
-     <li><a href="/events/add" class="parent">Submit Events</a>
-      <div>
-       <ul>
-        <li><a href="/user/eventadmin"><span>Events I've Submitted</span></a></li>
-        <li><a href="/events/add"><span>Submit New Event</span></a></li>
-       </ul>
-      </div>
-     </li>                          
+     {% if user_data %}
+          <li><a href="/logout"><span>Logout</span></a></li>      
+          <li><a href="/user" class="parent"><span>{{user_data.full_name}}{% if umsgs %}<span class="umsgct">{{umsgs.count}}</span>{% endif %}</span></a>
+           <div>
+            <ul>
+             <li><a href="/user/messages" class="parent"><span>{% if umsgs %}{{umsgs.count|apnumber|capfirst}} New Message{{umsgs.count|pluralize}} {% else %}Personal Messages{% endif %}</span></a></li>
+             <li><a href="/mycal/{{user_data.pk}}/{{user_data.user_netid}}.ics"><span>Sync with Google, iCal, Outlook</span></a></li>
+             <li><a href="/user"><span>Manage Profile</span></a></li>
+            </ul>
+           </div>
+          </li>                  
+          <li><a href="/user/events" class="parent"><span>My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</span></a>
+           <div>
+            <ul>
+             <li><a href="/user/invitations" class="parent"><span>{% if my_invites.count %}{{my_invites.count|apnumber|capfirst}} New Invitation{{my_invites.count|pluralize}}{% else %}My Invitations{% endif %}</span></a>
+              <div>
+               <ul>
+               {% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
+              </ul>
+             </div>
+            </li>  
+            <li><a href="/user/events"><span>Upcoming Events</span></a></li>
+            <li><a href="/user/oldevents"><span>Previous Events</span></a></li>    
+            <li><a href="/user/eventadmin"><span>Events I've Submitted</span></a></li>
+           </ul>
+          </div>
+         </li>
+         <li><a href="/events/add"><span>Add Event</span></a></li>
     {% else %}<li class="last"><a href="/login" class="parent"><span>Log In</span></a></li>{% endif %}
     </ul>
    </div>  

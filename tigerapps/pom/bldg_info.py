@@ -2,6 +2,7 @@
 - Mapping of buildings to their info
 - Functions that return a list of buildings with certain properties
 '''
+import operator
 from pom.menus.scraper import DINING_HALLS
 from pom.printers.scraper import PRINTER_BLDGS
 
@@ -201,7 +202,7 @@ BLDG_INFO = {
     
 }
 
-BLDG_CODE = tuple((code, info[0]) for code,info in BLDG_INFO.iteritems())
+BLDG_CODE = sorted(tuple((code, info[0]) for code,info in BLDG_INFO.iteritems()), key=operator.itemgetter(1))
 
 
 def getBldgsWithHours():

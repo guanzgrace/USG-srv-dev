@@ -17,7 +17,6 @@
         background:url(/static/cal/css/img/delete.png) no-repeat left center;
     }
 </style>
-<link rel="stylesheet" type="text/css" href="/static/cal/css/anytime.css" />
 {% endblock %}
 
 {% block headerscript %}
@@ -25,7 +24,6 @@
    <script type="text/javascript" src="/static/cal/js/admin/RelatedObjectLookups.js"></script>
 
    <script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
-   <script type="text/javascript" src="/static/cal/js/anytimec.js"></script>
    <script type="text/javascript" src="/static/cal/js/datetimepicker_css.js"></script>
 
 <script type="text/javascript">
@@ -75,16 +73,10 @@
 
 $(document).ready(function(){
    $('.evForm').find('.delete-row').remove();
-   //$("input[name*='event_date_time_start']").AnyTime_picker(
-   //{ format: "%m/%d/%y %I:%i%p" } );
    startfield = $("input[name*='event_date_time_start']");
    startfield.after("<a href=\"javascript:NewCssCal('" + startfield.attr('id') + "', 'MMddyyyy', 'Arrow', 'true', '12', 'true')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
-   //$("input[name*='event_date_time_end']").AnyTime_picker(
-   //{ format: "%m/%d/%y %I:%i%p" } );
    endfield = $("input[name*='event_date_time_end']");
    endfield.after("<a href=\"javascript:NewCssCal('" + endfield.attr('id') + "', 'MMddyyyy', 'Arrow', 'true', '12', 'true')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
-   //$("input[name*='event_date_rsvp_deadline']").AnyTime_picker(
-   //{ format: "%m/%d/%y" } );
    rsvpfield = $("input[name*='event_date_rsvp_deadline']");
    rsvpfield.after("<a href=\"javascript:NewCssCal('" + rsvpfield.attr('id') + "', 'MMddyyyy', 'Arrow')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
    
@@ -159,21 +151,22 @@ There was an error with the submission.<br />
 	  {% for m in group_mships %}
 	  <option value="{{m.group.id}}">{{m.group.name}}</option>
 	  {% endfor %}
-</select>
-</td> 
-</tr>
-{% else %}{% if group %}
-      <tr> 
-        <th class="tableLabel"><label for="id_post_groups">Post event on Princeton Student Groups</label>: 
-        </th> 
-        <td> 
-          <select name="post_groups" id="id_post_groups" />
-	  <option value="" selected="selected">---------</option>
-	  <option value="{{group.id}}">{{group.name}}</option>
-</select>
-</td> 
-</tr>
-	 {% endif %}{% endif %}
+        </select>
+        </td> 
+        </tr>
+      {% else %}{% if group %}
+        <tr> 
+          <th class="tableLabel"><label for="id_post_groups">Post event on Princeton Student Groups</label>: 
+          </th> 
+          <td> 
+            <select name="post_groups" id="id_post_groups" />
+              <option value="" selected="selected">---------</option>
+              <option value="{{group.id}}">{{group.name}}</option>
+            </select>
+          </td> 
+          </tr>
+	  {% endif %}
+     {% endif %}
 
       </tbody>
    </table>
