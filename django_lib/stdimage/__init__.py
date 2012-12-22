@@ -15,5 +15,4 @@ try:
     ]
     add_introspection_rules(rules, ["^stdimage\.fields"])
 except ImportError:
-    print "error"
     pass
