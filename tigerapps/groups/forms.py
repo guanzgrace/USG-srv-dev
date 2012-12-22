@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.forms.models import BaseModelFormSet, BaseInlineFormSet
 from models import *
 from django.forms.extras.widgets import SelectDateWidget
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 from django.forms.models import inlineformset_factory
 from cal.models import Event
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 import datetime
 from decimal import Decimal
 
