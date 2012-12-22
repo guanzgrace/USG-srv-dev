@@ -161,7 +161,7 @@ def email_clubs(ARPATH):
         mealsout = Exchange.objects.filter(meal_2=None).filter(meal_1__guest__club=club)
         #guests hosted at this club without reciprocating
         mealsin = Exchange.objects.filter(meal_2=None).filter(meal_1__host__club=club)
-        to_address = club.account.email
+        to_address =  ['markbur1@gmail.com', 'joshchen@princeton.edu']#[club.account.email]
         print 'Email: %s'%to_address
 
         print '  rendering email msg'
@@ -170,7 +170,7 @@ def email_clubs(ARPATH):
         text_msg = strip_tags(html_msg)
 
         msg = EmailMultiAlternatives('MealChecker: End of Month Update for %s!' % club.name, 
-                                     text_msg, 'MealChecker@usg.princeton.edu', [to_address])
+                                     text_msg, 'MealChecker@usg.princeton.edu', to_address)
         msg.attach_alternative(html_msg, "text/html")
 
         print '  attaching spreadsheet'
