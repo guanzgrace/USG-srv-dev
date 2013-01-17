@@ -138,7 +138,7 @@ class EventClusterForm(forms.ModelForm):
     class Meta:
         model=EventCluster
         exclude = ('cluster_user_created')
-        fields = ['cluster_title', 'cluster_description', 'cluster_category', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
+        fields = ['cluster_title', 'cluster_description', 'cluster_tags', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
 
 class EditUserForm(forms.ModelForm):
    class Meta:
