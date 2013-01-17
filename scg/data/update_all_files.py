@@ -9,8 +9,8 @@ import commands
 import os
 import sys
 
-from data import ct_parse, scg_parse, st_parse, xl_parse
-from data.parse import parse_time
+import ct_parse, scg_parse, st_parse, xl_parse # from data
+from parse import parse_time # from data.parse
 
 USAGE = """
 USAGE: python update_all_files.py [--parse] semester=(F|S) year
