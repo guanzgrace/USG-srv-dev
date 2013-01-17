@@ -1,19 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
+from currencyfield import CurrencyField
 import datetime
-from decimal import Decimal
-
-class CurrencyField(models.DecimalField):
-    __metaclass__ = models.SubfieldBase
-
-    def to_python(self, value):
-        try:
-           return super(CurrencyField, self).to_python(value).quantize(Decimal("0.01"))
-        except AttributeError:
-           return None
 
 # Method of purchase
+'''
+    Auction: just save best offer until end
+    Fixed: Close immediately upon purchase
+    Free: Close immediately upon claim
+    Multiple: Contact seller
+    No Price Displayed: Contact Seller
+    Trade: Contact Seller
+'''
 METHOD_CHOICES = (
     (u'Au', u'Auction (Best Price Wins)'),
     (u'Fi', u'Fixed Price'),
@@ -23,14 +22,6 @@ METHOD_CHOICES = (
     (u'Tr', u'Trade'),
 )
     
-'''
-    Auction: just save best offer until end
-    Fixed: Close immediately upon purchase
-    Free: Close immediately upon claim
-    Multiple: Contact seller
-    No Price Displayed: Contact Seller
-    Trade: Contact Seller
-'''
 
 # I think these are better hardcoded than stuck in a database where I would have 
 # to reset them every time.   
@@ -79,7 +70,7 @@ class Listing(models.Model):
     posted = models.DateTimeField('Date Posted')
     expire = models.DateTimeField('Date Expire')
     offers = models.ManyToManyField('Offer', null=True, blank=True)
-    price = CurrencyField("Price", blank=True, null=True, decimal_places=2, max_digits=7)
+    price = CurrencyField("Price", blank=True, null=True)
     active = models.BooleanField("Is active", default=True)
     
     def __unicode__(self):
@@ -89,7 +80,7 @@ class Listing(models.Model):
 class Offer(models.Model):
     offerID = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, related_name="Offerer")
-    price = CurrencyField("Price", blank=True, null=True, decimal_places=2, max_digits=7)
+    price = CurrencyField("Price", blank=True, null=True)
     additional = models.TextField("Message", null=True, blank=True)
     accepted = models.BooleanField("Is accepted", default=False)
 

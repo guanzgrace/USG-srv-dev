@@ -1,5 +1,5 @@
 from django.db import models
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 
 class USG_Movie(models.Model):
     start = models.DateField(help_text="When should this be posted?")

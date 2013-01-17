@@ -19,6 +19,10 @@ class RentalAdmin(admin.ModelAdmin):
 
     list_display = ('netid', 'dvd', 'dateRented', 'dateDue', 'dateReturned')
 
+class BlurbAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+
 admin.site.register(DVD, DVDadmin)
 admin.site.register(Rental, RentalAdmin)
 admin.site.register(Notice)
+admin.site.register(Blurb, BlurbAdmin)
