@@ -23,7 +23,7 @@
 	</style>
 	<![endif]-->
 	
-		<script src="http://www.google.com/jsapi"></script>
+    <script src="http://www.google.com/jsapi"></script>
 	<script>google.load("jquery", "1");</script>
 	<script>google.load("jqueryui", "1");</script>
 	<script type="text/javascript" src="/static/pam/js/jquery.qtip.min.js"></script>
@@ -188,10 +188,12 @@
 			//refresh_map();
 		});
 	</script>
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
 
 <body>
-{% include "main/jquery.html" %}
+{% include "toolbar/links.html" %}
 
 <div id="frame" style="margin: 70px auto 40px; padding: 4px 6px 4px 4px; position: relative; width: 900px; height: 454px; border: solid 2px black; background: orange;">
 	<div id="top-bar" style="display: block; margin: 5px 5px 7px;">

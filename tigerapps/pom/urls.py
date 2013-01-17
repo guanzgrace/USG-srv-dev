@@ -9,8 +9,6 @@ urlpatterns = patterns('',
     # Map-related
     url(r'^/?$', direct_to_template,
         {'template': 'pom/index.html'}),
-    url(r'^test/?$', direct_to_template,
-        {'template': 'pom/test.html'}),
     
     url(r'^json/bldgs/names/?$', 'pom.views.get_bldg_names_json'),
     

@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-   {% include 'toolbar/jquery.html' %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="/static/www/css/bootstrap.css" />
@@ -23,9 +22,12 @@
         });
     </script>
 
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
 
 <body>
+{% include 'toolbar/links.html' %}
+
 <div class="container">
 <div class="row">
     <div id="title">

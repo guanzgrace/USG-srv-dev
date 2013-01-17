@@ -67,10 +67,13 @@
     $("#drawtable").tableFilter();
     });
   </script>
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
 
 <body onload="initialize()">
-  {% include "main/jquery.html" %}
+{% include "toolbar/links.html" %}
+
     <div id="wrapper1">
         <div id="wrapper2">
             <div id="map_canvas"></div>

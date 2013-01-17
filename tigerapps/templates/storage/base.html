@@ -30,11 +30,13 @@
 	
 	{% block header %}
 	{% endblock %}
-	
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
 
 <body>
-	{% include "main/jquery.html" %}
+{% include "toolbar/links.html" %}
+
 	<div class="wrapper">
 		<div class="top">
 			<div class="header">
