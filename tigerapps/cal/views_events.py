@@ -578,9 +578,11 @@ def events_add(request):
            group = Group.objects.get(netid__exact=user.user_netid)
        except:
            pass
+           
+    # for tag suggestions
+   recent_tags = [str(category) for category in EventCategory.objects.all()[:20]] # TODO: order by last modified?
 
-   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group})
-
+   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'recent_tags':recent_tags})
 
 @login_required
 def events_add_another(request, event_id):
