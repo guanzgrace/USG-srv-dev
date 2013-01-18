@@ -5,7 +5,14 @@
     </div>
     <div class="sidebar-content">
       <ul class="sidebar-menu">
-	<li><a href="#">Test</a></li>
+	{% for t in my_tags %}
+	<li><a href="/events/{{t.tag_id}}">{{t}}</span></a></li>
+        {% endfor %}
+
+{% if not my_tags %}
+<p> There are no recent tags. </p>
+{% endif %}
+
       </ul>
     </div>
   </div>

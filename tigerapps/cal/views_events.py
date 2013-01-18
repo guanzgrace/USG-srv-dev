@@ -740,24 +740,29 @@ def events_search(request):
 
     if 'ftag' in request.GET:
         ftag = request.GET['ftag'].strip()
-        q_tags = Q(cluster_description__contains=ftag) | Q(cluster_description__contains=ftag) 
-        q = q | q_tags
+        q = q | Q(cluster_description__contains=ftag) | Q(cluster_description__contains=ftag) 
+
+    eventClustersFound = EventCluster.objects.filter(q)
+    eventsFound = Event.objects.filter(event_cluster__in=eventClustersFound)
+
+
 
     if 'timeselect' in request.GET:
         timeselect = request.GET['timeselect'].strip()
-   
+        q = Q()
         if timeselect == 'today':
-            q = q & Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
+            q = Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
                     
         elif timeselect == 'week':
-            q = q & Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
+            q = Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
         elif timeselect == 'weekend':
-            q = q & Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
+            q = Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
                     
         elif timeselect == 'past':
-           q = q & Q(event_date_time_start__lte=now)
+           q = Q(event_date_time_start__lte=now)
     
-    eventsFound = EventCluster.objects.filter(q).order_by('event_date_time_start')
+        eventsFound = eventsFound.filter(q).order_by('event_date_time_start')
+
     return event_processing_dicts(request, eventsFound, {})
  
    
