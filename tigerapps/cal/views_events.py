@@ -740,13 +740,10 @@ def events_search(request):
     q_tag = Q()
 
     for word in query_params:
-        q = q | Q(cluster_title__contains=word) | Q(cluster_description__contains=word) | Q(cluster_tags__contains=word)
+        q = q | Q(cluster_title__icontains=word) | Q(cluster_description__icontains=word) | Q(cluster_tags__category_name__icontains=word)
     
-    print "1"
     eventClustersFound = EventCluster.objects.filter(q)
-    print "2" 
     eventsFound = Event.objects.filter(event_cluster__in=eventClustersFound)
-    print "3"
 
 
     q = Q(event_date_time_start__gte=now)
@@ -768,10 +765,7 @@ def events_search(request):
         
 
 
-    print "4"
     eventsFound = eventsFound.order_by('event_date_time_start').reverse()
-    print "5"
-    print len(eventsFound)
     dict = {}
     dict['tabtitle'] = "Events matching your search"
     dict['feedurl'] = request.path + '.ics'

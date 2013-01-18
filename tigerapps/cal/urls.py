@@ -29,6 +29,7 @@ feeds = {
 urlpatterns = patterns('',
     # Front Page and Top Tabs
     (r'^$',events),
+
     (r'^today/?$',todays_events),
     (r'^week/?$', weeks_events),
 
@@ -37,6 +38,7 @@ urlpatterns = patterns('',
 
     (r'^weekend/?$', weekends_events),
     (r'^events/?$',events),
+
     (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$', events_date),
 
     (r'^features/(?P<feature>.*).ics$', feedByFeature),
