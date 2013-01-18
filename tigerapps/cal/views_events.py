@@ -715,9 +715,6 @@ def events_delete_confirm(request, event_ID):
 
 @login_required
 def events_search(request):
-    dict = {}
-    dict['tabtitle'] = "Searched Events"
-    eventsFound = {}
     
     now = datetime.now()
     today = datetime.today()
@@ -727,62 +724,43 @@ def events_search(request):
     midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
     next_week = timedelta(weeks=1)
 
-    ftag = []
-    ffeat = []
-    timeselect = []
+    ftag = ""
+    timeselect = ""
+    query_params = []
 
-    """"
-    WORK ON THIS
-    """
+   #list split by comma and spaces
+    if 'query' in request.GET:
+        query_string = request.GET['query'].strip().split(",")
+        for entry in query_string:
+            words = entry.split(" ")
+            for word in words:
+                query_params.append(word)
+
+    q = Q(cluster_title__in=query_params) | Q(cluster_description__in=query_params) 
 
     if 'ftag' in request.GET:
         ftag = request.GET['ftag'].strip()
+        q_tags = Q(cluster_description__contains=ftag) | Q(cluster_description__contains=ftag) 
+        q = q | q_tags
 
-        if 'query' in request.GET:
-            query = request.GET['query'].strip()
-
-            keywords = query.split()
-            for keyword in keywords:
-              q = q | Q(event_cluster__cluster_title__icontains=keyword) | Q(event_subtitle__icontains=keyword)
-              q = q | Q(event_cluster__cluster_description__icontains=keyword) | Q(event_subdescription__icontains=keyword)          
-
-              if 'timeselect' in request.GET:
-                timeselect = request.GET['timeselect'].strip()
-                if timeselect == 'today':
-                    q = q & Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
-                    eventsFound = Event.objects.filter(q).order_by('event_date_time_start')
+    if 'timeselect' in request.GET:
+        timeselect = request.GET['timeselect'].strip()
+   
+        if timeselect == 'today':
+            q = q & Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
                     
-                elif timeselect == 'week':
-                    q = q & Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
-                    eventsFound = Event.objects.filter(q).order_by('event_date_time_start')
-                elif timeselect == 'weekend':
-                    q = q & Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
-                    eventsFound = Event.objects.filter(q).order_by('event_date_time_start')
-                elif timeselect == 'past':
-                    q = q & Q(event_date_time_start__lte=now)
-                    eventsFound = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(q).order_by('event_date_time_start')
-                elif timeselect == 'all':
-                    eventsFound = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(q).order_by('event_date_time_start')
-                else:
-                    timeselect = 'future'
-                    q = q & Q(event_date_time_start__gte=now)
-                    eventsFound = Event.objects.filter(q).order_by('event_date_time_start')
-                
-            # have default be show only future events.
-            else:
-                timeselect = 'future'
-                q = q & Q(event_date_time_start__gte=now)
-                eventsFound = Event.objects.filter(q).order_by('event_date_time_start')
-
-            dict={'query':query, 'keywords':keywords, 'timeselect': timeselect, 'feature':feature, 'category':category}
-            return event_processing_dicts(request, eventsFound, dict, template="cal/events_search.html")
-
-    # if no query term, default to returning all future events
-    dict['timeselect'] = 'future'    
-    dict['default'] = 'yes'
-    eventsFound = Event.objects.filter(event_date_time_start__gte=now).order_by('event_date_time_start')
-    return event_processing_dicts(request, eventsFound, dict, template="cal/events_search.html")
+        elif timeselect == 'week':
+            q = q & Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
+        elif timeselect == 'weekend':
+            q = q & Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
+                    
+        elif timeselect == 'past':
+           q = q & Q(event_date_time_start__lte=now)
     
+    eventsFound = EventCluster.objects.filter(q).order_by('event_date_time_start')
+    return event_processing_dicts(request, eventsFound, {})
+ 
+   
 @login_required
 def showQR(request, event_id):
     try:
