@@ -12,6 +12,7 @@ from django import forms
 from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
 from models import *
+from widgets import *
 #import datetime
 from datetime import datetime, timedelta
 
@@ -133,7 +134,8 @@ class SingleEventForm(forms.ModelForm):
         return event_date_rsvp_deadline
 
 class EventClusterForm(forms.ModelForm):
-    cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000)
+    cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000) 
+    cluster_tags = forms.CharField(widget=forms.TextInput(attrs={'class':'tags'}), label='Tags')
     
     class Meta:
         model=EventCluster
