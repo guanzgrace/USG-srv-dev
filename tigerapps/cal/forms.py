@@ -137,6 +137,18 @@ class EventClusterForm(forms.ModelForm):
     cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000) 
     cluster_tags = forms.CharField(widget=forms.TextInput(attrs={'class':'tags'}), label='Tags')
     
+    def clean_cluster_tags(self):
+    	"""Transforms a comma-separated string of tags into a list of EventCategory objects""" 
+    	category_names_raw = self.cleaned_data['cluster_tags']
+    	category_names = category_names_raw.split(',')
+    	cluster_tags = []
+    	for category_name in category_names:
+    		tag = EventCategory(category_name=category_name)
+    		tag.save()
+    		cluster_tags.append(tag)
+    	
+    	return cluster_tags
+    
     class Meta:
         model=EventCluster
         exclude = ('cluster_user_created')
