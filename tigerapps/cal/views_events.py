@@ -736,17 +736,20 @@ def events_search(request):
             for word in words:
                 query_params.append(word)
 
-    q = Q(cluster_title__in=query_params) | Q(cluster_description__in=query_params) 
+    q = Q()
+    q_tag = Q()
 
-    if 'ftag' in request.GET:
-        ftag = request.GET['ftag'].strip()
-        q = q | Q(cluster_description__contains=ftag) | Q(cluster_description__contains=ftag) 
-
+    for word in query_params:
+        q = q | Q(cluster_title__contains=word) | Q(cluster_description__contains=word) | Q(cluster_tags__contains=word)
+    
+    print "1"
     eventClustersFound = EventCluster.objects.filter(q)
+    print "2" 
     eventsFound = Event.objects.filter(event_cluster__in=eventClustersFound)
+    print "3"
 
 
-
+    q = Q(event_date_time_start__gte=now)
     if 'timeselect' in request.GET:
         timeselect = request.GET['timeselect'].strip()
         q = Q()
@@ -760,10 +763,20 @@ def events_search(request):
                     
         elif timeselect == 'past':
            q = Q(event_date_time_start__lte=now)
-    
-        eventsFound = eventsFound.filter(q).order_by('event_date_time_start')
+        
+    eventsFound = eventsFound.filter(q).order_by('event_date_time_start')
+        
 
-    return event_processing_dicts(request, eventsFound, {})
+
+    print "4"
+    eventsFound = eventsFound.order_by('event_date_time_start').reverse()
+    print "5"
+    print len(eventsFound)
+    dict = {}
+    dict['tabtitle'] = "Events matching your search"
+    dict['feedurl'] = request.path + '.ics'
+
+    return event_processing_dicts(request, eventsFound, dict)
  
    
 @login_required
