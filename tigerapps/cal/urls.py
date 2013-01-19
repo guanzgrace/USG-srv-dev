@@ -74,7 +74,7 @@ urlpatterns = patterns('',
     (r'^events/delete_confirm/(?P<event_ID>\d+)/?$', events_delete_confirm),
 
     # Search Results
-    (r'^search/?$',events_search),
+    #(r'^search/?$',events_search),
 
     # Manage Profile
     (r'^user/?$',user_profile),

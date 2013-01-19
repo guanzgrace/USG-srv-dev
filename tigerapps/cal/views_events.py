@@ -50,7 +50,18 @@ def filterGeneral(request, timeselect=None):
     # Set time select parameters ##########
     q = Q()
     if timeselect == None:
-        q = Q(event_date_time_start__gte=today)
+        dict = {}
+        dict['tabtitle'] = "Upcoming Events"
+        dict['timeselect'] = "all"
+        all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')[0:7]
+
+        dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
+        dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
+
+
+        return event_processing_dicts(request, all_events, dict, template="cal/myevents.html")
+
+
 
     if timeselect == "all":
         title_dict['tabtitle'] = "All Events"
@@ -75,6 +86,7 @@ def filterGeneral(request, timeselect=None):
 
     eventsFound = Event.objects.filter(q).order_by('event_date_time_start').reverse()
 
+    info_dict = {}
     if "query" in request.GET:
 
         #filter by query
@@ -88,48 +100,30 @@ def filterGeneral(request, timeselect=None):
         q = Q()
         for word in query_params:
             q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
+
+        info_dict['tabtitle'] = "Search Results"
+        info_dict['pagetitle'] = "Search Results"
  
 
     elif "tag" in request.GET:
 
         #filter by tag
         q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
+        info_dict['tabtitle'] = "Tag Results"
+        info_dict['pagetitle'] = "Tag Results"
 
     elif "feat" in request.GET:
         #filter by feature
         q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
+        info_dict['tabtitle'] = "Tag Results"
+        info_dict['pagetitle'] = "Tag Results"
     
-    else:
-        return HttpResponse("test")
-
-    
+   
     event_list = eventsFound.filter(q)
-    return event_processing_dicts(request, event_list, {})
+    info_dict["timeselect"] = timeselect
+    return event_processing_dicts(request, event_list, info_dict)
 
-@login_required
-def events_search(request, event_list, query):
-     
-    #list split by comma and spaces
-    if query:
-        query_params = []
-        query_string = request.GET['query'].strip().split(",")
-        for entry in query_string:
-            words = entry.split(" ")
-            for word in words:
-                query_params.append(word)
-
-        q = Q()
-
-        for word in query_params:
-            q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
-    
-        event_list = event_list.filter(q)
-
-    dict = {}
-    dict['tabtitle'] = "Events matching your search"
-    dict['feedurl'] = request.path + '.ics'
-    return event_processing_dicts(request, event_list, dict)
-
+"""
 def events(request):
     dict = {}
     dict['tabtitle'] = "Upcoming Events"
@@ -178,6 +172,7 @@ def all_events(request):
     all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')
 
     return event_processing_dicts(request, all_events, dict)
+"""
 
 def events_date(request, year, month, day):
     dict = {}

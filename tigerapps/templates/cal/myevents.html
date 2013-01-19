@@ -1,7 +1,7 @@
 {% extends "cal/base.html" %}
 {% load app_extras %}
 
-{% block title %}{{curr.title}}{% endblock %}
+{% block title %}{{tabtitle}}{% endblock %}
 {% block headercss %}<link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />{% endblock %}
 {% block headerscript %}
 <script type="text/javascript" src="/static/cal/js/coin-slider.min.js"></script>
@@ -73,7 +73,7 @@ Shadowbox.init();
 {% endblock %}
 
 {% block content %}
-<h1 id="title">{{tabtitle}}</h1>
+<h1 id="title">{{tabtitle}} - {{timeselect}}</h1>
 
 <ul class="events">
 {% if all_my_dates %}
@@ -121,7 +121,7 @@ Have these events show up in your personal Google Calendar, iCal, or Outlook. <a
 <h2 class="legend-title">Features</h2>
 <div style="padding-top: 16px;">
 {% for feat in feat_opts %}
-<span style="white-space:nowrap; padding-right: 12px;"><a href="/cal/{{curr.timeselect}}/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" alt="{{feat.feature_name}}" style="height: 24px; width: 24px;"/></a> <a href="/cal/{{curr.timeselect}}/?feat={{feat.feature_name}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
+<span style="white-space:nowrap; padding-right: 12px;"><a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" alt="{{feat.feature_name}}" style="height: 24px; width: 24px;"/></a> <a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
 {% endfor %}
 </div>
 </div>
