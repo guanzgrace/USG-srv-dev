@@ -1,13 +1,14 @@
 {% load value_from_settings %}
-<link rel="stylesheet" type="text/css" href="http://www.tigerapps.org/static/toolbar/css/toolbar.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}tigerapps.org/static/toolbar/css/toolbar.css" media="screen" />
 <div id="toolbar">
     <div id="toolbar-left" style="position:absolute;left:0;top:0;">
-        <div class="toolbar-app"><a href="http://www.tigerapps.org/">Tigerapps Home</a></div>
-        <div class="toolbar-app"><a href="http://ice.tigerapps.org/">ICE</a></div>
-        <div class="toolbar-app"><a href="http://scg.tigerapps.org/">SCG</a></div>
-        <div class="toolbar-app"><a href="http://ptx.tigerapps.org/">PTX</a></div>
-        <div class="toolbar-app"><a href="http://cal.tigerapps.org/">Cal</a></div>
-        <div class="toolbar-app"><a href="http://pam.tigerapps.org/">PAM</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}tigerapps.org/">Tigerapps Home</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}ice.tigerapps.org/">ICE</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}scg.tigerapps.org/">SCG</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}ptx.tigerapps.org/">PTX</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/">Cal</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}pam.tigerapps.org/">PAM</a></div>
+        <div class="toolbar-app"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}deals.tigerapps.org/">Deals</a></div>
     </div>
 
     <div style="position:absolute;right:0;top:0;">

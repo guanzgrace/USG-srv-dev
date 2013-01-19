@@ -151,6 +151,9 @@ div.error {
     color: white;
 }
 
+#account > span {
+    padding: 4px 0;
+}
 
 /* ---------- Error Pages ---------- */
 .errordoc {
@@ -521,21 +524,21 @@ border: 1px Solid #ccc;
 }
 
 .events>li>ul>li.event-time {
-	font-size:18px;
+	font-size:14px;
 	text-align: right;
 	margin-top: -20px;
 	width: 100px;
 }
 
 .events>li>ul>li.event-time-alt {
-	font-size:18px;
+	font-size:14px;
 	text-align: right;
 	margin-top: -20px;
 	width: 100px;
 }
 
 .events>li>ul>li>span.event-date-abovetime {
-	font-size:14px;
+	font-size:12px;
 	text-align: right;
 	padding-top: 6px;
 	padding-bottom: -4px;

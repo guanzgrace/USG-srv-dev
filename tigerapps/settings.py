@@ -9,7 +9,7 @@ except ImportError, exp:
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, '/'.join(CURRENT_DIR.split('/')[:-1]))
+sys.path.insert(0, CURRENT_DIR[:CURRENT_DIR.rfind('/')] + '/django_lib')
 
 
 CURRENT_HOST = socket.gethostname()
@@ -150,23 +150,29 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'paypal.standard.ipn',
     'utils',
+    'adminsortable',
+    'south',
+
+# These apps are launched or in the process of being launched
+# This means that they ARE sync'd with South
     'www',
     'cal',
     'dvd',
     'ptx',
-    'my',
-    'myapps',
-    'groups',
     'ttrade',
     'card',
     'ccc',
     'elections',
-#    'facebook',
-#    'album',
     'pam',
     'rooms',
     'pom',
     'storage',
-    'adminsortable',
-    'south',
+
+# These apps were never launched and there are no plans to launch them
+# This means that they ARE NOT sync'd with South
+#    'facebook',
+#    'album',
+    'my',
+    'myapps',
+    'groups',
 )

@@ -1,5 +1,5 @@
 from django.db import models
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 import datetime
     
 class Office(models.Model):

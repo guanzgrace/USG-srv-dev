@@ -3,7 +3,7 @@
 # -------------------------------------------------------------------#
 
 from string import ascii_lowercase
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 from globalsettings import SITE_URL,SITE_EMAIL
 from email_msg import *
 from django.core.mail import send_mail

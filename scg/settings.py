@@ -23,7 +23,7 @@ CACHE_MIDDLEWARE_SECONDS = 60*5
 #######################
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, '/'.join(CURRENT_DIR.split('/')[:-1]))
+sys.path.insert(0, CURRENT_DIR[:CURRENT_DIR.rfind('/')] + '/django_lib')
 
 CURRENT_HOST = socket.gethostname()
 if socket.gethostname() == "USGDev":

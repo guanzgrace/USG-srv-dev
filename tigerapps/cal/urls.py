@@ -29,6 +29,7 @@ feeds = {
 urlpatterns = patterns('',
     # Front Page and Top Tabs
     (r'^$',events),
+
     (r'^today/?$',todays_events),
     (r'^week/?$', weeks_events),
 
@@ -37,13 +38,14 @@ urlpatterns = patterns('',
 
     (r'^weekend/?$', weekends_events),
     (r'^events/?$',events),
+
     (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$', events_date),
 
     (r'^features/(?P<feature>.*).ics$', feedByFeature),
     (r'^features/(?P<feature>.*)/?$', filterByFeature),
 
-    (r'^category/(?P<category>.*).ics$', feedByCategory),
-    (r'^category/(?P<category>.*)$', filterByCategory),
+    (r'^tags/(?P<tag>.*).ics$', feedByTags),
+    (r'^tags/(?P<tag>.*)$', filterByTags),
 
     (r'^eventsby/(?P<user>.*).ics$', feedByUser),
     (r'^eventsby/(?P<user>.*)$', filterByUser),
@@ -114,14 +116,10 @@ urlpatterns = patterns('',
     (r'^user/messages/?$',user_messages),
     (r'^user/messages/hover.html$',user_messages_hover),
 
-    #Feeds of type ics
-    (r'category/(?P<category>.*).ics$', feedByCategory),
-    #(r'^feeds/category/(?P<category>\d+).ics$', feedCategory),
-
     # iCal   
     (r'^ical/(?P<event_id>\d+)/?$', ical),
-    (r'^(?P<category>.*)/subscription.ics$', icalFeed),
-    (r'^subscribe/(?P<category>.*).ics$', subscribe),
+    (r'^(?P<tag>.*)/subscription.ics$', icalFeed),
+    (r'^subscribe/(?P<tag>.*).ics$', subscribe),
     (r'^mycal/(?P<id>\d+)/(?P<netid>.*).ics$', feedMyEvents),
     (r'^follow/(?P<netid>.*).ics$', followCalendar),
 

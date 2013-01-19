@@ -29,3 +29,7 @@ class Notice(models.Model):
     
     def __unicode__(self):
         return self.netid + " " + self.dvd.name
+
+class Blurb(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    content = models.TextField()

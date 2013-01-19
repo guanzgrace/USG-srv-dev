@@ -16,7 +16,8 @@ import dvd.emails as dvd_emails
 
 def home(request):
     DVD_list = DVD.objects.all().order_by('sortname')
-    return render_to_response('dvd/index.html', {'DVD_list': DVD_list}, RequestContext(request))
+    blurb = Blurb.objects.get(title='homepage')
+    return render_to_response('dvd/index.html', {'DVD_list': DVD_list, 'blurb_homepage': blurb.content}, RequestContext(request))
     
 @login_required
 def notify(request, dvd_id):

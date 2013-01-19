@@ -10,10 +10,13 @@
 	<title> {% block title %}USG TigerApps{% endblock %}</title>
 	<link rel="stylesheet" type="text/css" href="/static/tigerapps/css/styles.css" />
 	{% block headercss %}{% endblock %}
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
     
 <body>
-	{% include "toolbar/links.html" %}
+{% include "toolbar/links.html" %}
+
 	<div class="wrapper">
 		
     	<!--Header-->

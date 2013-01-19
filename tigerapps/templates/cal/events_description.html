@@ -137,7 +137,7 @@ Shadowbox.init();
 		<h3>Details<a name="details"></a></h3>
 		<div class="content">
 		<ul>
-			<li><span class="field">Category:</span> <a href="/category/{{event.event_cluster.cluster_category}}">{{event.event_cluster.cluster_category}}</a></li>
+			<li><span class="field">Tags:</span> {% for tag in event.event_cluster.cluster_tags.all %}<a href="/tags/{{tag}}">{{tag}}</a>&nbsp;&nbsp;{% endfor %}</li>
 			{% if event.event_cluster.cluster_features.all %}
 			<li><span class="field">Features:</span> {% for feature in event.event_cluster.cluster_features.all %}<a href="/features/{{ feature }}">{{ feature }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
 			{% endif %}

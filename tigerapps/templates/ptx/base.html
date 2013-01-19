@@ -17,10 +17,13 @@
   <![endif]-->
 
   {% block headerscript %}{% endblock %}
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
 
 <body id="{% block id %}base{% endblock %}">
-{% include "main/jquery.html" %}
+{% include "toolbar/links.html" %}
+
 <div id="overlay">
 </div>
 

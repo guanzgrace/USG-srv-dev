@@ -12,6 +12,7 @@ from django import forms
 from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
 from models import *
+from widgets import *
 #import datetime
 from datetime import datetime, timedelta
 
@@ -133,12 +134,25 @@ class SingleEventForm(forms.ModelForm):
         return event_date_rsvp_deadline
 
 class EventClusterForm(forms.ModelForm):
-    cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000)
+    cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000) 
+    cluster_tags = forms.CharField(widget=forms.TextInput(attrs={'class':'tags'}), label='Tags')
+    
+    def clean_cluster_tags(self):
+    	"""Transforms a comma-separated string of tags into a list of EventCategory objects""" 
+    	category_names_raw = self.cleaned_data['cluster_tags']
+    	category_names = category_names_raw.split(',')
+    	cluster_tags = []
+    	for category_name in category_names:
+    		tag = EventCategory(category_name=category_name)
+    		tag.save()
+    		cluster_tags.append(tag)
+    	
+    	return cluster_tags
     
     class Meta:
         model=EventCluster
         exclude = ('cluster_user_created')
-        fields = ['cluster_title', 'cluster_description', 'cluster_category', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
+        fields = ['cluster_title', 'cluster_description', 'cluster_tags', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
 
 class EditUserForm(forms.ModelForm):
    class Meta:

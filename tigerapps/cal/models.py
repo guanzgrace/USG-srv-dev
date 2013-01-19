@@ -10,7 +10,7 @@
 
 from django.db import models
 from datetime import datetime, date, timedelta
-from utils.stdimage import StdImageField
+from stdimage import StdImageField
 from globalsettings import SITE_ADMINS, dtdeleteflag, our_site
 from pom.bldg_info import BLDG_CODE
 
@@ -148,7 +148,7 @@ class EventCluster(models.Model):
    cluster_user_created = models.ForeignKey(CalUser)               # confirm is actual user
    cluster_image = StdImageField('Image', upload_to='cal/Images', size=(560,800), thumbnail_size=(260,520), blank=True)
    cluster_features = models.ManyToManyField(EventFeature, blank=True, verbose_name='Features')
-   cluster_category = models.ForeignKey(EventCategory, verbose_name='Category')
+   cluster_tags  = models.ManyToManyField(EventCategory, verbose_name='Tags', related_name = "Tag")
    cluster_rsvp_enabled = models.BooleanField('RSVP is Required to Attend')
    cluster_board_enabled = models.BooleanField('Message Board Enabled') #Whether the message board is activated
    cluster_notify_boardpost = models.BooleanField('Notify Me on Board Posts') #Whether to notify the administrator via email of new board post
