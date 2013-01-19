@@ -4,16 +4,15 @@
       <h3><a href="/user/events">Tags</a></h3>
     </div>
     <div class="sidebar-content">
+      {% if all_tags %}
       <ul class="sidebar-menu">
-	{% for t in all_tags %}
-	<li><a href="/tags/{{t}}">{{t}}</span></a></li>
+        {% for t in all_tags %}
+        <li><a href="/cal/{{curr.timeselect}}/?tag={{t}}">{{t}}</span></a></li>
         {% endfor %}
-
-{% if not all_tags %}
-<p> There are no recent tags. </p>
-{% endif %}
-
       </ul>
+      {% else %}
+      <p> There are no recent tags. </p>
+      {% endif %}
     </div>
   </div>
 </div>

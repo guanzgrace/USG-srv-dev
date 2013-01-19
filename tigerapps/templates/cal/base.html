@@ -87,19 +87,17 @@
        <li{{week|safe}}><a href="/week">This Week</a></li>
        <li{{week|safe}}><a href="/week">Next Week</a></li>
       <!--  <li{{weekend|safe}}><a href="/weekend">Weekend</a></li> -->
-       <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></li>
+       <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
       </ul>
      </td>
-     {% if user_data %}
      <td id="search">
-      <form method="GET" action="/search/">
+      <form method="GET" action="{%if curr%}/cal/{{curr.timeselect}}/{%else%}/{%endif%}">
        <p>
         <input type="text" name ="query" id="id_q" maxlength="40" />
         <input type="submit" value="Search Events" />
        </p>
       </form>
      </td>
-     {% endif %}
     </tr>
    </table>  
    
