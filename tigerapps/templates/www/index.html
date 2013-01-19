@@ -18,15 +18,15 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/www/js/main.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+    $(document).ready(function() {
             tigerapps.initializeTigerapps();
-	 if ( $(window).width() < 480){
-                    $(".tile-app").click( function(e){
-				  e.preventDefault();
-				  window.open($(this).find("a").attr("href")); 				     
-                    });
-	    }
-          });
+	if ( $(window).width() < 480){
+	       $(".tile-app").click( function(e){
+		e.preventDefault();
+	      	window.open($(this).find("a").attr("href"),"_self"); 				     
+             });
+	  }
+      });
     </script>
 {% endblock %}
 
