@@ -18,6 +18,8 @@ from django.http import *
 from render import render_to_response
 from django.contrib.auth import login
 import urllib, re
+from collections import defaultdict
+from operator import itemgetter
 from datetime import datetime, timedelta
 from models import *
 from cauth import *
@@ -34,6 +36,8 @@ from django.forms.formsets import formset_factory
 from django.db.models import Q
 from django.utils.encoding import smart_unicode, smart_str
 from django.template import Context, loader
+from django.db.models import Count
+
 
 
 def filterGeneral(request, timeselect=None):
@@ -45,7 +49,6 @@ def filterGeneral(request, timeselect=None):
     today_year = today.year
     midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
     next_week = timedelta(weeks=1)
-
     title_dict = {}
     # Set time select parameters ##########
     q = Q()
@@ -56,17 +59,14 @@ def filterGeneral(request, timeselect=None):
         all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')[0:7]
 
         dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
-        dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
-
+        dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')
 
         return event_processing_dicts(request, all_events, dict, template="cal/myevents.html")
 
-
-
-    if timeselect == "all":
+    elif timeselect == "all":
         title_dict['tabtitle'] = "All Events"
         title_dict['feedurl'] = request.path + '.ics'
-        q = Q(event_date_time_start__gte=today)
+        q = Q(event_date_time_start__gte=now)
 
     elif timeselect == "today":
         q = Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
@@ -83,7 +83,7 @@ def filterGeneral(request, timeselect=None):
     elif timeselect == "past":
         q = Q(event_date_time_start__lte=now)
  
-
+    # Events in the selected time range
     eventsFound = Event.objects.filter(q).order_by('event_date_time_start').reverse()
 
     info_dict = {}
@@ -109,14 +109,14 @@ def filterGeneral(request, timeselect=None):
 
         #filter by tag
         q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
-        info_dict['tabtitle'] = "Tag Results"
-        info_dict['pagetitle'] = "Tag Results"
+        info_dict['tabtitle'] = "Feature Search Results"
+        info_dict['pagetitle'] = "Feature Search Results"
 
     elif "feat" in request.GET:
         #filter by feature
         q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
-        info_dict['tabtitle'] = "Tag Results"
-        info_dict['pagetitle'] = "Tag Results"
+        info_dict['tabtitle'] = "Tag Search Results"
+        info_dict['pagetitle'] = "Tag Search Results"
     
    
     event_list = eventsFound.filter(q)
@@ -310,14 +310,19 @@ def event_processing_dicts(request, array, dict, template="cal/myevents.html"):
     dict['all_my_dates'] = my_dates
     dict['events_on_date'] = events_on_date
     
-    cat_list = EventCategory.objects.all()
-    dict['cat_opts'] = cat_list
+    # sort by most common
+    tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
+    tag_opts = defaultdict(int)
+    for tag in tag_list:
+        tag_opts[tag] += 1
+    dict['tag_opts'] = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
 
     feat_list = EventFeature.objects.all()
     dict['feat_opts'] = feat_list    
     
     return render_to_response(request, template, dict)
 
+"""
 def event_processing(request, array, dict):
     my_dates = []
     events_on_date = {}
@@ -340,7 +345,7 @@ def event_processing(request, array, dict):
     dict['site'] = request.path
     
     return render_to_response(request, 'cal/myevents.html', dict)
-
+"""
 
 @login_required
 def confirm(request, event_id):

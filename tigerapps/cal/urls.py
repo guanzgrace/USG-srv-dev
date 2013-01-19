@@ -28,7 +28,7 @@ feeds = {
 urlpatterns = patterns('',
     # Front Page and Top Tabs
     (r'^/?$', filterGeneral),
-    (r'^cal/(?P<timeselect>.*)/?$', filterGeneral),
+    (r'^cal/(?P<timeselect>[A-Za-z]+)/?$', filterGeneral),
 
     # Feeds
     (r'^all.ics$', feedAllEvents),    #legacy

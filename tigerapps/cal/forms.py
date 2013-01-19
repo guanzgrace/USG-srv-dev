@@ -11,8 +11,9 @@
 from django import forms
 from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
-from models import *
 from datetime import datetime, timedelta
+from models import *
+from cal import widgets
 
 goodInputs = ('%m/%d/%Y %I:%M %p','%m/%d/%Y %I:%M%p', '%m/%d/%Y')
 RSVPInputs = ('%m/%d/%Y',)

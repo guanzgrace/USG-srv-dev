@@ -71,19 +71,18 @@
 {% include "toolbar/links.html" %}
 
  <div id="overlay"></div>
-  <div id="container">
+  <div class="container">
   <h1 id="header">
   <a href="/">Princeton Events Calendar</a>
   </h1>
    <table id="nav">
     <tr>
      <td>
-      <ul class="lavaLampWithImage"{{uses_lava|safe}}>
-       <li{{lavanone|safe}} style='position: absolute; left: -40px;'><a href="/"></a></li>
-       <li{{all|safe}}><a href="/all">All</a></li>
-       <li{{today|safe}}><a href="/today">Today</a></li>
-       <li{{week|safe}}><a href="/week">This Week</a></li>
-       <li{{week|safe}}><a href="/week">Next Week</a></li>
+      <ul class="lavaLampWithImage" id="topmenu">
+       <li{%if not timeselect%} class="current"{%endif%} style='position: absolute; left: -40px;'><a href="/"></a></li>
+       {% for TIMESELECT in TIMESELECTS %}
+       <li{%ifequal timeselect TIMESELECT.0%} class="current"{%endifequal%}><a href="/cal/{{TIMESELECT.0}}/">{{TIMESELECT.1}}</a></li>
+       {% endfor %}
        <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
       </ul>
      </td>
@@ -140,7 +139,7 @@
     {% for msg in v_messages %}<p class="{{msg.type}}">{{msg.vm_contents|safe}}</p>{% endfor %}
   </div>{% endif %}
   <noscript><div id="message"><p class="error">Warning: You have JavaScript disabled. Please enable JavaScript to experience all of our site's features.</p></div></noscript>
-  {% if showrightcol %}{% include "cal/modules/rightcol.html" %}{% endif %}
+  {% if tag_opts %}{% include "cal/modules/rightcol.html" %}{% endif %}
   {% block content %}{% endblock %} 
   <div style="clear: both; display: block; height: 8px; width: 100%;"></div>
   {% include "cal/modules/spotlight.html" %}

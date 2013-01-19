@@ -1,17 +1,17 @@
 <div id="rightcol">
   <div class="sidebar">
     <div class="sidebar-title">
-      <h3><a href="/user/events">Tags</a></h3>
+      <h3>Popular Tags</h3>
     </div>
     <div class="sidebar-content">
-      {% if all_tags %}
+      {% if tag_opts %}
       <ul class="sidebar-menu">
-        {% for t in all_tags %}
-        <li><a href="/cal/{{timeselect}}/?tag={{t}}">{{t}}</span></a></li>
+        {% for tag,count in tag_opts %}
+        <li><a href="/cal/{{timeselect}}/?tag={{tag}}">{{tag}} ({{count}})</span></a></li>
         {% endfor %}
       </ul>
       {% else %}
-      <p> There are no recent tags. </p>
+      <p>There are no recent tags.</p>
       {% endif %}
     </div>
   </div>
