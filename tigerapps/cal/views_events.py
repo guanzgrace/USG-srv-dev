@@ -36,7 +36,7 @@ from django.utils.encoding import smart_unicode, smart_str
 from django.template import Context, loader
 
 
-def filterGeneral(request, timeselect="all"):
+def filterGeneral(request, timeselect=None):
     #based on timeselect, filter by time
     now = datetime.now()
     today = datetime.today()
@@ -49,6 +49,9 @@ def filterGeneral(request, timeselect="all"):
     title_dict = {}
     # Set time select parameters ##########
     q = Q()
+    if timeselect == None:
+        q = Q(event_date_time_start__gte=today)
+
     if timeselect == "all":
         title_dict['tabtitle'] = "All Events"
         title_dict['feedurl'] = request.path + '.ics'
@@ -73,17 +76,35 @@ def filterGeneral(request, timeselect="all"):
     eventsFound = Event.objects.filter(q).order_by('event_date_time_start').reverse()
 
     if "query" in request.GET:
-        return events_search(request, eventsFound, request.GET["query"])
+
         #filter by query
-        """
+        query_params = []
+        query_string = request.GET['query'].strip().split(",")
+        for entry in query_string:
+            words = entry.split(" ")
+            for word in words:
+                query_params.append(word)
+
+        q = Q()
+        for word in query_params:
+            q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
+ 
+
     elif "tag" in request.GET:
+
         #filter by tag
+        q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
+
     elif "feat" in request.GET:
         #filter by feature
-    return event_processing_dicts(request, all_events, dict, template="cal/front.html")
+        q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
+    
+    else:
+        return HttpResponse("test")
 
-        """
-    return HttpResponse("test")
+    
+    event_list = eventsFound.filter(q)
+    return event_processing_dicts(request, event_list, {})
 
 @login_required
 def events_search(request, event_list, query):
@@ -108,7 +129,6 @@ def events_search(request, event_list, query):
     dict['tabtitle'] = "Events matching your search"
     dict['feedurl'] = request.path + '.ics'
     return event_processing_dicts(request, event_list, dict)
- 
 
 def events(request):
     dict = {}
@@ -616,11 +636,9 @@ def events_add(request):
            group = Group.objects.get(netid__exact=user.user_netid)
        except:
            pass
-           
-    # for tag suggestions
-   recent_tags = [str(category) for category in EventCategory.objects.all()[:20]] # TODO: order by last modified?
 
-   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'recent_tags':recent_tags})
+   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group})
+
 
 @login_required
 def events_add_another(request, event_id):

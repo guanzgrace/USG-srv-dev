@@ -281,7 +281,7 @@ border: 1px Solid #ccc;
 
 #rightcol {
 	float: right;
-    padding-left: 15px;
+    padding: 20px 15px;
     width: 220px;
     display: inline-block;
 }
