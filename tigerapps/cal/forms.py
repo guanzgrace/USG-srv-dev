@@ -12,8 +12,6 @@ from django import forms
 from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
 from models import *
-from widgets import *
-#import datetime
 from datetime import datetime, timedelta
 
 goodInputs = ('%m/%d/%Y %I:%M %p','%m/%d/%Y %I:%M%p', '%m/%d/%Y')

@@ -9,7 +9,6 @@
 ################################################################
 
 from django.conf.urls.defaults import *
-from views import *
 from views_events import *
 from views_users import *
 from views_ajax import *
@@ -28,41 +27,24 @@ feeds = {
 
 urlpatterns = patterns('',
     # Front Page and Top Tabs
-    (r'^$',events),
+    (r'^/?$', filterGeneral),
+    (r'^cal/(?P<timeselect>.*)/?$', filterGeneral),
 
-    (r'^today/?$',todays_events),
-    (r'^week/?$', weeks_events),
+    # Feeds
+    (r'^all.ics$', feedAllEvents),    #legacy
+    #we also need to make a feed by tag..
 
-    (r'^all.ics$', feedAllEvents),
-    (r'^all/?$', all_events),
-
-    (r'^weekend/?$', weekends_events),
-    (r'^events/?$',events),
-
-    (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$', events_date),
-
-    (r'^features/(?P<feature>.*).ics$', feedByFeature),
-    (r'^features/(?P<feature>.*)/?$', filterByFeature),
-
-    (r'^tags/(?P<tag>.*).ics$', feedByTags),
-    (r'^tags/(?P<tag>.*)$', filterByTags),
-
+    # Filter without timeselect
     (r'^eventsby/(?P<user>.*).ics$', feedByUser),
     (r'^eventsby/(?P<user>.*)$', filterByUser),
-
     (r'^hotevents/?$', showHotEvents),
     (r'^recentlyadded/?$', showRecentlyAddedEvents),
     (r'^recentlyviewed/?$', showRecentlyViewedEvents),
 
-    (r'^feedlanding/?$', feedLanding),
-
-
-    #No Cookie!
-    (r'^nocookie/?$',nocookie),
-
-    # CAS
+    # Login logout
     (r'^login/?$',login),
     (r'^logout/?$',logout),
+    (r'^nocookie/?$',nocookie),
 
     # Event Description Page
     (r'^events/(?P<event_id>\d+)/?$',events_description),
@@ -77,7 +59,7 @@ urlpatterns = patterns('',
     (r'^events/add/?$',events_add),
     (r'^events/add/(?P<event_id>\d+)/?$', events_add_another),
 
-    #Forward to campus events list
+    # Forward to campus events list
     (r'^events/forwardtocampusevents/?$', events_forwardtocampusevents),
 
     # Manage Event Page  (specific number of numbers?)
@@ -92,7 +74,7 @@ urlpatterns = patterns('',
     (r'^events/delete_confirm/(?P<event_ID>\d+)/?$', events_delete_confirm),
 
     # Search Results
-    (r'^search/?$',events_search),
+    #(r'^search/?$',events_search),
 
     # Manage Profile
     (r'^user/?$',user_profile),
@@ -127,14 +109,14 @@ urlpatterns = patterns('',
     (r'^events/(?P<event_id>\d+)/sendmsg/?$', form_email_attendees),
     (r'^events/(?P<event_id>\d+)/msgsent/?$', email_attendees),
 
-    #Get attendee list
+    # Get attendee list
     (r'^events/(?P<event_id>\d+)/attendees.csv$', downloadAttendeeList),
 
     # Send custom invitations
     (r'^events/(?P<event_id>\d+)/custominvite/?$', custom_invite_message),
     (r'^events/(?P<event_id>\d+)/custominvitesent/?$', custom_invite_message_sent),
 
-    #QR Code
+    # QR Code
     (r'^events/(?P<event_id>\d+)/qr/?$', showQR),
 
     # Ajax goodness
@@ -143,13 +125,15 @@ urlpatterns = patterns('',
 
     # Feed
     (r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-
-    (r'^adminfun/?$',activityFeed),
-    (r'^lookup/?$',userlookup),
-
+    #(r'^feedlanding/?$', feedLanding), #doesn't work
 
     # XML Feed
     (r'^xml/?$', xml_feed),
+
+
+    # I don't know what these do...
+    (r'^adminfun/?$',activityFeed),
+    (r'^lookup/?$',userlookup),
 
     # Admin - not upgradable since it doesn't use django_cas
     (r'^admin/', include(admin.site.urls)),

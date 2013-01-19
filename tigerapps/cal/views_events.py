@@ -35,6 +35,95 @@ from django.db.models import Q
 from django.utils.encoding import smart_unicode, smart_str
 from django.template import Context, loader
 
+
+def filterGeneral(request, timeselect=None):
+    #based on timeselect, filter by time
+    now = datetime.now()
+    today = datetime.today()
+    today_day = today.day
+    today_month = today.month
+    today_year = today.year
+    midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
+    next_week = timedelta(weeks=1)
+
+    title_dict = {}
+    # Set time select parameters ##########
+    q = Q()
+    if timeselect == None:
+        dict = {}
+        dict['tabtitle'] = "Upcoming Events"
+        dict['timeselect'] = "all"
+        all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')[0:7]
+
+        dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
+        dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
+
+
+        return event_processing_dicts(request, all_events, dict, template="cal/myevents.html")
+
+
+
+    if timeselect == "all":
+        title_dict['tabtitle'] = "All Events"
+        title_dict['feedurl'] = request.path + '.ics'
+        q = Q(event_date_time_start__gte=today)
+
+    elif timeselect == "today":
+        q = Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
+ 
+    elif timeselect == "thisweek":
+        q = Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
+        title_dict = {}
+        title_dict['tabtitle'] = "Events This Week"
+
+    elif timeselect == "nextweek":
+        q = Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
+ 
+
+    elif timeselect == "past":
+        q = Q(event_date_time_start__lte=now)
+ 
+
+    eventsFound = Event.objects.filter(q).order_by('event_date_time_start').reverse()
+
+    info_dict = {}
+    if "query" in request.GET:
+
+        #filter by query
+        query_params = []
+        query_string = request.GET['query'].strip().split(",")
+        for entry in query_string:
+            words = entry.split(" ")
+            for word in words:
+                query_params.append(word)
+
+        q = Q()
+        for word in query_params:
+            q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
+
+        info_dict['tabtitle'] = "Search Results"
+        info_dict['pagetitle'] = "Search Results"
+ 
+
+    elif "tag" in request.GET:
+
+        #filter by tag
+        q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
+        info_dict['tabtitle'] = "Tag Results"
+        info_dict['pagetitle'] = "Tag Results"
+
+    elif "feat" in request.GET:
+        #filter by feature
+        q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
+        info_dict['tabtitle'] = "Tag Results"
+        info_dict['pagetitle'] = "Tag Results"
+    
+   
+    event_list = eventsFound.filter(q)
+    info_dict["timeselect"] = timeselect
+    return event_processing_dicts(request, event_list, info_dict)
+
+"""
 def events(request):
     dict = {}
     dict['tabtitle'] = "Upcoming Events"
@@ -42,9 +131,8 @@ def events(request):
     
     dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
     dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
-
-    
     return event_processing_dicts(request, all_events, dict, template="cal/front.html")
+
 
 def todays_events(request):
    dict = {}
@@ -54,34 +142,7 @@ def todays_events(request):
    now_day = now.day
    now_month = now.month
    now_year = now.year
-   
    return events_date(request, now_year, now_month, now_day)
-   
-#   today_events = Event.objects.filter(event_date_time_start__day=now_day,event_date_time_start__month=now_month, event_date_time_start__year=now_year).order_by('event_date_time_start')
-#   date_string = (datetime.today().strftime("%A, %B %e"))
-#   my_dates = []
-#   events_on_date = {}
-#   my_dates.append(date_string)
-#   events_on_date[date_string] = []
-#   usr = current_user(request)
-#   for event in today_events:
-#      if usr:    
-#         try:
-#            events_on_date[date_string].append((event,RSVP.objects.get(rsvp_event = event, rsvp_user = usr)))
-#         except:
-#            events_on_date[date_string].append((event,None))
-#      else:
-#         events_on_date[date_string].append((event,None))
-           
-#   dict['all_my_dates'] = my_dates
-#   dict['events_on_date'] = events_on_date
-
-#   dict['site'] = request.path    
-   
-#   feat_list = EventFeature.objects.all()
-#   dict['feat_opts'] = feat_list
-    
-#   return render_to_response(request, "myevents.html", dict);
 
 
 def weeks_events(request):
@@ -111,6 +172,7 @@ def all_events(request):
     all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')
 
     return event_processing_dicts(request, all_events, dict)
+"""
 
 def events_date(request, year, month, day):
     dict = {}
@@ -119,20 +181,12 @@ def events_date(request, year, month, day):
           return render_to_response(request, "cal/myevents.html", dict);
     dict['tabtitle'] = "Events on %s" % (date.strftime("%A, %B %e"))
     dict['filter'] = 'on'
-#        now = datetime.today()
-#        now_day = now.day
-#        now_month = now.month
-#        now_year = now.year              #check if valid date
-#    date = datetime(int(year), int(month), int(day)) #new
-#    if not date:
-#        return render_to_response(request, "myevents.html", dict);
 
     now_day = date.day #new
     now_month = date.month #new
     now_year = date.year #new
     
     today_events = Event.objects.filter(event_date_time_start__day=now_day,event_date_time_start__month=now_month, event_date_time_start__year=now_year).order_by('event_date_time_start')
-    #today_events = apply_filter(request, today_events)
     date_string = date.strftime("%A, %B %e")    # changed
     my_dates = []
     events_on_date = {}
@@ -159,6 +213,7 @@ def events_date(request, year, month, day):
 
     return render_to_response(request, "cal/myevents.html", dict);
 
+
 def filterByFeature(request, feature):
     try:
         dict = {}
@@ -180,6 +235,7 @@ def filterByTags(request, tag):
         return event_processing_dicts(request, events, dict)
     except:
         return go_back(request,'Error detected.%s' %tag,0)        
+
 
 def filterByUser(request, user):
     try:
@@ -232,7 +288,6 @@ def event_list_view(request, events, dict):
     return render_to_response(request, "cal/eventlist.html", dict)
 
 def event_processing_dicts(request, array, dict, template="cal/myevents.html"):
-
     today = datetime.now()
     my_dates = []
     events_on_date = {}
@@ -313,95 +368,93 @@ def unconfirm(request, event_id):
 
 @login_required
 def events_description(request, event_id):
+    myEvent = Event.objects.get(event_id=event_id)
+    myEvent.event_attendee_count = myEvent.getAttendeeCount()
+    myEvent.save()
+    
+
+    associatedEvents = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(event_cluster = myEvent.event_cluster).exclude(pk=myEvent.pk).order_by('event_date_time_start')
+    boardMessages = BoardMessage.objects.filter(boardmessage_eventcluster = myEvent.event_cluster).order_by('boardmessage_time_posted').reverse()
+    dict = {'event': myEvent, 'associatedEvents': associatedEvents, 'boardMessages': boardMessages}
+
+    
+    try:
+        dict['prev_event'] = myEvent.getPrevEvent()
+    except:
+        pass
+    try:
+        dict['next_event'] = myEvent.getNextEvent()
+    except:
+        pass
+    try:
+        dict['conc_events'] = myEvent.getConcurrentEvents()
+    except:
+        pass
         
-        myEvent = Event.objects.get(event_id=event_id)
-        myEvent.event_attendee_count = myEvent.getAttendeeCount()
-        myEvent.save()
+    if request.method == 'GET' and 'forwardtoevents' in request.GET:
+        dict['forwardtoevents'] = True
+    else:
+        dict['forwardtoevents'] = False
+        
+    
+        
+    public_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = False).order_by('rsvp_user__user_netid')
+    private_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = True).order_by('rsvp_user__user_netid')
+    
+    user = current_user(request)
+    dict['authorized'] = myEvent.isAuthorizedModifier(user)        
+    
+    n_public_guests = public_guests.count()
+    
+    max_disp = 5;
+    
+    if n_public_guests > max_disp+1:
+        dict['whoscoming'] = public_guests[0:max_disp]
+        dict['whoscoming_extra'] = (n_public_guests - max_disp) + private_guests.count()
+        dict['show_extra'] = True
+    else:
+        dict['whoscoming'] = public_guests
+        dict['whoscoming_extra'] =  private_guests.count()
+        dict['show_extra'] = False
         
 
-        associatedEvents = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(event_cluster = myEvent.event_cluster).exclude(pk=myEvent.pk).order_by('event_date_time_start')
-        boardMessages = BoardMessage.objects.filter(boardmessage_eventcluster = myEvent.event_cluster).order_by('boardmessage_time_posted').reverse()
-        dict = {'event': myEvent, 'associatedEvents': associatedEvents, 'boardMessages': boardMessages}
+    dict['showrightcol'] = False
+    
+    if dict['authorized']:
+        dict['whoscoming'] = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted').order_by('rsvp_user__user_netid')
+        dict['whoscoming_extra'] = 0
+        dict['show_extra'] = False
+        
+    user.add_viewed(myEvent)
 
-        
-        try:
-            dict['prev_event'] = myEvent.getPrevEvent()
-        except:
-            pass
-        try:
-            dict['next_event'] = myEvent.getNextEvent()
-        except:
-            pass
-        try:
-            dict['conc_events'] = myEvent.getConcurrentEvents()
-        except:
-            pass
-            
-        if request.method == 'GET' and 'forwardtoevents' in request.GET:
-            dict['forwardtoevents'] = True
-        else:
-            dict['forwardtoevents'] = False
-            
-        
-            
-        public_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = False).order_by('rsvp_user__user_netid')
-        private_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = True).order_by('rsvp_user__user_netid')
-        
-        user = current_user(request)
-        dict['authorized'] = myEvent.isAuthorizedModifier(user)        
-        
-        n_public_guests = public_guests.count()
-        
-        max_disp = 5;
-        
-        if n_public_guests > max_disp+1:
-            dict['whoscoming'] = public_guests[0:max_disp]
-            dict['whoscoming_extra'] = (n_public_guests - max_disp) + private_guests.count()
-            dict['show_extra'] = True
-        else:
-            dict['whoscoming'] = public_guests
-            dict['whoscoming_extra'] =  private_guests.count()
-            dict['show_extra'] = False
-            
-            
-        
-        dict['showrightcol'] = False
-        
-        if dict['authorized']:
-            dict['whoscoming'] = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted').order_by('rsvp_user__user_netid')
-            dict['whoscoming_extra'] = 0
-            dict['show_extra'] = False
-            
-        user.add_viewed(myEvent)
+    dict['open_invites'] = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Pending').count()
 
-        dict['open_invites'] = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Pending').count()
-
-        try: 
-            previous_view = View.objects.get(view_viewer = user, view_event = myEvent)
-            previous_view.view_count = previous_view.view_count + 1
-            previous_view.view_date_time = datetime.now()
-            previous_view.save()
-        except:
-            new_view = View(view_event = myEvent, 
-                    view_date_time = datetime.now(),
-                    view_viewer=user, 
-                    view_count = 1)
-            new_view.save()
-        try: 
-            dict['users_rsvp'] = RSVP.objects.get(rsvp_user = user, rsvp_event = myEvent)
-            if 'showrsvp' in request.GET:
-                Msg('%s has invited you to this event. <a href="/user/invitations/%s/accept/">Accept?</a> <a href="/user/invitations/%s/decline/">Decline?</a> ' % (dict['users_rsvp'].rsvp_referrer.full_name(),dict['users_rsvp'].pk,dict['users_rsvp'].pk),1).push(request)
-        except:
-            pass
-            # dict['unrsvp_url'] = '/events/%s/unconfirm' % (event_id)
-            
-        try:
-            address = urllib.quote('%sevents/%s' % (our_site, event_id), safe='')
-            dict['bitly_address'] = urllib.urlopen('http://api.bit.ly/v3/shorten?login=princetoneventscalendar&apiKey=R_16e331c21bf86e1f97667dec5608dba6&longUrl=%s&format=txt' % address).readlines()[0]
-        except:
-            dict['bitly_address'] = 'none'
+    try: 
+        previous_view = View.objects.get(view_viewer = user, view_event = myEvent)
+        previous_view.view_count = previous_view.view_count + 1
+        previous_view.view_date_time = datetime.now()
+        previous_view.save()
+    except:
+        new_view = View(view_event = myEvent, 
+                view_date_time = datetime.now(),
+                view_viewer=user, 
+                view_count = 1)
+        new_view.save()
+    try: 
+        dict['users_rsvp'] = RSVP.objects.get(rsvp_user = user, rsvp_event = myEvent)
+        if 'showrsvp' in request.GET:
+            Msg('%s has invited you to this event. <a href="/user/invitations/%s/accept/">Accept?</a> <a href="/user/invitations/%s/decline/">Decline?</a> ' % (dict['users_rsvp'].rsvp_referrer.full_name(),dict['users_rsvp'].pk,dict['users_rsvp'].pk),1).push(request)
+    except:
+        pass
+        # dict['unrsvp_url'] = '/events/%s/unconfirm' % (event_id)
         
-        return render_to_response(request,"cal/events_description.html", dict)
+    try:
+        address = urllib.quote('%sevents/%s' % (our_site, event_id), safe='')
+        dict['bitly_address'] = urllib.urlopen('http://api.bit.ly/v3/shorten?login=princetoneventscalendar&apiKey=R_16e331c21bf86e1f97667dec5608dba6&longUrl=%s&format=txt' % address).readlines()[0]
+    except:
+        dict['bitly_address'] = 'none'
+    
+    return render_to_response(request,"cal/events_description.html", dict)
 
     
 @login_required
@@ -578,11 +631,9 @@ def events_add(request):
            group = Group.objects.get(netid__exact=user.user_netid)
        except:
            pass
-           
-    # for tag suggestions
-   recent_tags = [str(category) for category in EventCategory.objects.all()[:20]] # TODO: order by last modified?
 
-   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'recent_tags':recent_tags})
+   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group})
+
 
 @login_required
 def events_add_another(request, event_id):
@@ -715,65 +766,7 @@ def events_delete_confirm(request, event_ID):
       return go_back(request,'You are not authorized to delete this event.',0) 
 
 
-@login_required
-def events_search(request):
-    
-    now = datetime.now()
-    today = datetime.today()
-    today_day = today.day
-    today_month = today.month
-    today_year = today.year
-    midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
-    next_week = timedelta(weeks=1)
 
-    ftag = ""
-    timeselect = ""
-    query_params = []
-
-   #list split by comma and spaces
-    if 'query' in request.GET:
-        query_string = request.GET['query'].strip().split(",")
-        for entry in query_string:
-            words = entry.split(" ")
-            for word in words:
-                query_params.append(word)
-
-    q = Q()
-    q_tag = Q()
-
-    for word in query_params:
-        q = q | Q(cluster_title__icontains=word) | Q(cluster_description__icontains=word) | Q(cluster_tags__category_name__icontains=word)
-    
-    eventClustersFound = EventCluster.objects.filter(q)
-    eventsFound = Event.objects.filter(event_cluster__in=eventClustersFound)
-
-
-    q = Q(event_date_time_start__gte=now)
-    if 'timeselect' in request.GET:
-        timeselect = request.GET['timeselect'].strip()
-        q = Q()
-        if timeselect == 'today':
-            q = Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
-                    
-        elif timeselect == 'week':
-            q = Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
-        elif timeselect == 'weekend':
-            q = Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
-                    
-        elif timeselect == 'past':
-           q = Q(event_date_time_start__lte=now)
-        
-    eventsFound = eventsFound.filter(q).order_by('event_date_time_start')
-        
-
-
-    eventsFound = eventsFound.order_by('event_date_time_start').reverse()
-    dict = {}
-    dict['tabtitle'] = "Events matching your search"
-    dict['feedurl'] = request.path + '.ics'
-
-    return event_processing_dicts(request, eventsFound, dict)
- 
    
 @login_required
 def showQR(request, event_id):
