@@ -51,7 +51,7 @@ def render_to_response(request, template, dict):
     else:
         timeselect = None
     dict['TIMESELECTS'] = (
-        ('all', 'All'),
+        ('all', 'Upcoming'),
         ('today', 'Today'),
         ('thisweek', 'This Week'),
         ('nextweek', 'Next Week'),

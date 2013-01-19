@@ -95,7 +95,7 @@ $(document).ready(function(){
    
    $('.tags').textext({
         plugins : 'tags prompt focus autocomplete suggestions',
-		suggestions: {{ recent_tags|safe }},
+		suggestions: {{ tag_sugs|safe }},
 		prompt: 'e.g. disiac or freefood',
     });		
 });

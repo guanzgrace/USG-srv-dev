@@ -311,41 +311,22 @@ def event_processing_dicts(request, array, dict, template="cal/myevents.html"):
     dict['events_on_date'] = events_on_date
     
     # sort by most common
-    tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
-    tag_opts = defaultdict(int)
-    for tag in tag_list:
-        tag_opts[tag] += 1
-    dict['tag_opts'] = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
+    dict['tag_opts'] = tag_opts
 
     feat_list = EventFeature.objects.all()
     dict['feat_opts'] = feat_list    
     
     return render_to_response(request, template, dict)
 
-"""
-def event_processing(request, array, dict):
-    my_dates = []
-    events_on_date = {}
-    for event in array:
-        date_string = event.event_date_time_start.strftime("%A, %B %e")
-    if date_string not in my_dates:
-          my_dates.append(date_string)
-          events_on_date[date_string] = []
-    events_on_date[date_string].append(event)
+def get_tag_opts():
+    # sort by most common
+    tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
+    tag_opts = defaultdict(int)
+    for tag in tag_list:
+        tag_opts[tag] += 1
+    tag_opts = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
+    return tag_opts
 
-    dict['all_my_dates'] = my_dates
-    dict['events_on_date'] = events_on_date
-    
-    cat_list = EventCategory.objects.all()
-    dict['cat_opts'] = cat_list
-
-    feat_list = EventFeature.objects.all()
-    dict['feat_opts'] = feat_list
-
-    dict['site'] = request.path
-    
-    return render_to_response(request, 'cal/myevents.html', dict)
-"""
 
 @login_required
 def confirm(request, event_id):
@@ -628,16 +609,17 @@ def events_add(request):
     except:
         pass
 
-   # data for interfacing with Student Groups
-   group = None
-   group_mships = Membership.objects.filter(student__netid__exact=user.user_netid,type='O')
-   if not group_mships.count():
-       try:
-           group = Group.objects.get(netid__exact=user.user_netid)
-       except:
-           pass
-
-   return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group})
+    # data for interfacing with Student Groups
+    group = None
+    group_mships = Membership.objects.filter(student__netid__exact=user.user_netid,type='O')
+    if not group_mships.count():
+        try:
+            group = Group.objects.get(netid__exact=user.user_netid)
+        except:
+            pass
+    tag_opts = [tag[0] for tag in get_tag_opts()]
+    tag_sugs = '["' + '","'.join(tag_opts) + '"]'
+    return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'tag_sugs':tag_sugs})
 
 
 @login_required
