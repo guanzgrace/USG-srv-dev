@@ -14,7 +14,7 @@ from datetime import datetime
 import urllib, re, string
 #from models import User
 from django.core.exceptions import ObjectDoesNotExist
-from dsml import gdi
+from utils.dsml import gdi
 from settings import *
 from models import User as FUser
 import logging

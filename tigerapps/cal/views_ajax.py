@@ -10,7 +10,7 @@
 
 from django.http import *
 from models import *
-from dsml import namelookup
+from utils.dsml import namelookup
 
 def netidlookup(request):
 	""" Return a formatted HTML chunk of the names found using the DSML for the query """

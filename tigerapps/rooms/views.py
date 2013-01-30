@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirec
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
-from dsml import gdi
+from utils.dsml import gdi
 # from rooms.models import Poll
 from django.contrib.auth.decorators import login_required, user_passes_test
 from models import *

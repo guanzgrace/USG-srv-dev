@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from elections.models import *
-from dsml import *
+from utils.dsml import *
 from django.contrib.auth.models import User
 from elections.forms import *
 from random import shuffle

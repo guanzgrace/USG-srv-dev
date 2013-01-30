@@ -15,7 +15,7 @@ import re, string, urllib
 from django_cas.urllib2_sslv3 import urllib2
 from models import *
 from django.core.exceptions import ObjectDoesNotExist
-from dsml import gdi
+from utils.dsml import gdi
 from globalsettings import *
 from usermsg import MsgMgr
 

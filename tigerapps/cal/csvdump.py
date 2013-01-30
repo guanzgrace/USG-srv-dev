@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from models import *
 from cauth import *
 from rsvp import *
-from dsml import *
+from utils.dsml import *
 from forms import *
 from mailer import *
 from views_users import *

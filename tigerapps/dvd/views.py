@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from dvd.emails import *
 from dvd.models import *
-from dvd.dsml import gdi
+from utils.dsml import gdi
 from dvd import cron
 from dvd import permissions
 import datetime

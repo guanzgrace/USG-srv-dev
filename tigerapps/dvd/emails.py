@@ -25,7 +25,7 @@ def email_if_available(dvd):
             )
 
             now = datetime.datetime.now()
-            f = open("/srv/tigerapps/logs/dvd_email_logs", "a")
+            f = open("/srv/logs/dvd_email.log", "a")
             f.write("\n************************\n")
             f.write(str(now) + '\n')
             f.write("SENT TO: " + to_email[0])
@@ -54,7 +54,7 @@ def notify_if_late():
         try:
             send_mail(subject, message, from_email, to_email, fail_silently=False)
             now = datetime.datetime.now()
-            f = open("/srv/tigerapps/logs/dvd_email_logs", "a")
+            f = open("/srv/logs/dvd_email.log", "a")
             f.write("\n************************\n")
             f.write(str(now) + '\n')
             f.write("SENT TO: " + to_email[0])
