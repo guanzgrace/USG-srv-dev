@@ -1,3 +1,10 @@
+"""
+A script used to load the old Rooms entries (stored in
+oldrooms.dat) into the new Rooms database. Uses the
+alias reverse map reversemap.dat to resolve the names
+of buildings.
+"""
+
 import pickle
 
 from django.core.management import setup_environ

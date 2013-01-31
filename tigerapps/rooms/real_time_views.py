@@ -14,8 +14,8 @@ import json
 import sys,os
 import traceback
 
-from simulation import start_sim, stop_sim, check_avail
-from queue import *
+from real_time_avail import start_sim, stop_sim, check_avail
+from real_time_queue import *
 
 
 REAL_TIME_ADDR='http://dev.rooms.tigerapps.org:8031'

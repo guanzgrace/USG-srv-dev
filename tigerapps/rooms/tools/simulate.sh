@@ -1,4 +1,7 @@
 #!/bin/bash
+# Used to run simulations for room draws. No real-time server integration,
+# was used to test email/text alerts.
+
 manager=~/USG-srv-dev/tigerapps/manage.py
 # Reset availability
 $manager rooms_resetavail

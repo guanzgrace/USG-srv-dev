@@ -1,5 +1,5 @@
 from gevent import spawn, sleep, kill
-from rooms.update import *
+from rooms.update_avail import *
 from rooms.models import *
 import random
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect

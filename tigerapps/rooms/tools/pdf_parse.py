@@ -16,26 +16,6 @@ floor_terms = {"Ground Floor":0, "First Floor":1, "Second Floor":2, "Third Floor
                "Fourth Floor":4, "Fifth Floor":5, "Sixth Floor":6, "A Level":-1,
                "Lower Floor":-1, "Third Floor Mezzanine":4, "Fourth Floor Mezzanine":5}
 
-# # Regexps for pulling components
-
-# #Building name
-# name_pat = re.compile(r'<li class="liOpen"><span class="bullet">&nbsp;(.+)\s*</span><ul>')
-# #r'<li class="liOpen"><span class="bullet">&nbsp;(.+)\s</span><ul>')
-
-
-# #Floor name, file
-# floor_pat = re.compile(r'<li class="liBullet"><span class="bullet">&nbsp;</span><a href="https://facilities.princeton.edu/housing/u/floorplans/UnderGrad_dorms/([0-9]{4}-[\w]+).pdf" target="_blank">([^<]+)</a></li>')
-
-
-# contents = open("pdfpage_files/menu3.html", "r").read()
-
-
-# name_matches = re.findall(name_pat, contents)
-
-# floor_matches = re.findall(floor_pat, contents)
-
-# print name_matches
-
 f = open("menu3.html", "r")
 soup = BeautifulSoup(f)
 
