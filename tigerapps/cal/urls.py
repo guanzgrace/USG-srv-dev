@@ -9,39 +9,71 @@
 ################################################################
 
 from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib import admin
+from django.http import HttpResponseRedirect
+
 from views_events import *
 from views_users import *
 from views_ajax import *
 from csvdump import *
 from attendee_email import *
-from rssfeed import LatestEvents
-from django.views.generic.simple import direct_to_template
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.contrib import admin
+from cal import rssfeed
 
 admin.autodiscover()
 
-feeds = {
-'latest': LatestEvents,
+OLD_FEEDS = {
+    'latest': rssfeed.LatestEvents,
 }
 
+"""
+replace:
+cal/{{}} -> cal/gen/{{}}/
+cal/upcoming -> cal/gen/upcoming/
+all.ics -> feeds/all.ics
+
+???????????????
+
+feeds/
+    feeds_index
+    - make feeds/tag, feeds/user in feeds/ ***
+feeds/all.ics, feeds/tag/{{}}.ics, feeds/user/{{}}.ics
+    events_feed
+eventsby/{{user}}.ics -> feeds/user/{{user}.ics
+    feedByUser -> events_feed
+
+eventsby/{{user}} -> cal/spec/user/{{}}/
+    filterByUser
+hotevents/ -> cal/spec/hot/
+    showHotEvents
+recentlyadded/ -> cal/spec/recentlyadded/
+    showRecentlyAddedEvents
+recentlyview/ -> cal/spec/recentlyviewed/
+    showRecentlyViewedEvents
+"""
+
 urlpatterns = patterns('',
-    # Front Page and Top Tabs
-    (r'^/?$', filterGeneral),
-    (r'^cal/(?P<timeselect>[A-Za-z]+)/?$', filterGeneral),
+    # General listing of events
+    (r'^/?$', 'cal.views_events.events_list'),
+    (r'^cal/(?P<timeselect>[A-Za-z]+)/?$', 'cal.views_events.events_list'),
+
+    # Specific listing of events
 
     # Feeds
-    (r'^all.ics$', feedAllEvents),    #legacy
-    #we also need to make a feed by tag..
+    (r'^feeds/?$', 'cal.views_events.feeds_index'),
+    (r'^feeds/all.ics$', 'cal.views_events.events_feed', name="feeds_all"), #copy feedAllEvents, feedByUser
+    (r'^feeds/tag/(?P<tag>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
+    (r'^feeds/user/(?P<user>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
 
-    # Filter without timeselect
-    (r'^eventsby/(?P<user>.*).ics$', feedByUser),
-    (r'^eventsby/(?P<user>.*)$', filterByUser),
-    (r'^hotevents/?$', showHotEvents),
-    (r'^recentlyadded/?$', showRecentlyAddedEvents),
-    (r'^recentlyviewed/?$', showRecentlyViewedEvents),
+    # Feeds - old: Not sure how this one works
+    (r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed', {'feed_dict': OLD_FEEDS}),
+    # Feeds - old: Not sure how this one works
+    (r'^xml/?$', xml_feed),
+    # Feeds - old: Need a redirect
+    (r'^all.ics$', lambda x: HttpResponseRedirect('/feeds/all.ics')),
 
-    # Login logout
+    # Authentication
     (r'^login/?$',login),
     (r'^logout/?$',logout),
     (r'^nocookie/?$',nocookie),
@@ -122,13 +154,6 @@ urlpatterns = patterns('',
     # Ajax goodness
     (r'^ajax/netidlookup/?$',netidlookup),
     (r'^ajax/allguests/?$',allguests),
-
-    # Feed
-    (r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-    #(r'^feedlanding/?$', feedLanding), #doesn't work
-
-    # XML Feed
-    (r'^xml/?$', xml_feed),
 
 
     # I don't know what these do...
