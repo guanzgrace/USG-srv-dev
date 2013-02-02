@@ -1,31 +1,17 @@
-# Create your views here.
+import re
+from django.conf import settings as conf
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from utils.dsml import gdi
-# from rooms.models import Poll
 from django.contrib.auth.decorators import login_required, user_passes_test
 from models import *
-from views import *
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django import forms
 import json
-import sys,os
 import traceback
-
-if 'IS_REAL_TIME_SERVER' in os.environ:
-    from real_time_views import *
-
-REAL_TIME_ADDR='http://dev.rooms.tigerapps.org:8031'
-NORMAL_ADDR='http://dev.rooms.tigerapps.org:8017'
-
-def externalResponse(data):
-    response =  HttpResponse(data)
-    response['Access-Control-Allow-Origin'] =  NORMAL_ADDR
-    response['Access-Control-Allow-Credentials'] =  "true"
-    return response
 
 def check_undergraduate(username):
     # Check if user can be here
@@ -36,17 +22,15 @@ def check_undergraduate(username):
         user = User(netid=username, firstname=info.get('givenName'), lastname=info.get('sn'), pustatus=info.get('pustatus'))
         if info.get('puclassyear'):
             user.puclassyear = int(info.get('puclassyear'))
-#        if user.pustatus == 'undergraduate' and 2011 < user.puclassyear:
-        user.save()
-        # Create queues for each draw
-        for draw in Draw.objects.all():
-            queue = Queue.make(draw=draw, user=user)
-            queue.save()
-            user.queues.add(queue)
-    # temporarily remove current undergrad check for sake of testing
-    # if user.pustatus == 'undergraduate' and 2011 < user.puclassyear:
-    #     return user
-    # return None
+        if user.pustatus == 'undergraduate':
+            user.save()
+            # Create queues for each draw
+            for draw in Draw.objects.all():
+                queue = Queue.make(draw=draw, user=user)
+                queue.save()
+                user.queues.add(queue)
+        else:
+            return None
     return user
 
 @login_required
@@ -84,7 +68,10 @@ def mapdata():
         maplist.append({'name':building.name, 'draws':draws,
                         'lat':building.lat, 'lon':building.lon})
     mapstring = json.dumps(maplist)
-    mapstring = mapstring + ('; REAL_TIME_ADDR = "%s"' % REAL_TIME_ADDR)
+    # Strip off port if present.
+    domain = re.sub(r':[0-9]+$', '', conf.SITE_DOMAIN)
+    real_time_addr = domain + ':' + conf.REAL_TIME_PORT
+    mapstring = mapstring + ('; REAL_TIME_ADDR = "%s"' % real_time_addr)
     mapscript = '<script type="text/javascript">mapdata = %s</script>' % mapstring
     return mapscript
 
@@ -470,21 +457,6 @@ def manage_queues(request, error=""):
                                                            'sent_invites' : sent_invites,
                                                            'shared_queues' : shared_queues,
                                                            'error' : error })
-
-
-def test(request):
-    #return HttpResponse(testtime())
-    externalResponse('Hello')
-    return response
-
-def trigger(request):
-    try:
-        #print('Hello' + request.META['HTTP_ORIGIN'])    
-        triggertime()
-        return externalResponse('triggered')#'Hello' + request.META['HTTP_ORIGIN'])
-    except Exception as e:
-        return externalResponse(traceback.format_exc())
-
 
 #helper function
 def notify(user, subject, message):

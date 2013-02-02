@@ -1,9 +1,7 @@
 from tigerapps.rooms.models import *
 from django.core.mail import send_mail
 
-
-
-    # Mark a collection of rooms as taken and notify people as necessary
+# Mark a collection of rooms as taken and notify people as necessary
 def updateavail(roomset):
     # Mark as taken
     roomset.update(avail=False)

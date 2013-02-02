@@ -1,3 +1,9 @@
+"""
+Code fragments used to parse the json output of the 'Places' endpoint 
+at http://etcweb.princeton.edu/MobileFeed/ and eventually produce
+a mapping of building aliases to building ids.
+"""
+
 import json
 import pickle
 

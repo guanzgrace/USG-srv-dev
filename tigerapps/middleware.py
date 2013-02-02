@@ -1,5 +1,22 @@
 from django.conf import settings
 
+BASE_DOMAIN='tigerapps.org'
+
+class RealTimeMiddleware(object):
+    """Middleware for handling real-time requests."""
+
+    def process_response(self, request, response):
+        """Modify response to be CORS compatible with request origin.
+
+        Basically, set access control headers to allow this response to be loaded
+        from other tigerapps domains.
+        """
+        response['Access-Control-Allow-Credentials'] =  "true"
+        origin = request.META['HTTP_ORIGIN']
+        if origin.find(BASE_DOMAIN) != -1:
+            response['Access-Control-Allow-Origin'] = origin
+        return response
+
 class SubdomainsMiddleware:
     def process_request(self, request):
         #Find the subdomain

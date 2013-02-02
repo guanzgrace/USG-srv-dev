@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from tigerapps.rooms.models import *
-from tigerapps.rooms.update import *
+from tigerapps.rooms.update_avail import *
 from django.core.mail import send_mail
 import random
 
