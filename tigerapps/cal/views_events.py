@@ -8,87 +8,66 @@
 # Info :  rendering pages and executing actions related to events
 ################################################################
 
-from groups.models import *
-from groups.email_msg import FEED_NOTIFICATION_EMAIL
-from groups.globalsettings import SITE_EMAIL,EMAIL_HEADER_PREFIX
-from cal.globalsettings import our_site, our_email
 from django.core.mail import send_mail
-
+from django.forms.formsets import formset_factory
+from django.utils.encoding import smart_unicode, smart_str
+from django.template import Context, loader
+from django.db.models import Q, Count
 from django.http import *
-from render import render_to_response
 from django.contrib.auth import login
+
 import urllib, re, json
 from collections import defaultdict
 from operator import itemgetter
 from datetime import datetime, timedelta
-from models import *
-from cauth import *
-from rsvp import *
-from utils.dsml import *
-from forms import *
-from mailer import *
-from views_users import *
 import vobject
 import cgi
-from usermsg import MsgMgr
-from decorators import login_required
-from django.forms.formsets import formset_factory
-from django.db.models import Q
-from django.utils.encoding import smart_unicode, smart_str
-from django.template import Context, loader
-from django.db.models import Count
+
+from groups.models import *
+from groups.email_msg import FEED_NOTIFICATION_EMAIL
+from groups.globalsettings import SITE_EMAIL,EMAIL_HEADER_PREFIX
+from cal.globalsettings import our_site, our_email
+
+from utils.dsml import *
+from cal.decorators import login_required
+from cal.render import render_to_response
+from cal.models import *
+from cal.cauth import *
+from cal.rsvp import *
+from cal.forms import *
+from cal.mailer import *
+from cal.views_users import *
+from cal.usermsg import MsgMgr
+from cal import query
 
 
 
-def filterGeneral(request, timeselect=None):
-    #based on timeselect, filter by time
-    now = datetime.now()
-    today = datetime.today()
-    today_day = today.day
-    today_month = today.month
-    today_year = today.year
-    midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
-    next_week = timedelta(weeks=1)
-    title_dict = {}
-    # Set time select parameters ##########
-    q = Q()
-    if timeselect == None:
-        dict = {}
-        dict['tabtitle'] = "Upcoming Events"
-        dict['timeselect'] = "all"
-        all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')[0:7]
+def events_list(request, timeselect="upcoming"):
 
-        dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
-        dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')
+    if "sd" in request.GET:
+        sd = request.GET['sd']
+        sd_y = int(sd[0:4])
+        sd_m = int(sd[4:6])
+        sd_d = int(sd[6:8])
+        start_day = datetime(sd_y, sd_m, sd_d, 0, 0, 0)
+    else:
+        today = datetime.today()
+        start_day = datetime(today.year, today.month, today.day, 0, 0, 0)
 
-        return event_processing_dicts(request, all_events, dict, template="cal/myevents.html")
+    title, q_timeselect = query.get_time_query(timeselect, start_day)
+    out_dict = {}
+    out_dict['tabtitle'] = title
+    out_dict['timeselect'] = timeselect
 
-    elif timeselect == "all":
-        title_dict['tabtitle'] = "All Events"
-        title_dict['feedurl'] = request.path + '.ics'
-        q = Q(event_date_time_start__gte=now)
+    if timeselect == "upcoming":
+        out_dict['poster_events'] = Event.objects.filter(q, event_cluster__cluster_image__isnull=False).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
+        out_dict['hotest_events'] = Event.objects.filter(q, event_cluster__cluster_image__isnull=False, event_attendee_count__gte=1).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
 
-    elif timeselect == "today":
-        q = Q(event_date_time_start__day=today_day,event_date_time_start__month=today_month, event_date_time_start__year=today_year)
- 
-    elif timeselect == "thisweek":
-        q = Q(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week)
-        title_dict = {}
-        title_dict['tabtitle'] = "Events This Week"
-
-    elif timeselect == "nextweek":
-        q = Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))
- 
-
-    elif timeselect == "past":
-        q = Q(event_date_time_start__lte=now)
- 
     # Events in the selected time range
-    eventsFound = Event.objects.filter(q).order_by('event_date_time_start').reverse()
+    eventsFound = Event.objects.filter(q_timeselect).order_by('event_date_time_start').reverse()
 
     info_dict = {}
     if "query" in request.GET:
-
         #filter by query
         query_params = []
         query_string = request.GET['query'].strip().split(",")
@@ -96,83 +75,30 @@ def filterGeneral(request, timeselect=None):
             words = entry.split(" ")
             for word in words:
                 query_params.append(word)
-
         q = Q()
         for word in query_params:
             q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
-
-        info_dict['tabtitle'] = "Search Results"
-        info_dict['pagetitle'] = "Search Results"
- 
+        out_dict['tabtitle'] = "Search Results"
+        out_dict['pagetitle'] = "Search Results"
 
     elif "tag" in request.GET:
-
         #filter by tag
         q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
-        info_dict['tabtitle'] = "Feature Search Results"
-        info_dict['pagetitle'] = "Feature Search Results"
+        out_dict['tabtitle'] = "Feature Search Results"
+        out_dict['pagetitle'] = "Feature Search Results"
 
     elif "feat" in request.GET:
         #filter by feature
         q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
-        info_dict['tabtitle'] = "Tag Search Results"
-        info_dict['pagetitle'] = "Tag Search Results"
+        out_dict['tabtitle'] = "Tag Search Results"
+        out_dict['pagetitle'] = "Tag Search Results"
     
    
     event_list = eventsFound.filter(q)
-    info_dict["timeselect"] = timeselect
     return event_processing_dicts(request, event_list, info_dict)
 
-"""
-def events(request):
-    dict = {}
-    dict['tabtitle'] = "Upcoming Events"
-    all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')[0:7]
-    
-    dict['poster_events'] = Event.objects.filter(event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
-    dict['hotest_events'] = Event.objects.filter(event_attendee_count__gte=1, event_date_time_start__gte=datetime.now(), event_cluster__cluster_image__isnull=False, ).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
-    return event_processing_dicts(request, all_events, dict, template="cal/front.html")
 
 
-def todays_events(request):
-   dict = {}
-   dict['tabtitle'] = "Events Today"
-   dict['filter'] = 'on'
-   now = datetime.today()
-   now_day = now.day
-   now_month = now.month
-   now_year = now.year
-   return events_date(request, now_year, now_month, now_day)
-
-
-def weeks_events(request):
-        dict = {}
-        dict['tabtitle'] = "Events This Week"
-        today = datetime.today()
-        midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
-        next_week = timedelta(weeks=1)
-        weeks_events = Event.objects.filter(event_date_time_start__gte=midnight,event_date_time_start__lte=midnight + next_week).order_by('event_date_time_start')
-        return event_processing_dicts(request, weeks_events, dict)
-
-def weekends_events(request):
-        dict = {}
-        dict['tabtitle'] = "Events This Weekend"
-        next_week = timedelta(weeks=1)
-        today = datetime.today()
-        midnight = datetime(today.year, today.month, today.day, 0, 0, 0)
-        weeks_events = Event.objects.filter(Q(event_date_time_start__gte=midnight) & Q(event_date_time_start__lte=midnight + next_week) & (Q(event_date_time_start__week_day=1) | Q(event_date_time_start__week_day=6) | Q(event_date_time_start__week_day=7))).order_by('event_date_time_start')
-
-        return event_processing_dicts(request, weeks_events, dict)
-
-def all_events(request):
-    dict = {}
-    dict['tabtitle'] = "All Events"
-    dict['feedurl'] = request.path + '.ics'
-    next_week = timedelta(weeks=1)
-    all_events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('event_date_time_start')
-
-    return event_processing_dicts(request, all_events, dict)
-"""
 
 def events_date(request, year, month, day):
     dict = {}

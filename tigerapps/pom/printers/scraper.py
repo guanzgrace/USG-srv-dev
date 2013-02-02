@@ -48,7 +48,7 @@ PRINTER_BLDGS = {
     'Wu': 'WILCH'
 }
 
-url = 'http://campuscgi.princeton.edu/~clusters/clusterinfo.pl'
+url = 'http://clusters-lamp.princeton.edu/cgi-bin/clusterinfo.pl'
 
 class Printer:
     def __init__(self, loc, color, status):
