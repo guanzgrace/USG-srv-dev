@@ -3,7 +3,6 @@ from rooms.models import *
 from gevent.event import Event
 import subprocess
 import os, sys
-import simplejson
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 
@@ -52,7 +51,7 @@ class QueueManager(object):
         for roomid in room_idlist:
             room = Room.objects.get(pk=roomid)
             if (not room) or not draw in room.building.draw.all():
-                return json_response({'error':'bad room/draw'})
+                return {'error':'bad room/draw'}
             rooms.append(room)
         # Clear out the old list
         queue.queuetoroom_set.all().delete()
@@ -71,7 +70,7 @@ class QueueManager(object):
         for room in rooms:
             room_list.append({'id':room.id, 'number':room.number,
                               'building':room.building.name})
-        return json_response({'rooms':room_list})
+        return {'rooms':room_list}
 
     def check(self, user, queue, timestamp):
         print user, queue, timestamp
@@ -84,7 +83,7 @@ class QueueManager(object):
         print 'past wait'
         queueToRooms = QueueToRoom.objects.filter(queue=queue).order_by('ranking')
         if not queueToRooms:
-            return json_response({'timestamp':int(time.time()), 'rooms':[]})
+            return {'timestamp':int(time.time()), 'rooms':[]}
         room_list = []
         if latest.update.kind == QueueUpdate.EDIT:
             if latest.update.kind_id == user.id and timestamp != 0:
@@ -95,10 +94,10 @@ class QueueManager(object):
         for qtr in queueToRooms:
             room_list.append({'id':qtr.room.id, 'number':qtr.room.number,
                               'building':qtr.room.building.name})
-        return json_response({'timestamp':int(time.time()),
-                              'kind':QueueUpdate.UPDATE_KINDS[latest.update.kind][1],
-                              'netid':netid,
-                              'rooms':room_list})
+        return {'timestamp':int(time.time()),
+                'kind':QueueUpdate.UPDATE_KINDS[latest.update.kind][1],
+                'netid':netid,
+                'rooms':room_list}
 
 manager = QueueManager()
 
@@ -109,11 +108,3 @@ def check(user, queue, timestamp):
     return response
 
 edit = manager.edit
-
-
-def json_response(value, **kwargs):
-#    kwargs.setdefault('content_type', 'text/javascript; charset=UTF-8')
-    response =  HttpResponse(simplejson.dumps(value), **kwargs)
-    response['Access-Control-Allow-Methods'] =  "JSON"
-    return response
-
