@@ -1,4 +1,5 @@
-import sys
+import re
+from django.conf import settings as conf
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -11,9 +12,6 @@ from django.core.mail import send_mail
 from django import forms
 import json
 import traceback
-
-# TODO(jgiles): Handle variable real-time addresses.
-REAL_TIME_ADDR='http://dev.rooms.tigerapps.org:8031'
 
 def check_undergraduate(username):
     # Check if user can be here
@@ -70,7 +68,10 @@ def mapdata():
         maplist.append({'name':building.name, 'draws':draws,
                         'lat':building.lat, 'lon':building.lon})
     mapstring = json.dumps(maplist)
-    mapstring = mapstring + ('; REAL_TIME_ADDR = "%s"' % REAL_TIME_ADDR)
+    # Strip off port if present.
+    domain = re.sub(r':[0-9]+$', '', conf.SITE_DOMAIN)
+    real_time_addr = domain + ':' + conf.REAL_TIME_PORT
+    mapstring = mapstring + ('; REAL_TIME_ADDR = "%s"' % real_time_addr)
     mapscript = '<script type="text/javascript">mapdata = %s</script>' % mapstring
     return mapscript
 

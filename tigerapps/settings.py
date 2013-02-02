@@ -26,6 +26,9 @@ if 'IS_REAL_TIME_SERVER' in os.environ:
 else:
     IS_REAL_TIME_SERVER = False
 
+
+REAL_TIME_PORT = os.environ.get('REAL_TIME_PORT', '8031')
+
 #For django_cas
 LOGIN_URL = '/login/'
 #For paypal
