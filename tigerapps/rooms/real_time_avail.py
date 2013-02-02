@@ -3,7 +3,7 @@ from rooms.update_avail import *
 from rooms.models import *
 import random
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from rooms.queue import json_response
+from rooms.real_time_queue import json_response
 import time
 from gevent.event import Event
 

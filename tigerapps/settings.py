@@ -21,6 +21,11 @@ else:
     CURRENT_HOME = "http://www.tigerapps.org"
 
 
+if 'IS_REAL_TIME_SERVER' in os.environ:
+    IS_REAL_TIME_SERVER = True
+else:
+    IS_REAL_TIME_SERVER = False
+
 #For django_cas
 LOGIN_URL = '/login/'
 #For paypal
@@ -125,6 +130,9 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfResponseMiddleware',
 
 )
+
+if IS_REAL_TIME_SERVER:
+    MIDDLEWARE_CLASSES += ('middleware.RealTimeMiddleware',)
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

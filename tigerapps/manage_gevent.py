@@ -9,8 +9,7 @@ DEFAULT_PORT = 8031
 PIDFILE = '/srv/logs/gevent_server_%d.pid'
 TRIES = 5
 
-
-path = '/'.join(__file__.split('/')[:-1])
+path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if path not in sys.path:
     sys.path.append(path)
 

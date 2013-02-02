@@ -11,23 +11,6 @@ init_time = int(time.time())
 
 timing_event = Event()
 
-# Start the real-time server if need be
-# if not 'IS_REAL_TIME_SERVER' in os.environ:
-#     scriptname = 'serverscript.py'
-#     scriptloc = os.path.dirname(__file__)+'/serverscript.py'
-    
-#     #os.environ['IS_REAL_TIME_SERVER'] = 'TRUE'
-#     subprocess.Popen(scriptloc, close_fds=True)
-#     #del os.environ['IS_REAL_TIME_SERVER']
-
-NORMAL_ADDR='http://dev.rooms.tigerapps.org:8017'
-# def externalResponse(data):
-#     response =  HttpResponse(data)
-#     response['Access-Control-Allow-Origin'] =  NORMAL_ADDR
-#     response['Access-Control-Allow-Credentials'] =  "true"
-#     response['Access-Control-Allow-Methods'] =  "JSON"
-#     return response
-
 def triggertime():
     timing_event.set()
     timing_event.clear()
@@ -93,7 +76,7 @@ class QueueManager(object):
     def check(self, user, queue, timestamp):
         print user, queue, timestamp
         latest = self.updates[queue.id]
-        if timestamp != 0 and timestamp > latest.update.timestamp:
+        if timestamp != 0 and timestamp >= latest.update.timestamp:
             print 'going to wait'
             print latest.update.timestamp
             latest.event.wait()
@@ -117,7 +100,6 @@ class QueueManager(object):
                               'netid':netid,
                               'rooms':room_list})
 
-#if 'IS_REAL_TIME_SERVER' in os.environ:
 manager = QueueManager()
 
 def check(user, queue, timestamp):
