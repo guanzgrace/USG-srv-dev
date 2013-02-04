@@ -11,9 +11,18 @@ from django import forms
 import json
 import sys,os
 import traceback
+import simplejson
 
 from real_time_avail import start_sim, stop_sim, check_avail
 from real_time_queue import check, edit
+
+
+def json_response(value, **kwargs):
+    """Return JSON-encoded value in an HttpResponse."""
+#    kwargs.setdefault('content_type', 'text/javascript; charset=UTF-8')
+    response =  HttpResponse(simplejson.dumps(value), **kwargs)
+    response['Access-Control-Allow-Methods'] =  "JSON"
+    return response
     
 @login_required
 def update_queue(request, drawid):
@@ -26,7 +35,7 @@ def update_queue(request, drawid):
     if not queue:
         return HttpResponse('no queue')
     try:
-        return edit(user, queue, qlist, draw)
+        return json_response(edit(user, queue, qlist, draw))
     except Exception as e:
         return HttpResponse(e)
 
@@ -43,7 +52,7 @@ def get_queue(request, drawid, timestamp = 0):
     except Exception as e:
         return HttpResponse(traceback.format_exc(2) + str(draw))
     try:
-        return check(user, queue, timestamp)
+        return json_response(check(user, queue, timestamp))
     except Exception as e:
         return HttpResponse(traceback.format_exc(2))
     
@@ -56,4 +65,4 @@ def stop_simulation(request):
     return stop_sim()
 
 def check_availability(request, timestamp):
-    return check_avail(int(timestamp))
+    return json_response(check_avail(int(timestamp)))

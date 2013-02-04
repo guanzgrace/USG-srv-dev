@@ -3,7 +3,6 @@ from rooms.update_avail import *
 from rooms.models import *
 import random
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from rooms.real_time_queue import json_response
 import time
 from gevent.event import Event
 
@@ -68,8 +67,8 @@ class AvailManager(object):
             else:
                 break
 
-        return json_response({'timestamp':int(time.time()),
-                              'rooms':room_ids})
+        return {'timestamp':int(time.time()),
+                'rooms':room_ids}
 
 avail_manager = AvailManager()
 start_sim = avail_manager.start_sim
