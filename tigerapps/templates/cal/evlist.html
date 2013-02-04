@@ -1,0 +1,123 @@
+{% extends "cal/base.html" %}
+{% load app_extras %}
+
+{% block title %}{{tabtitle}}{% endblock %}
+{% block headercss %}<link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />{% endblock %}
+{% block headerscript %}
+<script type="text/javascript" src="/static/cal/js/coin-slider.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#coin-slider').coinslider({ width: 260, delay: 5000 });
+        $('#coin-slider2').coinslider({ width: 260, delay: 5000 });
+    });
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('.rsvp_indicator').cluetip({
+    showTitle: true, // hide the clueTip's heading
+    splitTitle: '|',
+    width: 540,
+    clickThrough: true,
+    cluetipClass: 'jtip', 
+    arrows: false, 
+    dropShadow: true,
+    hoverIntent: false,
+    sticky: false,
+    mouseOutClose: true,
+  });
+});
+</script>
+<link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
+<script type="text/javascript" src="/static/cal/js/shadowbox/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init();
+</script>
+{% endblock %}
+
+
+{% block top %}
+{% if poster_events %}
+<div style="display: block; padding: 6px;">
+<table style="border-spacing: 30px;">
+<tr><td style="font-size: 18px; text-align: center;">Upcoming Events</td><td style="font-size: 18px; text-align: center;">Popular Events</td></tr>
+<tr>
+<td>
+<div id='coin-slider' style="width: 260px;">
+{% for pev in poster_events %}
+    <a href="/events/{{pev.pk}}">
+        <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
+        <span>
+            {{pev.displayname}}
+        </span>
+    </a>
+{% endfor %}
+</div>
+</td><td>
+<div id='coin-slider2' style="width: 260px;">
+{% for pev in hotest_events %}
+    <a href="/events/{{pev.pk}}">
+        <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
+        <span>
+            {{pev.displayname}}
+        </span>
+    </a>
+{% endfor %}
+</div>
+</td></tr>
+</table>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+{% if tag_opts %}
+<div id="rightcol">
+  <div class="sidebar">
+    <div class="sidebar-title">
+      <h3>Popular Tags</h3>
+    </div>
+    <div class="sidebar-content">
+      <ul class="sidebar-menu">
+        {% for tag,count in tag_opts %}
+        <li><a href="/cal/{{timeselect}}/?tag={{tag}}">{{tag}} ({{count}})</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% comment %}
+<div class="evlist-filter">
+  <form method="GET" action="{%if timeselect%}/cal/{{timeselect}}/{%else%}/{%endif%}">
+    <p>
+      <input type="text" name ="query" id="id_q" maxlength="40" />
+      <input type="submit" value="Search Events" />
+     </p>
+  </form>
+</div>
+{% endcomment %}
+
+<div id="evlist-general">
+  {{evlist_inner}}
+</div>
+
+<div style="height: 24px; clear: both;"></div>
+
+<div style="width: 70%; padding: 8px; margin-top: 12px; background-color: #f0f0ff; border: 1px Solid #ccccff;">
+<p style="font-size: 16px; font-weight: bold;"><a href="/feeds/"><img src="/static/cal/css/img/200px-Feed-icon.svg.png" style="float: right;"/></a>Want easier access to your events?</p>
+<p>Have these events show up in your personal Google Calendar, iCal, or Outlook. <a href="/feeds/">Subscribe here.</a></p>
+</div>
+
+<div class="legend" style="width: 70%; padding: 8px; margin-top: 12px;">
+<h2 class="legend-title">Features</h2>
+<div style="padding-top: 16px;">
+{% for feat in feat_opts %}
+<span style="white-space:nowrap; padding-right: 12px;"><a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" alt="{{feat.feature_name}}" style="height: 24px; width: 24px;"/></a> <a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
+{% endfor %}
+</div>
+</div>
+
+{% endblock %}

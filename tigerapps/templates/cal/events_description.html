@@ -69,14 +69,6 @@ Shadowbox.init();
 		<a rel="shadowbox" href="{{event.event_cluster.cluster_image.url}}"><img id="poster" src="{{event.event_cluster.cluster_image.thumbnail.url}}" /></a>
 		{% endif %}
 		
-		{% if user_data.is_site_admin %}
-		<h3>Site Administrator Tools</h3>
-		<div class="content">
-		Hey!  You're a site admin.  Don't you feel special?  <a href="/adminfun">Here's what's happened recently on the calendar</a>.
-		</div>
-		{% endif %}
-		
-		
 		{% if not event.isDeleted %}{% if authorized %}
 		<h3>Event Administrator Tools</h3>
 		<div class="content">

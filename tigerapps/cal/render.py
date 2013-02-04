@@ -13,64 +13,53 @@ from datetime import datetime
 from models import *
 from usermsg import MsgMgr, Msg
 from globalsettings import our_site
-
-def render_to_response(request, template, dict):
-    """ Process every page's common parts """
-    if 'user_data' in request.session:
-        dict['user_data'] = request.session['user_data']
-        #My Events Rightcol
-        user_rsvps = RSVP.objects.filter(rsvp_user=dict['user_data'],rsvp_event__event_date_time_start__gte=datetime.now(),rsvp_type='Accepted').order_by('rsvp_event__event_date_time_start')[0:2] 
-        first_events = []
-        for rsvp in user_rsvps: 
-                first_events.append(rsvp.rsvp_event) 
-        dict['my_events'] = first_events 
+from cal.cauth import current_user
+from cal import query
 
 
-        views = View.objects.filter(view_viewer = dict['user_data']).order_by('view_date_time')[0:3].reverse()
-        recently_viewed = []
-        for view in views:
-            recently_viewed.append(view.view_event)
-#        dict['recently_viewed'] = dict['user_data'].user_recently_viewed_events.all()[0:3]
-        dict['recently_viewed'] = recently_viewed
-            
-        #My Invitations Righcol
-        user_invites = RSVP.objects.filter(rsvp_user=dict['user_data'],rsvp_event__event_date_time_start__gte=datetime.now(),rsvp_type='Pending').order_by('rsvp_event__event_date_time_start')
-#         upcoming_invites = []
-#         for rsvp in user_invites: 
-#                 upcoming_invites.append(rsvp.rsvp_event) 
-        dict['my_invites'] = user_invites 
-        dict['my_invites_right'] = user_invites[0:2]
-        
-        umsgs = UserMessage.objects.filter(um_user = dict['user_data'], um_date_read = None)
-        dict['umsgs'] = umsgs
-        
-        dict['n_ur_messages'] = umsgs.count()
+def render_to_response(request, template, out_dict):
+    """
+    Load context with common parts of each page. Includes:
+    - User data for top bar
+    - Hot/new events for bottom spotlight
+    """
+    user = current_user(request)
+    if user:
+        out_dict['user_data'] = user
+        # Top menu
+        out_dict['my_invites'] = query.rsvps_pending(user)
+        out_dict['unread_msgs'] = UserMessage.objects.filter(um_user=user, um_date_read=None)
+        # Bottom spotlight
+        out_dict['my_viewed'] = query.events_myviewed(user, limit=3, group=False)
+    
+    # ???
+    out_dict['v_messages'] = MsgMgr.iterable(request)
 
-    if 'timeselect' in dict:        
-        timeselect = dict['timeselect']
+    # Bottom spotlight
+    out_dict['hot_events'] = query.events_hot(limit=3, group=False)
+    out_dict['new_events'] = query.events_new(limit=3, group=False)
+    
+    #out_dict['our_site'] = our_site
+    #Msg('This site will be undergoing planned maintenance tonight. Sorry for any inconvenience.',1).push(request)
+    return shortcuts.render_to_response(template, out_dict)
+
+
+
+def prepare_user_rightcol(user, out_dict):
+    """
+    For cal/modules/user_rightcol.html, which isn't being used right now
+    """
+    out_dict['user_rc_accepted'] = query.rsvps_accepted(user, 3)
+    out_dict['user_rc_pending'] = query.rsvps_pending(user, 3)
+
+
+def go_back(request, error_msg=None, type=0):
+    if error_msg:
+        Msg(error_msg,type).push(request)
+    ref = request.META.get('HTTP_REFERER',None)
+    if ref and ref.find(our_site) == 0:
+        ref = ref.replace(our_site,'/',1)
     else:
-        timeselect = None
-    dict['TIMESELECTS'] = (
-        ('all', 'Upcoming'),
-        ('today', 'Today'),
-        ('thisweek', 'This Week'),
-        ('nextweek', 'Next Week'),
-    )
-
-    #Hot Events Spotlight
-    hot_events = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(event_date_time_end__gte=datetime.now()).order_by('event_attendee_count')[0:3].reverse()
-    dict['hot_events'] = hot_events
-    
-    #Recently Added Spotlight
-    recently_added = Event.objects.exclude(event_date_time_start=dtdeleteflag).order_by('event_date_time_created')[0:3].reverse()
-    dict['recently_added'] = recently_added
-    
-    dict['v_messages'] = MsgMgr.iterable(request)
-    
-    if not 'showrightcol' in dict:
-        dict['showrightcol'] = True
-    
-    dict['our_site'] = our_site
-#     Msg('This site will be undergoing planned maintenance tonight. Sorry for any inconvenience.',1).push(request)
-    return shortcuts.render_to_response(template, dict)
+        ref = '/'
+    return HttpResponseRedirect(ref)
 

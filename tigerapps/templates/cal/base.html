@@ -24,18 +24,28 @@
  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js"></script>
  <script src="/static/cal/js/jquery.easing.min.js" type="text/javascript"></script>
  <script src="/static/cal/js/jquery.lavalamp.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(function() {
-            $("#topmenu").lavaLamp({
-                fx: "backout",
-                speed: 700,
-                click: function(event, menuItem) {
-                    return true;
-                }
-            });
-        });
-         
-    </script>
+ <script type="text/javascript">
+  $(function() {
+    var found = false;
+    var tm = $("#topmenu");
+    tm.children().each(function(i,ele) {
+      if (window.location.href == $(ele).children()[0].href) {
+        $(ele).addClass('current');
+        found = true;
+        console.log($(ele).attr('class'));
+        return false;
+      }
+    });
+    if (!found) tm.children("#topmenu-dummy").addClass('current');
+    tm.lavaLamp({
+      fx: "backout",
+      speed: 700,
+      click: function(event, menuItem) {
+        return true;
+      }
+    });
+  });
+ </script>
  <script src="/static/cal/js/jquery.ThreeDots.min.js" type="text/javascript"></script>
  <script type="text/javascript">
   $(document).ready(function () {var the_obj1 = $('.centerellipsis').ThreeDots({max_rows: 1, whole_word: false});});
@@ -70,7 +80,7 @@
 {% include "toolbar/links.html" %}
 
  <div id="overlay"></div>
-  <div class="container">
+ <div class="container">
   <h1 id="header">
   <a href="/">Princeton Events Calendar</a>
   </h1>
@@ -78,20 +88,14 @@
     <tr>
      <td>
       <ul class="lavaLampWithImage" id="topmenu">
-       <li{%if not timeselect%} class="current"{%endif%} style='position: absolute; left: -40px;'><a href="/"></a></li>
-       {% for TIMESELECT in TIMESELECTS %}
-       <li{%ifequal timeselect TIMESELECT.0%} class="current"{%endifequal%}><a href="/cal/{{TIMESELECT.0}}/">{{TIMESELECT.1}}</a></li>
-       {% endfor %}
+       <li id="topmenu-dummy" style='position: absolute; left: -40px;'><a href="/"></a></li>
+       <li><a href="/evlist/gen/">Front</a></li>
+       <li><a href="/evlist/spe/hot/">Popular</a></li>
+       <li><a href="/evlist/spe/new/">New</a></li>
+       <li><a href="/user/events/">My Events</a></li>
        <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
+       <li style='float:right;font-weight:bold;'><a href="/events/add/">+ Add Event</a></li>
       </ul>
-     </td>
-     <td id="search">
-      <form method="GET" action="{%if timeselect%}/cal/{{timeselect}}/{%else%}/{%endif%}">
-       <p>
-        <input type="text" name ="query" id="id_q" maxlength="40" />
-        <input type="submit" value="Search Events" />
-       </p>
-      </form>
      </td>
     </tr>
    </table>  
@@ -102,10 +106,10 @@
      <ul class="menu">
      {% if user_data %}
           <li><a href="/logout"><span>Logout</span></a></li>      
-          <li><a href="/user" class="parent"><span>{{user_data.full_name}}{% if umsgs %}<span class="umsgct">{{umsgs.count}}</span>{% endif %}</span></a>
+          <li><a href="/user" class="parent"><span>{{user_data.full_name}}{% if unread_msgs %}<span class="umsgct">{{unread_msgs.count}}</span>{% endif %}</span></a>
            <div>
             <ul>
-             <li><a href="/user/messages" class="parent"><span>{% if umsgs %}{{umsgs.count|apnumber|capfirst}} New Message{{umsgs.count|pluralize}} {% else %}Personal Messages{% endif %}</span></a></li>
+             <li><a href="/user/messages" class="parent"><span>{% if unread_msgs %}{{unread_msgs.count|apnumber|capfirst}} New Message{{unread_msgs.count|pluralize}} {% else %}Personal Messages{% endif %}</span></a></li>
              <li><a href="/mycal/{{user_data.pk}}/{{user_data.user_netid}}.ics"><span>Sync with Google, iCal, Outlook</span></a></li>
              <li><a href="/user"><span>Manage Profile</span></a></li>
             </ul>
@@ -128,20 +132,33 @@
           </div>
          </li>
          <li><a href="/events/add"><span>Add Event</span></a></li>
-    {% else %}<li class="last"><a href="/login" class="parent"><span>Log In</span></a></li>{% endif %}
-    </ul>
-   </div>  
-  <div class="clear"></div>
- </div>
- <div id="content">
-  {% if v_messages %}<div id="message">
+    {% else %}
+        <li class="last"><a href="/login" class="parent"><span>Log In</span></a></li>
+    {% endif %}
+     </ul>
+    </div>  
+   <div class="clear"></div>
+  </div>
+  <div id="content">
+
+   {% if v_messages %}<div id="message">
     {% for msg in v_messages %}<p class="{{msg.type}}">{{msg.vm_contents|safe}}</p>{% endfor %}
-  </div>{% endif %}
-  <noscript><div id="message"><p class="error">Warning: You have JavaScript disabled. Please enable JavaScript to experience all of our site's features.</p></div></noscript>
-  {% if tag_opts %}{% include "cal/modules/rightcol.html" %}{% endif %}
-  {% block content %}{% endblock %} 
-  <div style="clear: both; display: block; height: 8px; width: 100%;"></div>
-  {% include "cal/modules/spotlight.html" %}
+   </div>{% endif %}
+   <noscript><div id="message"><p class="error">Warning: You have JavaScript disabled. Please enable JavaScript to experience all of our site's features.</p></div></noscript>
+
+{% comment %}
+        {% if user_data.is_site_admin %}
+        <h3>Site Administrator Tools</h3>
+        <div class="content">
+        Hey!  You're a site admin.  Don't you feel special?  <a href="/adminfun">Here's what's happened recently on the calendar</a>.
+        </div>
+        {% endif %}
+{% endcomment %}
+
+   {% block content %}{% endblock %} 
+
+   <div style="clear: both; display: block; height: 8px; width: 100%;"></div>
+   {% include "cal/modules/spotlight.html" %}
   </div>
   <div id="footer">
    <p>
