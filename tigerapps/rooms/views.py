@@ -37,7 +37,7 @@ def check_undergraduate(username):
     return user
 
 @login_required
-@cache_control(max_age=24*60*60)
+@cache_control(max_age=24*60*60, must_revalidate=True)
 def index(request):
     draw_list = Draw.objects.order_by('id')
     #occlong = occlong()
@@ -57,7 +57,8 @@ def index(request):
 
 
 @login_required
-@cache_control(max_age=24*60*60) # May need to change if put in availability.
+# May need to change if put in availability.
+@cache_control(max_age=24*60*60, must_revalidate=True)
 def draw(request, drawid):
     user = check_undergraduate(request.user.username)
     if not user:
