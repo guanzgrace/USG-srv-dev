@@ -36,219 +36,125 @@ from cal.cauth import *
 from cal.rsvp import *
 from cal.forms import *
 from cal.mailer import *
-from cal.views_users import *
 from cal.usermsg import MsgMgr
 from cal import query
 
 
-
-def events_list(request, timeselect="upcoming"):
-
-    if "sd" in request.GET:
-        sd = request.GET['sd']
-        sd_y = int(sd[0:4])
-        sd_m = int(sd[4:6])
-        sd_d = int(sd[6:8])
-        start_day = datetime(sd_y, sd_m, sd_d, 0, 0, 0)
-    else:
-        today = datetime.today()
-        start_day = datetime(today.year, today.month, today.day, 0, 0, 0)
-
-    title, q_timeselect = query.get_time_query(timeselect, start_day)
+def evlist_gen(request):
     out_dict = {}
-    out_dict['tabtitle'] = title
-    out_dict['timeselect'] = timeselect
+    out_dict['evlist_inner'] = evlist_gen_inner(request)
 
-    if timeselect == "upcoming":
-        out_dict['poster_events'] = Event.objects.filter(q, event_cluster__cluster_image__isnull=False).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
-        out_dict['hotest_events'] = Event.objects.filter(q, event_cluster__cluster_image__isnull=False, event_attendee_count__gte=1).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
-
-    # Events in the selected time range
-    eventsFound = Event.objects.filter(q_timeselect).order_by('event_date_time_start').reverse()
-
-    info_dict = {}
-    if "query" in request.GET:
-        #filter by query
-        query_params = []
-        query_string = request.GET['query'].strip().split(",")
-        for entry in query_string:
-            words = entry.split(" ")
-            for word in words:
-                query_params.append(word)
-        q = Q()
-        for word in query_params:
-            q = q | Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
-        out_dict['tabtitle'] = "Search Results"
-        out_dict['pagetitle'] = "Search Results"
-
-    elif "tag" in request.GET:
-        #filter by tag
-        q = Q(event_cluster__cluster_tags__category_name__icontains=request.GET["tag"])
-        out_dict['tabtitle'] = "Feature Search Results"
-        out_dict['pagetitle'] = "Feature Search Results"
-
-    elif "feat" in request.GET:
-        #filter by feature
-        q = Q(event_cluster__cluster_features__feature_name__icontains=request.GET["feat"])
-        out_dict['tabtitle'] = "Tag Search Results"
-        out_dict['pagetitle'] = "Tag Search Results"
-    
-   
-    event_list = eventsFound.filter(q)
-    return event_processing_dicts(request, event_list, info_dict)
-
-
-
-
-def events_date(request, year, month, day):
-    dict = {}
-    date = datetime(int(year), int(month), int(day))
-    if not date:
-          return render_to_response(request, "cal/myevents.html", dict);
-    dict['tabtitle'] = "Events on %s" % (date.strftime("%A, %B %e"))
-    dict['filter'] = 'on'
-
-    now_day = date.day #new
-    now_month = date.month #new
-    now_year = date.year #new
-    
-    today_events = Event.objects.filter(event_date_time_start__day=now_day,event_date_time_start__month=now_month, event_date_time_start__year=now_year).order_by('event_date_time_start')
-    date_string = date.strftime("%A, %B %e")    # changed
-    my_dates = []
-    events_on_date = {}
-    my_dates.append(date_string)
-    events_on_date[date_string] = []
-    usr = current_user(request)
-    for event in today_events:
-        if usr:
-            try:
-                events_on_date[date_string].append((event,RSVP.objects.get(rsvp_event = event, rsvp_user = usr)))
-            except:
-                events_on_date[date_string].append((event,None))
-        else:
-            events_on_date[date_string].append((event,None))
-            
-    dict['all_my_dates'] = my_dates
-    dict['events_on_date'] = events_on_date
-    cat_list = EventCategory.objects.all()
-    dict['cat_opts'] = cat_list
-
-    feat_list = EventFeature.objects.all()
-    dict['feat_opts'] = feat_list
-    dict['site'] = request.path
-
-    return render_to_response(request, "cal/myevents.html", dict);
-
-
-def filterByFeature(request, feature):
-    try:
-        dict = {}
-        dict['tabtitle'] = "Events Featuring %s" % feature
-        dict['feedurl'] = request.path + '.ics'
-        feat = EventFeature.objects.get(feature_name=feature)
-        events = Event.objects.filter(event_date_time_start__gte=datetime.now()).filter(event_cluster__cluster_features=feat).order_by('event_date_time_start')
-        return event_processing_dicts(request, events, dict)
-    except:
-        return go_back(request,'Error detected.%s' %feature,0)
-
-def filterByTags(request, tag):
-    try:
-        dict = {}
-        dict['tabtitle'] = "Events with the  \'%s\' Tag" % tag
-        dict['feedurl'] = request.path + '.ics'
-        cat = EventCategory.objects.get(category_name=tag)
-        events = Event.objects.filter(event_date_time_start__gte=datetime.now()).filter(event_cluster__cluster_tags=cat).order_by('event_date_time_start')
-        return event_processing_dicts(request, events, dict)
-    except:
-        return go_back(request,'Error detected.%s' %tag,0)        
-
-
-def filterByUser(request, user):
-    try:
-        caluser = CalUser.objects.get(user_netid=user)
-    except:
-        return go_back(request,'Could not find user with NetID \'%s\' who has visited the calendar site.' %user,0)
-    dict = {}
-    dict['tabtitle'] = "Events Submitted by %s" % caluser.full_name();
-    dict['feedurl'] = request.path + '.ics'
-    events = Event.objects.filter(event_date_time_start__gte=datetime.now()).filter(event_cluster__cluster_user_created=caluser).order_by('event_date_time_start')
-    return event_processing_dicts(request, events, dict)
-    
-def showHotEvents(request):
-    dict = {}
-    dict['tabtitle'] = "Top 10 Hot Upcoming Events"
-    dict['subtitle'] = "Ordered by number of confirmed attendees"
-    events = Event.objects.filter(event_date_time_start__gte=datetime.now()).filter(event_attendee_count__gte=1).order_by('-event_attendee_count')[0:10]
-    return event_list_view(request, events, dict)
-    
-def showRecentlyAddedEvents(request):
-    dict = {}
-    dict['tabtitle'] = "10 Most Recently Added Upcoming Events"
-    dict['subtitle'] = "Ordered by date submitted"
-    dict['flag_dateadded'] = True
-    events = Event.objects.filter(event_date_time_start__gte=datetime.now()).order_by('-event_date_time_created')[0:10]
-    return event_list_view(request, events, dict)    
-
-def showRecentlyViewedEvents(request):
-    user = current_user(request)
-    dict = {}
-    dict['tabtitle'] = "Your 10 Most Recently Viewed Events"
-    dict['subtitle'] = "Ordered by date viewed"
-    dict['flag_dateviewed'] = True
-    dict['flag_dateadded'] = True
-    views = View.objects.filter(view_viewer=user).order_by('-view_date_time')[0:10]
-    events = []
-    dict['views'] = {}
-    for v in views:
-        events.append(v.view_event)
-        dict['views'][v.view_event] = v.view_date_time
-    return event_list_view(request, events, dict)
-
-def getMatchingRSVP(event_pk, user):
-    return RSVP.objects.get(rsvp_event = Event.objects.get(pk=event_pk),rsvp_user = user)
-
-def event_list_view(request, events, dict):
-    dict['events'] = events
-    feat_list = EventFeature.objects.all()
-    dict['feat_opts'] = feat_list    
-    return render_to_response(request, "cal/eventlist.html", dict)
-
-def event_processing_dicts(request, array, dict, template="cal/myevents.html"):
-    today = datetime.now()
-    my_dates = []
-    events_on_date = {}
-    usr = current_user(request)
-    for event in array:
-        if event.event_date_time_start.year == today.year:
-            date_string = event.event_date_time_start.strftime("%A, %B %e")
-        else:
-            date_string = event.event_date_time_start.strftime("%A, %B %e, %Y")
-        if date_string not in my_dates:
-            my_dates.append(date_string)
-            events_on_date[date_string] = []
-        if usr:    
-            try:
-                events_on_date[date_string].append((event,RSVP.objects.get(rsvp_event = event, rsvp_user = usr)))
-            except:
-                events_on_date[date_string].append((event,None))
-        else:
-            events_on_date[date_string].append((event,None))
-    dict['all_my_dates'] = my_dates
-    dict['events_on_date'] = events_on_date
-    
-    # sort by most common
-    # sort by most common
+    # Tags: sort by most common
     tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
     tag_opts = defaultdict(int)
     for tag in tag_list:
         tag_opts[tag] += 1
     tag_opts = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
-    dict['tag_opts'] = tag_opts
+    out_dict['tag_opts'] = tag_opts
 
+    return evlist_render_page(request, out_dict)
+
+def evlist_gen_ajax(request):
+    inner_html = evlist_gen_inner(request)
+    return HttpResponse(inner_html, content_type="application/javascript")
+
+def evlist_gen_inner(request):
+    """
+    Generate HTML of events list matching the filters in `request`
+    """
+    params = {}
+
+    # Perform timeselect filtering
+    if "ts" in request.GET:
+        timeselect = request.GET['ts']
+    else:
+        timeselect = "upcoming"
+    params['ts'] = timeselect
+
+    if timeselect != "upcoming":
+        if "sd" in request.GET:
+            sd = request.GET['sd']
+            sd_y = int(sd[0:4])
+            sd_m = int(sd[4:6])
+            sd_d = int(sd[6:8])
+            start_day = datetime(sd_y, sd_m, sd_d, 0, 0, 0)
+        else:
+            td = datetime.today()
+            start_day = datetime(td.year, td.month, td.day, 0, 0, 0)
+        params['sd'] = start_day.strftime("%Y%m%d")
+    else:
+        start_day = None
+
+    # Perform additional filtering
+    if "query" in request.GET:
+        query_string = request.GET['query'].strip().split(",")
+        query_words = []
+        for entry in query_string:
+            query_words += entry.split(" ")
+        params['query'] = query_string
+    else:
+        query_words = None
+
+    if "tag" in request.GET:
+        tag_ids = map(int, request.GET.getlist('tag'))
+        params['tags'] = tag_ids
+    else:
+        tag_ids = None
+
+    if "feat" in request.GET:
+        feat_ids = map(int, request.GET.getlist('feat'))
+        params['feats'] = feat_ids
+    else:
+        feat_ids = None
+
+    if "creator" in request.GET:
+        creator = request.GET['creator']
+        params['creator'] = creator
+    else:
+        creator = None
+
+    user = current_user(request)
+    grouped_events = query.events_general(timeselect, start_day, query_words, tag_ids, feat_ids, creator, user)
+    out_dict = {
+        'grouped_events': grouped_events,
+        'params': params,
+        'params_json': json.dumps(params),
+        'evlist_title': "Upcoming Events",
+    }
+    return render_to_string("cal/evlist_inner.html", out_dict)
+
+SPE_LIMIT = 10
+def evlist_spe_hot(request):
+    user = current_user(request)
+    grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Hottest Events"})
+    return evlist_render_page(request, {'evlist_inner': inner_html})
+
+def evlist_spe_new(request):
+    user = current_user(request)
+    grouped_events = query.events_new(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Newest Events"})
+    return evlist_render_page(request, {'evlist_inner': inner_html})
+
+def evlist_spe_myviewed(request):
+    user = current_user(request)
+    grouped_events = query.events_myviewed(user, SPE_LIMIT)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Events I've Viewed"})
+    return evlist_render_page(request, {'evlist_inner': inner_html})
+
+
+def evlist_render_page(request, out_dict):
+    q_upcoming = query.query_upcoming()
+
+    # Posters on top
+    out_dict['poster_events'] = Event.objects.filter(q_upcoming, event_cluster__cluster_image__isnull=False).exclude(event_cluster__cluster_image='').order_by('event_date_time_start')[0:7]
+    out_dict['hotest_events'] = Event.objects.filter(q_upcoming, event_cluster__cluster_image__isnull=False, event_attendee_count__gte=1).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
+
+    # Features: just show all
     feat_list = EventFeature.objects.all()
-    dict['feat_opts'] = feat_list    
-    
-    return render_to_response(request, template, dict)
+    out_dict['feat_opts'] = feat_list    
+
+    return render_to_response(request, "cal/evlist.html", out_dict)
 
 
 @login_required
@@ -281,12 +187,10 @@ def events_description(request, event_id):
     myEvent.event_attendee_count = myEvent.getAttendeeCount()
     myEvent.save()
     
-
     associatedEvents = Event.objects.exclude(event_date_time_start=dtdeleteflag).filter(event_cluster = myEvent.event_cluster).exclude(pk=myEvent.pk).order_by('event_date_time_start')
     boardMessages = BoardMessage.objects.filter(boardmessage_eventcluster = myEvent.event_cluster).order_by('boardmessage_time_posted').reverse()
     dict = {'event': myEvent, 'associatedEvents': associatedEvents, 'boardMessages': boardMessages}
 
-    
     try:
         dict['prev_event'] = myEvent.getPrevEvent()
     except:
@@ -304,8 +208,6 @@ def events_description(request, event_id):
         dict['forwardtoevents'] = True
     else:
         dict['forwardtoevents'] = False
-        
-    
         
     public_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = False).order_by('rsvp_user__user_netid')
     private_guests = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted', rsvp_user__user_privacy_enabled = True).order_by('rsvp_user__user_netid')
@@ -327,8 +229,6 @@ def events_description(request, event_id):
         dict['show_extra'] = False
         
 
-    dict['showrightcol'] = False
-    
     if dict['authorized']:
         dict['whoscoming'] = RSVP.objects.filter(rsvp_event = myEvent, rsvp_type = 'Accepted').order_by('rsvp_user__user_netid')
         dict['whoscoming_extra'] = 0
@@ -416,6 +316,7 @@ def report_bmsg(request, bmsg_id):
         message = message+myEventUrl
     send ("usg@princeton.edu", "usg@princeton.edu", "Princeton Events Calendar: Board Message Reported", message)
     return go_back(request,'A report about this board message was sent to the website administrator. Thank you.',1)
+
 
 @login_required
 def invite(request):
@@ -574,6 +475,7 @@ def events_add_another(request, event_id):
     #dict = {'cluster': base_cluster, 'eventForm': eventForm }
    return render_to_response(request, 'cal/events_add.html', {'formset':formset, 'event':base_event})
 
+
 @login_required
 def events_manage_ID(request, event_ID):
    thisEvent = Event.objects.get(event_id=event_ID)
@@ -622,6 +524,7 @@ def events_manage_ID(request, event_ID):
    dict = {'eventForm':eventForm, 'clusterForm':clusterForm, 'event':thisEvent}
 
    return render_to_response(request, 'cal/events_manage.html', dict )
+
 
 @login_required
 def events_cancel(request, event_ID):
@@ -675,9 +578,6 @@ def events_delete_confirm(request, event_ID):
    else:
       return go_back(request,'You are not authorized to delete this event.',0) 
 
-
-
-   
 @login_required
 def showQR(request, event_id):
     try:
@@ -706,6 +606,7 @@ def showQR(request, event_id):
     dict['generalqr_url'] = 'http://qrcode.kaywa.com/img.php?%s' % (generalqrparams)
     return render_to_response(request,"cal/qr_code.html", dict)
     
+
 @login_required    
 def custom_invite_message(request, event_id):
     try:
@@ -1105,16 +1006,6 @@ def followCalendar(request, netid):
     return response
     
 
-def go_back(request, error_msg = None, type = 0):
-    if error_msg:
-        Msg(error_msg,type).push(request)
-    ref = request.META.get('HTTP_REFERER',None)
-    if ref and ref.find(our_site) == 0:
-        ref = ref.replace(our_site,'/',1)
-    else:
-        ref = '/'
-    return HttpResponseRedirect(ref)    
-        
 def xml_feed(request):
     now = datetime.now()
     if 'from' in request.GET and 'to' in request.GET:
@@ -1132,3 +1023,9 @@ def xml_feed(request):
     c = Context({'eventList': eventList, 'now': now})
     return HttpResponse(t.render(c),
             mimetype="text/xml")
+
+
+def nocookie():
+    dict = {}
+    return render_to_response(request, 'cal/nocookie.html', dict)
+

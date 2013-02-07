@@ -15,8 +15,9 @@ if socket.gethostname() == 'USGDev':
     monitor.start(interval=1.0)
 
 # Start the long-polling gevent server
-os.environ['REAL_TIME_PORT'] = '8031'
-subprocess.Popen(['manage_gevent.py', '8031'])
+PORT = '8031'
+os.environ['REAL_TIME_PORT'] = PORT
+subprocess.Popen([os.path.join(path, 'manage_gevent.py'), PORT])
 
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()

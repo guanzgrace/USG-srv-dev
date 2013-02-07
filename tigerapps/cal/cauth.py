@@ -13,9 +13,10 @@ from django.contrib.auth import login
 from datetime import datetime
 import re, string, urllib
 from django_cas.urllib2_sslv3 import urllib2
-from models import *
 from django.core.exceptions import ObjectDoesNotExist
+
 from utils.dsml import gdi
+from models import *
 from globalsettings import *
 from usermsg import MsgMgr
 
@@ -121,3 +122,4 @@ def make_new_user(netid):
 	newbie.save()
 	return newbie
 	
+

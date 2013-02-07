@@ -50,5 +50,4 @@ def allguests(request):
 
 	html = html + '</ol>'
 
-
 	return HttpResponse(html)

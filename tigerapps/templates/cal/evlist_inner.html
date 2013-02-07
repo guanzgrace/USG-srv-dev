@@ -1,0 +1,15 @@
+{% load app_extras %}
+<h1 id="title">{{evlist_title}}</h1>
+
+<ul class="events">
+{% if grouped_events %}{% for group, events in grouped_events %}
+    <li class="date">{{group}}</li>
+    {% if events %}{% for event, rsvp in events %}
+    <li><ul>
+    <li class="event-title{% if event.event_cancelled %} strikethrough{% endif %}">{% for feat in event.event_cluster.cluster_features.all %}<a href="/cal/upcoming/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}" alt="{{feat.feature_name}}" style="float: right; height: 20px; width: 20px;"/></a>{% endfor %}<a {% ifequal user_data event.event_cluster.cluster_user_created %}class="event_owner" {% endifequal %}href="/events/{{event.event_id}}">{{event}}</a>{% if event.event_cluster.cluster_image %}<a rel="shadowbox[Gallery]" href="{{event.event_cluster.cluster_image.url}}" title="{{ event.displayname }}"><img src="/static/cal/img/design/icon-clip.png" /></a>{% endif %}</li>
+    <li class="event-time"><span{% if rsvp %} style="border-bottom: 2px dotted {% ifequal rsvp.rsvp_type 'Accepted' %}green;{% endifequal %}{% ifequal rsvp.rsvp_type 'Declined' %}red;{% endifequal %}{% ifequal rsvp.rsvp_type 'Pending' %}orange;{% endifequal %}"{% endif %}><a {% if rsvp %}class="rsvp_indicator" title="<span style='letter-spacing: 0.05em;'>{{event}}</span>|{% ifequal rsvp.rsvp_type 'Accepted' %}You've previously added this event to your calendar.{% endifequal %}{% ifequal rsvp.rsvp_type 'Declined' %}You've declined {{rsvp.rsvp_referrer.full_name}}'s invitation to this event.{% endifequal %}{% ifequal rsvp.rsvp_type 'Pending' %}{{rsvp.rsvp_referrer.full_name}} has invited you to this event.{% endifequal %}"{% endif %}style="text-decoration: none;" href="/events/{{event.event_id}}">{{event.getTime}}</a></span></li>
+    <li class="event-subtext">{{event.get_event_location_display}} {{event.event_location_details}} {% if not event.get_event_location_display %}{% if not event.event_location_details %}No location provided {% endif %}{% endif %}{% ifnotequal event.event_attendee_count 0 %}| {{event.getAttendeeCount}} attendee{{event.getAttendeeCount|pluralize}}{% endifnotequal %}</li>
+    </ul></li>
+    {% endfor %}{% else %}There are no events to display.{% endif %}
+{% endfor %}{% else %}There are no events to display.{% endif %}
+</ul>
