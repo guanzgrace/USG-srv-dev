@@ -3,9 +3,14 @@
 {% block dataPanel %}
 <script type="text/javascript">
   $(function() {
-  $( "#tabs" ).tabs({load: function(event, ui) {
-  current_draw = ui.tab.id.substring(ui.tab.id.length-1);
+  $( "#tabs" ).tabs({
+  beforeLoad: function(event, ui) {
+  var id = ui.tab.find('a')[0].id;
+  current_draw = id.substring(id.length-1);
   $.publish("draw", current_draw);
+  ui.panel.find("tbody").html("");
+  },
+  load: function(event, ui) {
   $("#drawtable").tablesorter({headers: { 0: { sorter: false}}});
   $("#drawtable").tableFilter();
   }});

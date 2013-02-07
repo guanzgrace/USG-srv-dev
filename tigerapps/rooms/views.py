@@ -2,16 +2,18 @@ import re
 from django.conf import settings as conf
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
-from utils.dsml import gdi
 from django.contrib.auth.decorators import login_required, user_passes_test
-from models import *
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django import forms
 import json
 import traceback
+from utils.dsml import gdi
+from models import *
 
 def check_undergraduate(username):
     # Check if user can be here
@@ -19,7 +21,8 @@ def check_undergraduate(username):
         user = User.objects.get(netid=username)
     except:
         info = gdi(username)
-        user = User(netid=username, firstname=info.get('givenName'), lastname=info.get('sn'), pustatus=info.get('pustatus'))
+        user = User(netid=username, firstname=info.get('givenName'),
+                    lastname=info.get('sn'), pustatus=info.get('pustatus'))
         if info.get('puclassyear'):
             user.puclassyear = int(info.get('puclassyear'))
         if user.pustatus == 'undergraduate':
@@ -34,10 +37,9 @@ def check_undergraduate(username):
     return user
 
 @login_required
+@cache_control(max_age=24*60*60)
 def index(request):
     draw_list = Draw.objects.order_by('id')
-    mapscript = mapdata()
-    drawscript = drawdata()
     #occlong = occlong()
     #    return HttpResponse(request.user.username);
     user = check_undergraduate(request.user.username)
@@ -45,18 +47,28 @@ def index(request):
     if not user:
         return HttpResponseForbidden()
     
-    response = render_to_response('rooms/base_dataPanel.html', locals())
-    response['Access-Control-Allow-Origin'] =  '*'
+    response = cache.get('rooms_index')
+    if not response:
+        mapscript = mapdata()
+        drawscript = drawdata()
+        response = render_to_response('rooms/base_dataPanel.html', locals())
+        cache.set('rooms_index', response)
     return response
 
 
 @login_required
+@cache_control(max_age=24*60*60) # May need to change if put in availability.
 def draw(request, drawid):
     user = check_undergraduate(request.user.username)
     if not user:
         return HttpResponseForbidden()
-    room_list = Room.objects.filter(building__draw__id=drawid)
-    return render_to_response('rooms/drawtab.html', locals())
+    key = 'rooms_draw%s' % drawid
+    response = cache.get(key)
+    if not response:
+        room_list = Room.objects.filter(building__draw__id=drawid)
+        response = render_to_response('rooms/drawtab.html', locals())
+        cache.set(key, response)
+    return response
 
 def mapdata():
     buildings = Building.objects.order_by('id')
@@ -224,7 +236,7 @@ def invite_queue(request):
         invite.save();
 
     sender_name = "%s %s (%s@princeton.edu)" % (user.firstname, user.lastname, user.netid)
-    url = "http://dev.rooms.tigerapps.org:8099/manage_queues.html#received" #TODO - change this URL
+    url = conf.SITE_DOMAIN + "/manage_queues.html#received"
     subject = "Rooms: Queue Invitation"
     message = """Your friend %s invited you to share a room draw queue on the
 Princeton Room Draw Guide! Accept the request at the following URL: 

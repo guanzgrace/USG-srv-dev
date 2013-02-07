@@ -176,6 +176,10 @@ var QueueModule = (function($) {
 }(jQuery));
 
 
+
+/*
+// Availability checking disabled pending university info.
+
 var avail_handler = function(data) {
     console.log('In avail_handler');
     console.log(data);
@@ -191,3 +195,5 @@ var check_avail = function(timestamp) {
 }
 
 check_avail(0);
+
+*/
