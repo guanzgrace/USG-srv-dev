@@ -51,8 +51,8 @@ def user_profile(request):
 
 
 @login_required
-def user_events(request, events, dict):
-    grouped_events = query.events2grouped(events, Event.getFormattedStartDate, rsvp_user=current_user(request))
+def user_events(request, rsvps, dict):
+    grouped_events = query.rsvps2grouped(rsvps, Event.getFormattedStartDate)
     dict['evlist_title'] = dict['tabtitle']
     dict['grouped_events'] = grouped_events
     dict['evlist_inner'] = render_to_string("cal/evlist_inner.html", dict)

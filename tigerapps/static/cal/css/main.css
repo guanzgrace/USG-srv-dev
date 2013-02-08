@@ -30,12 +30,12 @@ body {
     min-height: 652px;
 }
 
-a {
+a, a:visited {
     text-decoration: none;
     color: #000000;
 }
 
-a:hover {
+a:hover, a:active {
     text-decoration: underline;
 }
 
@@ -51,7 +51,7 @@ strong {
     clear: both;
 }
 
-h1#title {
+h1#title, h1.title {
 	font-size: 22px;
 	color: #333;
 	letter-spacing: 0.07em;
@@ -254,13 +254,11 @@ div.error {
 }
 
 .accordion-content {
-width: 550px; 
-margin-bottom: 6px; 
-padding-bottom: 6px; 
-border: 1px Solid #ccc;
+	width: 550px; 
+	margin-bottom: 6px; 
+	padding-bottom: 6px; 
+	border: 1px Solid #ccc;
 }
-
-
 
 /* ------------ Message ------------- */
 
@@ -272,23 +270,23 @@ border: 1px Solid #ccc;
 	padding: 10px;
 	border: 1px solid #333;
 	box-shadow: 0 6px 5px #888;
-/*	width: 100%;*/
 }
-
 
 /* ------------ Sidebar ------------- */
 
-
 #rightcol {
-	float: right;
-    padding: 20px 0;
-    width: 220px;
-    display: inline-block;
+  float: right;
+  padding: 20px 0;
+  width: 215px;
+  display: inline-block;
+}
+#evfilter-datepicker div {
+	margin: auto;
 }
 
 .sidebar {
-	width: 220px;
-    margin-bottom: 20px;
+    width: 100%;
+    margin: 14px 0;
 }
 
 .sidebar-title {
@@ -301,7 +299,6 @@ border: 1px Solid #ccc;
     -moz-border-radius: 15px 15px 0 0;
     -webkit-border-radius: 15px 15px 0 0;    
 }
-
 .sidebar-title h3{
     padding: 5px 10px;   
     text-align: center;
@@ -314,21 +311,22 @@ border: 1px Solid #ccc;
     -moz-border-radius: 0 0 15px 15px;
     -webkit-border-radius: 0 0 15px 15px;
     padding: 10px;
+    text-align: center;
 }
-
 .sidebar-content ul {
     list-style: none;
-    text-align: center;
+}
+.sidebar-content ul li {
+    padding-bottom: 2px;
+}
+.sidebar-content hr {
+	margin: 12px 0;
 }
 
 .action {
     font-size: 0.90em;
     margin-left: 5px;
     font-weight: 500;
-}
-
-.sidebar-content ul li {
-    padding-bottom: 2px;
 }
 
 /* ------------ Spotlight ------------- */
@@ -350,20 +348,13 @@ border: 1px Solid #ccc;
 	margin: 10px 0;
 	float: left;
 }
-
-#spotleft {
-
+#spotleft, #spotright {
 	width: 32%;
 }
 #spotcenter {
 	padding: 0 2%;
 	width: 32%;
 }
-#spotright {
-
-	width: 32%;
-}
-
 
 .spotlight-title {
     background: url('img/sub-nav-pattern.png');
@@ -375,12 +366,10 @@ border: 1px Solid #ccc;
     -moz-border-radius: 15px 15px 0 0;
     -webkit-border-radius: 15px 15px 0 0;    
 }
-
 .spotlight-title h3{
-    font-size: 13px;
-    padding-left: 10px;
+    font-size: 14px;
+    padding: 10px 12px;
 }
-
 .spotlight-more {
 	font-size: 10px;
 	float: right;
@@ -389,7 +378,7 @@ border: 1px Solid #ccc;
 	vertical-align: bottom;
 	padding-right: 4px;
 	position: relative;
-	top: 8px;
+	top: 6px;
 }
 
 .spotlight-content {
@@ -400,28 +389,26 @@ border: 1px Solid #ccc;
     -moz-border-radius: 0 0 15px 15px;
     -webkit-border-radius: 0 0 15px 15px;
 }
-
 .spotlight-content ul {
+    padding: 8px 10px;
     list-style: none;
-    padding: 10px;
 }
-
+.spotlight-content ul li {
+    padding-bottom: 2px;
+}
 .spotlight-content ul ul {
     color: #555;
     list-style: none;
     padding: 0px;
 }
-
-.spotlight-content ul li {
-    padding-bottom: 2px;
-}
 .spotlight-content ul ul li {
     padding-left: 5px;
     font-size: 0.75em;
 }
-
-.spotlight-content ul li a {
-    text-decoration: none;
+.spotlight-content p {
+    padding: 8px;
+	text-align: center;
+	font-style: italic;
 }
 
 
@@ -458,31 +445,41 @@ border: 1px Solid #ccc;
 
 /* ---------- Events listing ---------- */
 
+.evlist {
+	width: 72%;
+	padding-top: 16px;
+}
+
+.evlist-top {
+	overflow: auto;
+}
+#evlist-title {
+	padding: 0;
+}
+#evlist-time {
+	float: right;
+	margin: 4px 0;
+}
+
 .events {
-	width: 70%;
+	padding: 8px 0 0;
 	list-style: none;
 }
 
-
 .events>li {
-
 }
 .events>li.date {
 	padding-top: 10px;
 	font-size: 18px;
 	border-bottom: 1px dashed black;
 }
-
+.events>li.evlist-none {
+	font-style:italic;
+}
 .events>li>ul {
 	list-style: none;
 	padding-bottom: 10px;
 }
-
-/*
-.events>ul:hover {
-	background: #e2e2e2;
-}
-*/
 
 .events>li>ul:hover>div#menu_ev ul.flevel {
     visibility: visible;
@@ -493,18 +490,10 @@ border: 1px Solid #ccc;
 	text-align: left;
 	padding-left: 110px;
 }
-.events>li>ul>li.event-title-alt {
-	font-size:14px;
-	text-align: left;
-	padding-left: 110px;
-	position: relative;
-	top: 12px;
-}
 
 .strikethrough {
 	text-decoration: line-through;
 }
-
 .event_owner {
 	background: #d6e4e8;
 }
@@ -515,14 +504,6 @@ border: 1px Solid #ccc;
 	margin-top: -20px;
 	width: 100px;
 }
-
-.events>li>ul>li.event-time-alt {
-	font-size:14px;
-	text-align: right;
-	margin-top: -20px;
-	width: 100px;
-}
-
 .events>li>ul>li>span.event-date-abovetime {
 	font-size:12px;
 	text-align: right;
@@ -539,23 +520,13 @@ border: 1px Solid #ccc;
 	font-size:10px;
 	text-align: left;
 	padding-left: 110px;
-	margin-top: -8px;
+	margin-top: -6px;
 }
-
-.events>li>ul>li.event-subtext-alt {
-	font-size:10px;
-	text-align: left;
-	padding-left: 110px;
-	margin-top: -8px;
-	position: relative;
-	top: -16px;
-}
-
 .events>li>ul>li.event-subtext2 {
 	font-size:10px;
 	text-align: left;
 	padding-left: 110px;
-	margin-top: 0px;
+	margin-top: 2px;
 	color: #555;
 }
 
