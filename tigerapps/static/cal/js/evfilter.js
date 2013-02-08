@@ -17,9 +17,11 @@ function evlistInit() {
 function evfilterReq() {
     var ts = $('.evfilter-timeselect:checked')[0].id;
     var sd = $.datepicker.formatDate("yymmdd", $('#evfilter-datepicker').datepicker('getDate'));
+    var query = $('#evfilter-query').val();
     console.log(ts);
     console.log(sd);
-    $.get('/evlist/gen/ajax/', {ts: ts, sd: sd, },
+    console.log(query);
+    $.get('/evlist/gen/ajax/', {ts: ts, sd: sd, query: query},
         evfilterResp, 'json');
 }
 

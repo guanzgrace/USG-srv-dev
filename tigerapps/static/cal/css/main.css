@@ -64,8 +64,9 @@ p.subtitle {
 	color: #555;
 	font-style: italic;
 	position: relative;
-	top: -10px;
+	top: -6px;
 	padding-bottom: 6px;
+	margin: 0;
 	font-weight: normal; !important
 }
 
@@ -88,8 +89,7 @@ div.error {
 
 #footer {
     text-align: center;
-    margin-top: 5em;
-    padding-bottom: 1em;
+    padding: 16px 0 24px;
 }
 
 #footer, #footer a {
@@ -310,7 +310,7 @@ div.error {
     border-radius: 0 0 15px 15px;
     -moz-border-radius: 0 0 15px 15px;
     -webkit-border-radius: 0 0 15px 15px;
-    padding: 10px;
+    padding: 8px 10px 16px;
     text-align: center;
 }
 .sidebar-content ul {
@@ -321,6 +321,9 @@ div.error {
 }
 .sidebar-content hr {
 	margin: 12px 0;
+}
+.sidebar-desc {
+	font-style: italic;
 }
 
 .action {
@@ -462,7 +465,7 @@ div.error {
 }
 
 .events {
-	padding: 8px 0 0;
+	padding: 0;
 	list-style: none;
 }
 

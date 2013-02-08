@@ -30,3 +30,8 @@
 div.ui-datepicker {
     font-size: 90%;
 }
+
+input.ui-button {
+	padding: 0.2em 1.3em 0.4em;
+	font-size: 0.9em;
+}
