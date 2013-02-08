@@ -19,7 +19,7 @@
   {{ drawscript|safe }}
   <script src="http://www.google.com/jsapi"></script>
   <script>google.load("jquery", "1");</script>
-  <script>google.load("jqueryui", "1");</script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
 	
     <!-- Pub/sub framework -->
   <script type="text/javascript" src="/static/rooms/js/jquery.ba-tinypubsub.min.js"></script>
@@ -80,8 +80,13 @@
             <div id="floorplan_canvas"></div>
             <div id="fp_nav">
                 <div id="fp_nav_whitebackground">
-                <span class="fp_button" id="fp_back_button">&#8592; </span>
+                <span class="fp_button" id="fp_back_button">&#8592; Back</span>
+                <br>
+                <br>
                 <h1 id="fp_title"></h1>
+                <br>
+                <br>
+                <strong>Click on a room for details</strong>
                 <br>
                 <br>
                 Floors:
@@ -95,7 +100,7 @@
 
             <div id="queues_wrapper">
                 <div id="queues">
-                    <a id="settings" title="User Settings" class="various" data-fancybox-type="iframe" href="/user_settings.html"></a>
+                    <!-- <a id="settings" title="User Settings" class="various" data-fancybox-type="iframe" href="/user_settings.html"></a> -->
                     <div id="queue">
                         <h1 id="queuehead"></h1>
                         <br>
@@ -114,7 +119,6 @@
                 </div>
             </div>
 
-            <!- is this even being used? ->
             <div id="room_view">
                 {% block room_view %}
                 {% endblock room_view %}
@@ -123,7 +127,6 @@
         </div> <!-- wrapper2 -->
     </div> <!-- wrapper1 -->
 
-    <!-- used for dynamically calling fancybox through floorplan.js -->
     <a id="hiddenclicker" data-fancybox-type="iframe" class="fancyroom" href="filler" title="Room Overview"></a>
 </body>
 </html>

@@ -123,7 +123,7 @@ var QueueModule = (function($) {
     var switchdraw = function(e, drawid) {
         //$('#room_queue').load('/get_queue/'+drawid, switchhelper);
         get_queue(drawid, 0);
-	    $('#queuehead').html(drawdata[drawid-1]['name'] + ' Queue'); // needs to be more secure?
+	    $('#queuehead').html('Current Queue: ' + drawdata[drawid-1]['name']); // needs to be more secure?
     }
 
     var handler = function(data) {
@@ -176,6 +176,10 @@ var QueueModule = (function($) {
 }(jQuery));
 
 
+
+/*
+// Availability checking disabled pending university info.
+
 var avail_handler = function(data) {
     console.log('In avail_handler');
     console.log(data);
@@ -191,3 +195,5 @@ var check_avail = function(timestamp) {
 }
 
 check_avail(0);
+
+*/
