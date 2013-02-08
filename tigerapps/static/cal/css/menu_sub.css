@@ -115,25 +115,30 @@ div#menu li.last span{
     padding: 18px 10px 0px 0;
 }
 
-div#menu span span.umsgct {
+span.umsgct {
 	margin: 1px;
 	padding: 1px;
 	font-size: 9px;
 	font-weight:bold;
-	/*dsiplay: inline;*/
-	position: absolute;
-	top: -6px;
-	right: -4px;
 	vertical-align: top;
 	text-align: center;
 	width: 12px;
 	height: 12px;
 	color: white;
 	background: #d45400;
-/*
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;	
-*/
+  z-index: 100;
+  display: inline-block;
+	-moz-border-radius: 1px;
+	-webkit-border-radius: 1px;	
+  position: absolute;
+}
+div#menu span span.umsgct {
+	top: -6px;
+	right: -4px;
+}
+#topmenu li a span.umsgct {
+	top: 4px;
+	right: -6px;
 }
 
 /* menu::level2 */

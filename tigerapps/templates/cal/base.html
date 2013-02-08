@@ -16,11 +16,11 @@
 
  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/humanity/jquery-ui.css" rel="stylesheet" type="text/css" />
  <link href="/static/tigerapps/css/jqueryui-mod.css" rel="stylesheet" type="text/css" />
- <link href="/static/cal/css/lavalamp_test.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/typo.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/jquery.cluetip.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/menu_lavalamp.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/menu_sub.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/main.css?version=2.1" rel="stylesheet" type="text/css" />
- <link href="/static/cal/css/menu.css" rel="stylesheet" type="text/css" />
  {% block headercss %}{% endblock %}
 
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
@@ -96,7 +96,7 @@
        <li><a href="/evlist/spe/hot/">Popular</a></li>
        <li><a href="/evlist/spe/new/">New</a></li>
        <li><a href="/user/events/">My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</a></li>
-       <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
+       <li><a href="/feeds/latest"/>Sync&nbsp;&nbsp;<img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
        <li style='float:right;font-weight:bold;margin-right:10px;'><a href="/events/add/">+ Add Event</a></li>
       </ul>
      </td>
@@ -110,7 +110,7 @@
      {% if user_data %}
        <li><a href="/logout"><span>Logout ({{user_data.full_name}})</span></a></li>
        <li><a href="/user"><span>My Profile</span></a></li>
-       <li><a href="/user/messages"><span>{% if unread_msgs %}{{unread_msgs.count|apnumber|capfirst}} New Message{{unread_msgs.count|pluralize}}}<span class="umsgct">{{unread_msgs.count}}</span>{% else %}My Messages{% endif %}</span></a></li>
+       <li><a href="/user/messages"><span>{% if unread_msgs %}{{unread_msgs.count}} New Message{{unread_msgs.count|pluralize}}<span class="umsgct">{{unread_msgs.count}}</span>{% else %}My Messages{% endif %}</span></a></li>
     {% else %}
        <li class="last"><a href="/login"><span>Log In</span></a></li>
     {% endif %}
