@@ -1,6 +1,10 @@
 /* Enables range selection on the standard jQueryUI datepicker
  * Source (modified): http://www.tikalk.com/incubator/week-picker-using-jquery-ui-datepicker */
 
+function dateStringToDate(ds) {
+    return new Date(ds.substring(0,4), parseInt(ds.substring(4,6))-1, ds.substring(6,8));
+}
+
 rangepicker = {}
 /* Set up the datepicker so that it selects the appropriate
  * range of dates for the timeselect. Uses sd, ed as a hack
@@ -12,6 +16,9 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
     if (rangepicker.ts == timeselect)
         return false;
     rangepicker.ts = timeselect;
+
+    sd = dateStringToDate(sd);
+    ed = dateStringToDate(ed);
 
     var minDate, maxDate;
     if (timeselect == "upcoming") {
@@ -47,7 +54,8 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
 
     /* If this isn't the first time it's been called */
     if (rangepicker.dp != undefined) {
-        this.datepicker('setDate', sd);
+        if (timeselect == "upcoming")
+            this.datepicker('setDate', sd);
         this.datepicker('option', 'minDate', minDate);
         this.datepicker('option', 'maxDate', maxDate);
         rangepicker.skipAjax = true;

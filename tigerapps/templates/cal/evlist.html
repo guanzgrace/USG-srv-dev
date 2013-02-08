@@ -18,15 +18,10 @@
   });
   $(document).ready(evlistInit);
   {% if evlist_time_dict %}
-  function dateStringToDate(ds) {
-    return new Date(ds.substring(0,4), parseInt(ds.substring(4,6))-1, ds.substring(6,8));
-  }
   $(function() {
 	  var ts = '{{evlist_time_dict.ts}}';
-	  var sd_s = '{{evlist_time_dict.sd}}';
-	  var ed_s = '{{evlist_time_dict.ed}}';
-	  var sd = new Date(sd_s.substring(0,4), parseInt(sd_s.substring(4,6))-1, sd_s.substring(6,8));
-	  var ed = new Date(ed_s.substring(0,4), parseInt(ed_s.substring(4,6))-1, ed_s.substring(6,8));
+	  var sd = '{{evlist_time_dict.sd}}';
+	  var ed = '{{evlist_time_dict.ed}}';
     $('#evfilter-datepicker').rangepicker(ts, sd, ed, evfilterReq);
     $('.evfilter-timeselect').click(evfilterReq);
   });
