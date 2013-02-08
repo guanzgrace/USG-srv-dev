@@ -21,13 +21,16 @@
 <div id="roomlist">
   <div id="tabs">
     <ul>
+      <span>Draw / Queue Type:</span>
       {% for draw in draw_list %}
       <li id="tabheaders"><a id="drawref{{ draw.id }}" href="/drawid/{{ draw.id }}" title="drawtab">{{ draw }}</a></li>
       {% endfor %}
     </ul>
-      <div id="expandMap">&darr;</div>
-      <div id="restoreMap">&loz;</div>
-      <div id="contractMap">&uarr;</div>
+    <div id="traycontrols">
+      <span id="expandMap">&darr; Lower</span>
+      <span id="restoreMap">- Restore</span>
+      <span id="contractMap">&uarr; Raise</span>
+    </div>
   </div>
 </div>
 
