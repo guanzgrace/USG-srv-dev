@@ -27,7 +27,8 @@ def render_to_response(request, template, out_dict):
     if user:
         out_dict['user_data'] = user
         # Top menu
-        out_dict['my_invites'] = query.rsvps_pending(user)
+        out_dict['n_my_events'] = query.count_rsvps(user, 'Accepted')
+        out_dict['n_my_invites'] = query.count_rsvps(user, 'Pending')
         out_dict['unread_msgs'] = UserMessage.objects.filter(um_user=user, um_date_read=None)
         # Bottom spotlight
         out_dict['my_viewed'] = query.events_myviewed(user, limit=3, group=False)

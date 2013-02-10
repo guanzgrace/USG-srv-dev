@@ -23,8 +23,10 @@
 	  var sd = '{{evlist_time_dict.sd}}';
 	  var ed = '{{evlist_time_dict.ed}}';
     $('#evfilter-datepicker').rangepicker(ts, sd, ed, evfilterReq);
-    $('.evfilter-timeselect').click(evfilterReq);
     $('#evfilter-query-form').submit(function() { evfilterReq(); return false; });
+    $('.evfilter-tag').click(evfilterTagOnClick);
+    $('.evfilter-feat').click(evfilterFeatOnClick);
+    $('#evfilter-clear').click(evfilterClear);
   });
   {% endif %}
 </script>
@@ -69,44 +71,55 @@ for myevents
 {% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
 {% endcomment %}
 
-{% if evlist_filter_dict %}
+{% if evlist_filter_dict %}{% with D=evlist_filter_dict %}
 <div id="rightcol">
   <div id="evfilter-datepicker"></div> {% comment %}will always have evlist_time_dict when we have evlist_filter_dict{% endcomment %}
   <div class="sidebar">
     <div class="sidebar-title">
-      <h3>Filter Events</h3>
+      <h3 id="evfilter-exists">Filter Events</h3>
     </div>
     <div class="sidebar-content">
+      <p class="sidebar-desc-mini">Narrow down the list of events displayed to the left with these options</p>
+      <hr/>
+      <p class="sidebar-desc">Filter by popular tags:</p>
+      <ul class="sidebar-menu">{% for tag,count in tag_opts %}
+        <li><a class="evfilter-tag events-tag" rel="{{tag}}" href="javascript:void(0);">{{tag}} ({{count}})</span></a></li>
+      {% endfor %}</ul>
+      <hr/>
+      <p class="sidebar-desc">Filter by event features:</p>
+      <ul class="sidebar-grid">{% for feat in feat_opts %}
+        <li><a class="evfilter-feat events-feat events-feat-img" rel="{{feat.id}}" href="javascript:void(0);"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a></li>
+      {% endfor %}</ul>
+      <hr/>
+      <p class="sidebar-desc">Filter by search:</p>
       <form id="evfilter-query-form">
         <p><input type="text" name="query" id="evfilter-query" size="26" placeholder="ex: dance, free food"/></p>
-        <p><input type="submit" value="Search Events" class="jqu-button"/></p>
+        <p><input type="submit" value="Filter" class="jqu-button" style="display:none;"/></p>
       </form>
-      <hr/>
-      <form method="GET">
-        <p class="sidebar-desc">Search by popular tags:</p>
-        <ul class="sidebar-menu">{% for tag,count in tag_opts %}
-          <li><a href="/cal/{{timeselect}}/?tag={{tag}}">{{tag}} ({{count}})</span></a></li>
-        {% endfor %}</ul>
+      <hr style="display:none;" class="evfilter-clear"/>
+      <form>
+        <p><input value="Clear Filters" class="jqu-button evfilter-clear" id="evfilter-clear" style="display:none;" type="submit" /></p>
       </form>
     </div>
   </div>
 </div>
-{% endif %}
+{% endwith %}{% endif %}
 
 <div class="evlist">
 
 <div class="evlist-top">
-  {% if evlist_time_dict %}{% with D=evlist_time_dict %}
+  {% if evlist_dates %}
   <div id="evlist-time"><form>
-    <div class="jqu-radio">{% for ts in evlist_TS %}
-      <input class="evfilter-timeselect" name="timeselect" type="radio" id="{{ts}}"{% ifequal ts D.ts %} checked="checked"{% endifequal %} /><label for="{{ts}}">{{ts.capitalize}}</label>
-	  {% endfor %}</div>
-	  <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
-  </form></div>{% endwith %}{% endif %}
+    <div class="jqu-radio" id="evfilter-ts"></div>
+    <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
+  </form></div>{% endif %}
   <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
 </div>
 
-<div id="evlist-inner">{{evlist_inner}}</div>
+<div style="position:relative;">
+    <img src="/static/shared/img/spinner.gif" style="position:absolute;top:50%;left:50%;display:none;" id="evlist-loading"/>
+    <div id="evlist-inner">{{evlist_inner}}</div>
+</div>
 
 <div style="height: 24px; clear: both;"></div>
 
@@ -118,12 +131,10 @@ for myevents
 </div>
 
 <div class="legend" style="padding: 8px; margin-top: 12px;">
-<h2 class="legend-title">Features</h2>
-<div style="padding-top: 16px;">
-{% for feat in feat_opts %}
-<span style="white-space:nowrap; padding-right: 12px;"><a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" alt="{{feat.feature_name}}" style="height: 24px; width: 24px;"/></a> <a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
-{% endfor %}
-</div>
+  <h2 class="legend-title">Features</h2>
+  <div style="padding-top: 16px;">{% for feat in feat_opts %}
+    <span style="white-space:nowrap; padding-right: 12px;"><a class="events-feat events-feat-img" href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a> <a class="events-feat" href="/evlist/gen/?feat={{feat.id}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
+  {% endfor %}</div>
 </div>
 
 </div>

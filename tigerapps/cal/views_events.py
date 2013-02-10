@@ -38,6 +38,7 @@ from cal.forms import *
 from cal.mailer import *
 from cal.usermsg import MsgMgr
 from cal import query
+from cal import cal_util
 
 
 def evlist_gen(request):
@@ -63,10 +64,10 @@ def evlist_gen_inner(request):
     Generate HTML of events list matching the filters in `request`
     """
     time_params, title, dates, start_day, end_day = evlist_parse_time_params(request)
-    filter_params, query_words, tag_ids, feat_ids, creator = evlist_parse_filter_params(request)
+    filter_params, query_words, tags, feat_ids, creator = evlist_parse_filter_params(request)
 
     user = current_user(request)
-    grouped_events = query.events_general(start_day, end_day, query_words, tag_ids, feat_ids, creator, user)
+    grouped_events = query.events_general(start_day, end_day, query_words, tags, feat_ids, creator, user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
 
     out_dict = {
@@ -74,7 +75,6 @@ def evlist_gen_inner(request):
         'evlist_title': title,
         'evlist_dates': dates,
         'evlist_time_dict': time_params,
-        'evlist_TS': ('upcoming', 'day', 'week', 'month'),
         'evlist_filter_dict': filter_params,
     }
     return out_dict
@@ -123,9 +123,7 @@ def evlist_parse_time_params(request):
 
     if timeselect == "upcoming":
         start_day = datetime.now()
-        title = "Upcoming Events"
     else:
-        title = "Events - %s" % timeselect.capitalize()
         if "sd" in request.GET:
             sd = request.GET['sd']
             sd_y = int(sd[0:4])
@@ -135,21 +133,25 @@ def evlist_parse_time_params(request):
         else:
             td = datetime.today()
             start_day = datetime(td.year, td.month, td.day, 0, 0, 0)
-    start_day, end_day = query.get_sded(timeselect, start_day)
+    time_params['dp'] = start_day.strftime("%Y%m%d") #so datepicker knows what date was clicked
+    ts_ind, start_day, end_day = query.get_sded(timeselect, start_day)
     end_day_show = end_day - timedelta(days=1) #since we want to display inclusive dates; otherwise we're showing [inclusive exclusive]
     time_params['sd'] = start_day.strftime("%Y%m%d")
     time_params['ed'] = end_day_show.strftime("%Y%m%d")
 
-    this_year = datetime.today().year
-    if start_day.year == this_year:
-        dates_title = start_day.strftime("%a, %b %e")
+    if ts_ind == 0:
+        title = "Upcoming Events"
+        dates_title = "%s - %s" % (
+            cal_util.strftime_yearopt(start_day, "%a, %b %e"),
+            cal_util.strftime_yearopt(end_day_show, "%a, %b %e"))
     else:
-        dates_title = start_day.strftime("%a, %b %e, %Y")
-    if timeselect != "day":
-        if end_day_show.year == this_year:
-            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e"))
-        else:
-            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e, %Y"))
+        title = "Events - %s" % timeselect.capitalize()
+        if ts_ind == 1:
+            dates_title = cal_util.strftime_yearopt(start_day, "%A, %B %e")
+        elif ts_ind == 2:
+            dates_title = "Week of %s" % start_day.strftime("%B %e, %Y")
+        elif ts_ind == 3:
+            dates_title = "Month of %s" % start_day.strftime("%B %Y")
 
     return time_params, title, dates_title, start_day, end_day
 
@@ -168,10 +170,10 @@ def evlist_parse_filter_params(request):
         query_words = None
 
     if "tag" in request.GET:
-        tag_ids = map(int, request.GET.getlist('tag'))
-        filter_params['tags'] = tag_ids
+        tags = request.GET.getlist('tag')
+        filter_params['tags'] = tags
     else:
-        tag_ids = None
+        tags = None
 
     if "feat" in request.GET:
         feat_ids = map(int, request.GET.getlist('feat'))
@@ -185,7 +187,7 @@ def evlist_parse_filter_params(request):
     else:
         creator = None
 
-    return filter_params, query_words, tag_ids, feat_ids, creator
+    return filter_params, query_words, tags, feat_ids, creator
 
 
 def evlist_render_page(request, out_dict):

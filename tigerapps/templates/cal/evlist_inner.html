@@ -13,7 +13,7 @@
     </div>
     <div class="event-title{% if event.event_cancelled %} strikethrough{% endif %}">
       {% for feat in event.event_cluster.cluster_features.all %}
-      	<a href="/evlist/gen/?feat={{feat.feature_name}}"><img class="evlist-feat" src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}" alt="{{feat.feature_name}}"/></a>
+      	<a class="events-feat events-feat-img" href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a>
       {% endfor %}
       <a {% ifequal user_data event.event_cluster.cluster_user_created %}class="event-owner"{% endifequal %}href="/events/{{event.event_id}}">{{event}}</a>
       {% if event.event_cluster.cluster_image %}<a rel="shadowbox[Gallery]" href="{{event.event_cluster.cluster_image.url}}" title="{{ event.displayname }}"><img src="/static/cal/img/design/icon-clip.png" /></a>{% endif %}

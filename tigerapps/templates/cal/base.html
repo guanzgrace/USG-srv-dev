@@ -15,7 +15,7 @@
  <link rel="alternate" type="application/rss+xml" title="Princeton Events Calendar" href="/feeds/latest" />
 
  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/humanity/jquery-ui.css" rel="stylesheet" type="text/css" />
- <link href="/static/tigerapps/css/jqueryui-mod.css" rel="stylesheet" type="text/css" />
+ <link href="/static/shared/css/jqueryui-mod.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/typo.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/jquery.cluetip.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/menu_lavalamp.css" rel="stylesheet" type="text/css" />
@@ -33,8 +33,17 @@
   $(function() {
     var found = false;
     var tm = $("#topmenu");
+    var thisHref = window.location.href;
+    var ind  = thisHref.indexOf("#");
+    if (ind != -1)
+        thisHref = thisHref.substr(0, ind);
+    else {
+        ind = thisHref.indexOf("?");
+        if (ind != -1)
+            thisHref = thisHref.substr(0, ind);
+    }
     tm.children().each(function(i,ele) {
-      if (window.location.href == $(ele).children()[0].href) {
+      if (thisHref == $(ele).children()[0].href) {
         $(ele).addClass('current');
         found = true;
         return false;
@@ -95,7 +104,7 @@
        <li><a href="/evlist/gen/">Front</a></li>
        <li><a href="/evlist/spe/hot/">Popular</a></li>
        <li><a href="/evlist/spe/new/">New</a></li>
-       <li><a href="/user/events/">My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</a></li>
+       <li><a href="/user/events/">My Events{% if user_data %} ({{n_my_events}}){% endif %}{% if n_my_invites %}<span class="umsgct">{{n_my_invites}}{% endif %}</a></li>
        <li><a href="/feeds/">Sync{% include 'cal/modules/sync.html' %}</a></li>
        <li style='float:right;font-weight:bold;margin-right:10px;'><a href="/events/add/">+ Add Event</a></li>
       </ul>

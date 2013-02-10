@@ -103,11 +103,12 @@ div.error {
 }
 
 #nav li a {
+    display: block;
+	padding: 8px 18px 0;
+	margin: 0;
 	font-size: 22px;
 	color: white;
 	text-decoration: none;
-	padding: 8px 8px 0 8px;
-    display: block;
 }
 
 /* ---------- Account information ---------- */
@@ -277,148 +278,6 @@ p.dates {
 	box-shadow: 0 6px 5px #888;
 }
 
-/* ------------ Sidebar ------------- */
-
-#rightcol {
-  float: right;
-  padding: 20px 0;
-  width: 215px;
-  display: inline-block;
-}
-#evfilter-datepicker div {
-	margin: auto;
-}
-
-.sidebar {
-    width: 100%;
-    margin: 14px 0;
-}
-
-.sidebar-title {
-    background: url('img/sub-nav-pattern.png');
-    background-repeat: repeat-x;
-    background-color: #ffb55d;
-    color: black;
-    height: 34px;
-    border-radius: 15px 15px 0 0;
-    -moz-border-radius: 15px 15px 0 0;
-    -webkit-border-radius: 15px 15px 0 0;    
-}
-.sidebar-title h3{
-    padding: 5px 10px;   
-    text-align: center;
-}
-
-.sidebar-content {
-    background: #e0e0e0;
-    color: black;
-    border-radius: 0 0 15px 15px;
-    -moz-border-radius: 0 0 15px 15px;
-    -webkit-border-radius: 0 0 15px 15px;
-    padding: 8px 10px 16px;
-    text-align: center;
-}
-.sidebar-content ul {
-    list-style: none;
-}
-.sidebar-content ul li {
-    padding-bottom: 2px;
-}
-.sidebar-content hr {
-	margin: 12px 0;
-}
-.sidebar-desc {
-	font-style: italic;
-}
-
-.action {
-    font-size: 0.90em;
-    margin-left: 5px;
-    font-weight: 500;
-}
-
-/* ------------ Spotlight ------------- */
-
-#spotlight {
-    background: #efefef;
-    color: black;
-    padding: 14px 18px;
-	clear: both;
-	height: 210px;
-	display: block;
-	border-top: 1px dotted black;
-    border-radius: 0 0 15px 15px;
-    -moz-border-radius: 0 0 15px 15px;
-    -webkit-border-radius: 0 0 15px 15px;	
-}
-
-.spotlight-item {
-	margin: 10px 0;
-	float: left;
-}
-#spotleft, #spotright {
-	width: 32%;
-}
-#spotcenter {
-	padding: 0 2%;
-	width: 32%;
-}
-
-.spotlight-title {
-    background: url('img/sub-nav-pattern.png');
-    background-repeat: repeat-x;
-    background-color: #ffb55d;
-    color: black;
-    height: 40px;
-    border-radius: 15px 15px 0 0;
-    -moz-border-radius: 15px 15px 0 0;
-    -webkit-border-radius: 15px 15px 0 0;    
-}
-.spotlight-title h3{
-    font-size: 14px;
-    padding: 10px 12px;
-}
-.spotlight-more {
-	font-size: 10px;
-	float: right;
-	font-weight: normal;
-	color: #333;
-	vertical-align: bottom;
-	padding-right: 4px;
-	position: relative;
-	top: 6px;
-}
-
-.spotlight-content {
-    background: #e0e0e0;
-    color: black;
-    height: 140px;
-    border-radius: 0 0 15px 15px;
-    -moz-border-radius: 0 0 15px 15px;
-    -webkit-border-radius: 0 0 15px 15px;
-}
-.spotlight-content ul {
-    padding: 8px 10px;
-    list-style: none;
-}
-.spotlight-content ul li {
-    padding-bottom: 2px;
-}
-.spotlight-content ul ul {
-    color: #555;
-    list-style: none;
-    padding: 0px;
-}
-.spotlight-content ul ul li {
-    padding-left: 5px;
-    font-size: 0.75em;
-}
-.spotlight-content p {
-    padding: 8px;
-	text-align: center;
-	font-style: italic;
-}
-
 
 /* ------------ Header ------------- */
 
@@ -451,6 +310,28 @@ p.dates {
     background-repeat: no-repeat;
 }
 
+/* ---------- Events-related ---------- */
+
+.events-feat-img img {
+	height: 20px;
+	width: 20px;
+}
+.events-feat-img, .events-feat-img:visited {
+	display:inline-block;
+	height:20px;
+	width:20px;
+	border-radius: 4px;
+	padding: 1px;
+	border: 1px solid #888;
+	background-color: #c8c8c8;
+}
+.events-feat-img:hover, .events-feat-img:active {
+	border: 1px solid #f5ad66;
+	padding: 1px;
+	background-color: #ddd;
+}
+
+
 /* ---------- Events listing ---------- */
 
 .evlist {
@@ -468,6 +349,9 @@ p.dates {
 	float: right;
 	margin: 4px 0;
 }
+#evlist-time form div label {
+    font-size: 15px;
+}    
 
 .events {
 	padding: 0;
@@ -526,10 +410,8 @@ p.dates {
 .event-owner {
 	background: #d6e4e8;
 }
-.evlist-feat {
+.event-title a.events-feat-img {
 	float: right;
-	height: 20px;
-	width: 20px;
 	margin: 3px 0 0 2px;
 }
 .event-subtext {
@@ -765,6 +647,7 @@ p.dates {
 	font-style: italic;
 }
 
+
 /* ---------- Message Board ---------- */
 
 .bm_container {
@@ -808,7 +691,6 @@ p.dates {
 
 .bm_container .bm_about .postauthor{
 	font-weight: bold;
-
 }
 
 .bm_container .bm_submit {
@@ -845,6 +727,7 @@ div.bm_container:hover>p>a#bm_tinylink {
     padding-right: 10px;
 }
 
+
 /* ---------- Add/modify event ---------- */
 
 .required {
@@ -855,6 +738,169 @@ div.bm_container:hover>p>a#bm_tinylink {
 .tableLabel {
    vertical-align:top;
    line-height:90%;
+}
+
+
+/* ------------ Sidebar ------------- */
+
+#rightcol {
+  float: right;
+  padding: 20px 0;
+  width: 215px;
+  display: inline-block;
+}
+#evfilter-datepicker div {
+	margin: auto;
+}
+
+.sidebar {
+    width: 100%;
+    margin: 14px 0;
+}
+
+.sidebar-title {
+    background: url('img/sub-nav-pattern.png');
+    background-repeat: repeat-x;
+    background-color: #ffb55d;
+    color: black;
+    height: 34px;
+    border-radius: 15px 15px 0 0;
+    -moz-border-radius: 15px 15px 0 0;
+    -webkit-border-radius: 15px 15px 0 0;    
+}
+.sidebar-title h3{
+    padding: 5px 10px;   
+    text-align: center;
+}
+
+.sidebar-content {
+    background: #e0e0e0;
+    color: black;
+    border-radius: 0 0 15px 15px;
+    -moz-border-radius: 0 0 15px 15px;
+    -webkit-border-radius: 0 0 15px 15px;
+    padding: 8px 10px 16px;
+    text-align: center;
+}
+.sidebar-content hr {
+	margin: 12px 0;
+}
+.sidebar-desc {
+	font-style: italic;
+}
+.sidebar-desc-mini {
+	font-style: italic;
+	font-size: 10px;
+}
+ul.sidebar-menu, ul.sidebar-grid {
+    list-style: none;
+}
+ul.sidebar-menu li {
+    padding-bottom: 2px;
+}
+ul.sidebar-grid {
+	width: 62%;
+	margin: auto;
+}
+ul.sidebar-grid li {
+    display: inline-block;
+    margin: 1px;
+}
+
+.action {
+    font-size: 0.90em;
+    margin-left: 5px;
+    font-weight: 500;
+}
+
+#evfilter-tag-current {
+	font-weight: bold;
+	color: black;
+}
+#evfilter-feat-current {
+	border: 2px solid #333;
+}
+
+/* ------------ Spotlight ------------- */
+
+#spotlight {
+    background: #efefef;
+    color: black;
+    padding: 14px 18px;
+	clear: both;
+	height: 210px;
+	display: block;
+	border-top: 1px dotted black;
+    border-radius: 0 0 15px 15px;
+    -moz-border-radius: 0 0 15px 15px;
+    -webkit-border-radius: 0 0 15px 15px;	
+}
+
+.spotlight-item {
+	margin: 10px 0;
+	float: left;
+}
+#spotleft, #spotright {
+	width: 32%;
+}
+#spotcenter {
+	padding: 0 2%;
+	width: 32%;
+}
+
+.spotlight-title {
+    background: url('img/sub-nav-pattern.png');
+    background-repeat: repeat-x;
+    background-color: #ffb55d;
+    color: black;
+    height: 40px;
+    border-radius: 15px 15px 0 0;
+    -moz-border-radius: 15px 15px 0 0;
+    -webkit-border-radius: 15px 15px 0 0;    
+}
+.spotlight-title h3{
+    font-size: 14px;
+    padding: 10px 12px;
+}
+.spotlight-more {
+	font-size: 10px;
+	float: right;
+	font-weight: normal;
+	color: #333;
+	vertical-align: bottom;
+	padding-right: 4px;
+	position: relative;
+	top: 6px;
+}
+
+.spotlight-content {
+    background: #e0e0e0;
+    color: black;
+    height: 140px;
+    border-radius: 0 0 15px 15px;
+    -moz-border-radius: 0 0 15px 15px;
+    -webkit-border-radius: 0 0 15px 15px;
+}
+.spotlight-content ul {
+    padding: 8px 10px;
+    list-style: none;
+}
+.spotlight-content ul li {
+    padding-bottom: 2px;
+}
+.spotlight-content ul ul {
+    color: #555;
+    list-style: none;
+    padding: 0px;
+}
+.spotlight-content ul ul li {
+    padding-left: 5px;
+    font-size: 0.75em;
+}
+.spotlight-content p {
+    padding: 8px;
+	text-align: center;
+	font-style: italic;
 }
 
 

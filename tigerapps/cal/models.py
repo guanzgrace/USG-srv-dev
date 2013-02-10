@@ -146,7 +146,7 @@ class EventCluster(models.Model):
    cluster_user_created = models.ForeignKey(CalUser)               # confirm is actual user
    cluster_image = StdImageField('Image', upload_to='cal/Images', size=(560,800), thumbnail_size=(260,520), blank=True)
    cluster_features = models.ManyToManyField(EventFeature, blank=True, verbose_name='Features')
-   cluster_tags  = models.ManyToManyField(EventCategory, verbose_name='Tags', related_name="tag_clusters")
+   cluster_tags = models.ManyToManyField(EventCategory, verbose_name='Tags', related_name="tag_clusters")
    cluster_rsvp_enabled = models.BooleanField('RSVP is Required to Attend')
    cluster_board_enabled = models.BooleanField('Message Board Enabled') #Whether the message board is activated
    cluster_notify_boardpost = models.BooleanField('Notify Me on Board Posts') #Whether to notify the administrator via email of new board post
@@ -157,7 +157,7 @@ class EventCluster(models.Model):
 
 
 class Event(models.Model):
-    # Event_cluster
+    event_cluster = models.ForeignKey(EventCluster)
     event_id = models.AutoField(primary_key=True)              # automatically increments
     event_date_time_created = models.DateTimeField(auto_now_add=True)   
     event_date_time_last_modified = models.DateTimeField(auto_now=True)      
@@ -171,7 +171,6 @@ class Event(models.Model):
     event_date_rsvp_deadline = models.DateField('RSVP Deadline', blank=True, null=True)
     event_max_attendance = models.PositiveSmallIntegerField('Maximum Attendees', blank=True, null=True)
     event_attendee_count = models.PositiveSmallIntegerField()                  
-    event_cluster = models.ForeignKey(EventCluster)
     event_cancelled = models.BooleanField()
     event_webcal_uid = models.CharField(max_length=100, null=True, blank=True)
 
