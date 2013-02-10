@@ -1,7 +1,7 @@
 {% extends "cal/base.html" %}
 {% load app_extras %}
 
-{% block title %}{{tabtitle}}{% endblock %}
+{% block title %}{{evlist_title}}{% endblock %}
 {% block headercss %}
 <link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />
 <link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
@@ -71,7 +71,7 @@ for myevents
 
 {% if evlist_filter_dict %}
 <div id="rightcol">
-  <div id="evfilter-datepicker"></div>
+  <div id="evfilter-datepicker"></div> {% comment %}will always have evlist_time_dict when we have evlist_filter_dict{% endcomment %}
   <div class="sidebar">
     <div class="sidebar-title">
       <h3>Filter Events</h3>
@@ -101,11 +101,9 @@ for myevents
     <div class="jqu-radio">{% for ts in evlist_TS %}
       <input class="evfilter-timeselect" name="timeselect" type="radio" id="{{ts}}"{% ifequal ts D.ts %} checked="checked"{% endifequal %} /><label for="{{ts}}">{{ts.capitalize}}</label>
 	  {% endfor %}</div>
-  </form></div>
-  {% endwith %}{% endif %}
-
+	  <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
+  </form></div>{% endwith %}{% endif %}
   <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
-  <p class="subtitle" id="evlist-subtitle">{{evlist_subtitle}}</h2>
 </div>
 
 <div id="evlist-inner">{{evlist_inner}}</div>
@@ -113,7 +111,9 @@ for myevents
 <div style="height: 24px; clear: both;"></div>
 
 <div style="padding: 8px; margin-top: 12px; background-color: #f0f0ff; border: 1px Solid #ccccff;">
-<p style="font-size: 16px; font-weight: bold;"><a href="/feeds/"><img src="/static/cal/css/img/200px-Feed-icon.svg.png" style="float: right;"/></a>Want easier access to your events?</p>
+<p style="font-size: 16px; font-weight: bold;">
+  <span style="float:right;"><a href="/feeds/">{% include 'cal/modules/sync.html' %}</a></span>
+  Want easier access to your events?</p>
 <p>Have these events show up in your Google Calendar, iCal, or Outlook. <a href="/feeds/">Sync your events here.</a></p>
 </div>
 

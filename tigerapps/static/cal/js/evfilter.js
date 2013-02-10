@@ -28,9 +28,9 @@ function evfilterReq() {
 function evfilterResp(data, textStatus, jqXHR) {
     var td = data.evlist_time_dict;
     console.log(td);
-    $('#evfilter-datepicker').rangepicker(td.ts, td.sd, td.ed)
-    $('#evlist-title').html(data.evlist_title);
-    $('#evlist-subtitle').html(data.evlist_subtitle);
+    $('#evfilter-datepicker').rangepicker(td.ts, td.sd, td.ed);
+	$('#evlist-title').html(data.evlist_title);
+	$('#evlist-dates').html(data.evlist_dates);
     $('#evlist-inner').html(data.evlist_inner);
     evlistInit();
 }

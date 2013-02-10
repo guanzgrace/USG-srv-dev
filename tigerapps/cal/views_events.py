@@ -62,17 +62,17 @@ def evlist_gen_inner(request):
     """
     Generate HTML of events list matching the filters in `request`
     """
-    time_params, title, subtitle, timeselect, start_day, end_day = evlist_parse_time_params(request)
+    time_params, title, dates, start_day, end_day = evlist_parse_time_params(request)
     filter_params, query_words, tag_ids, feat_ids, creator = evlist_parse_filter_params(request)
 
     user = current_user(request)
-    grouped_events = query.events_general(timeselect, start_day, end_day, query_words, tag_ids, feat_ids, creator, user)
+    grouped_events = query.events_general(start_day, end_day, query_words, tag_ids, feat_ids, creator, user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
 
     out_dict = {
         'evlist_inner': inner_html,
         'evlist_title': title,
-        'evlist_subtitle': subtitle,
+        'evlist_dates': dates,
         'evlist_time_dict': time_params,
         'evlist_TS': ('upcoming', 'day', 'week', 'month'),
         'evlist_filter_dict': filter_params,
@@ -102,7 +102,6 @@ def evlist_spe_new(request):
 
 def evlist_spe_myviewed(request):
     user = current_user(request)
-    time_params, timeselect, start_day, end_day = evlist_parse_time_params(request)
     grouped_events = query.events_myviewed(user, SPE_LIMIT, rsvp_user=user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
     out_dict = {
@@ -123,8 +122,8 @@ def evlist_parse_time_params(request):
     time_params['ts'] = timeselect
 
     if timeselect == "upcoming":
-        title = "Upcoming Events"
         start_day = datetime.now()
+        title = "Upcoming Events"
     else:
         title = "Events - %s" % timeselect.capitalize()
         if "sd" in request.GET:
@@ -141,13 +140,18 @@ def evlist_parse_time_params(request):
     time_params['sd'] = start_day.strftime("%Y%m%d")
     time_params['ed'] = end_day_show.strftime("%Y%m%d")
 
-    ST_FMT = "%a %m/%d/%Y"
-    if timeselect == "day":
-        subtitle = start_day.strftime(ST_FMT)
+    this_year = datetime.today().year
+    if start_day.year == this_year:
+        dates_title = start_day.strftime("%a, %b %e")
     else:
-        subtitle = "%s - %s" % (start_day.strftime(ST_FMT), end_day_show.strftime(ST_FMT))
+        dates_title = start_day.strftime("%a, %b %e, %Y")
+    if timeselect != "day":
+        if end_day_show.year == this_year:
+            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e"))
+        else:
+            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e, %Y"))
 
-    return time_params, title, subtitle, timeselect, start_day, end_day
+    return time_params, title, dates_title, start_day, end_day
 
 def evlist_parse_filter_params(request):
     """Parse event filter params from the GET request headers"""

@@ -51,34 +51,6 @@ strong {
     clear: both;
 }
 
-h1#title, h1.title {
-	font-size: 22px;
-	color: #333;
-	letter-spacing: 0.07em;
-	padding-top: 8px;
-	padding-bottom: 6px;
-	font-weight: 600;
-}
-p.subtitle {
-	font-size: 16px;
-	color: #555;
-	font-style: italic;
-	position: relative;
-	top: -6px;
-	padding-bottom: 6px;
-	margin: 0;
-	font-weight: normal; !important
-}
-
-#subtitle {
-	font-size: 18px;
-	color: #d45100;
-	letter-spacing: 0.03em;
-	padding-top: 4px;
-	padding-bottom: 6px;
-	font-weight: normal; !important
-}
-
 
 div.error {
     background: #FFC7EC;
@@ -190,7 +162,7 @@ div.error {
 }
 
 /* ----------- Content ------------ */
-#content {
+.content {
     background: #efefef;
     color: black;
     display: block;
@@ -198,7 +170,7 @@ div.error {
     padding: 0 25px;
 }
 
-#content p {
+.content p {
     margin: 0.5em 0;
 }
 
@@ -232,6 +204,39 @@ div.error {
     margin: 0.5em 0;
     padding-top: 1em;
 }
+
+span.sync img {
+	height: 20px;
+	width: 20px;
+	margin: 0 2px;
+}
+
+h1#title, h1.title {
+	font-size: 22px;
+	color: #333;
+	letter-spacing: 0.07em;
+	padding-top: 8px;
+	padding-bottom: 6px;
+	font-weight: 600;
+}
+p.subtitle {
+	font-size: 16px;
+	color: #555;
+	font-style: italic;
+	padding: 0;
+	margin: 6px 0 6px;
+	font-weight: normal; !important
+}
+p.dates {
+	font-size: 15px;
+	color: #444;
+	font-style: italic;
+	padding: 0;
+	margin: 2px 10px 6px 0;
+	text-align:right;
+	font-weight: normal; !important
+}
+
 
 /* ------------ Accordion ------------- */
 
@@ -449,7 +454,7 @@ div.error {
 /* ---------- Events listing ---------- */
 
 .evlist {
-	width: 72%;
+	width: 640px;
 	padding-top: 16px;
 }
 
@@ -468,70 +473,72 @@ div.error {
 	padding: 0;
 	list-style: none;
 }
-
-.events>li {
-}
-.events>li.date {
-	padding-top: 10px;
+.evlist-date {
 	font-size: 18px;
 	border-bottom: 1px dashed black;
+	padding-top: 12px;
 }
-.events>li.evlist-none {
+.evlist-event {
+	position: relative;
+	vertical-align: middle;
+}
+
+.evlist-none {
+	font-style:italic;
+	color: #888;
+}
+.evlist-none-desc {
 	font-style:italic;
 }
-.events>li>ul {
-	list-style: none;
-	padding-bottom: 10px;
-}
-
-.events>li>ul:hover>div#menu_ev ul.flevel {
-    visibility: visible;
-}
-
-.events>li>ul>li.event-title {
-	font-size:14px;
-	text-align: left;
-	padding-left: 110px;
-}
-
 .strikethrough {
 	text-decoration: line-through;
 }
-.event_owner {
-	background: #d6e4e8;
-}
 
-.events>li>ul>li.event-time {
+.event-time {
+	display: inline-block;
+	vertical-align: middle;
 	font-size:14px;
 	text-align: right;
-	margin-top: -20px;
 	width: 100px;
 }
-.events>li>ul>li>span.event-date-abovetime {
-	font-size:12px;
-	text-align: right;
-	padding-top: 6px;
-	padding-bottom: -4px;
-	position: relative;
+.event-time span a {
+	text-decoration: none;
+}
+.event-date-abovetime {
 	display: block;
+	text-align: right;
+	position: relative;
 	top: 0px;
 	width: 100px;
-	
+	font-size:12px;
+	margin-top: 6px;
+	margin-bottom: -3px;
 }
 
-.events>li>ul>li.event-subtext {
-	font-size:10px;
+.event-title {
+	display: inline-block;
+	vertical-align: middle;
+	font-size:14px;
 	text-align: left;
-	padding-left: 110px;
-	margin-top: -6px;
+	width: 525px;
+	margin-left: 10px;
 }
-.events>li>ul>li.event-subtext2 {
-	font-size:10px;
+.event-owner {
+	background: #d6e4e8;
+}
+.evlist-feat {
+	float: right;
+	height: 20px;
+	width: 20px;
+	margin: 3px 0 0 2px;
+}
+.event-subtext {
+	display: block;
 	text-align: left;
-	padding-left: 110px;
-	margin-top: 2px;
-	color: #555;
+	font-size: 10px;
+	margin-top: -5px;
 }
+
 
 /* ---------- Single Event ---------- */
 

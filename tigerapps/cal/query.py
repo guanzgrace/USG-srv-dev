@@ -36,7 +36,7 @@ def query_upcoming():
     return Q(event_date_time_start__gte=start_day, event_date_time_start__lte=end_day)
 
 
-def events_general(timeselect, start_day, end_day, query, tag_ids, feat_ids, creator, rsvp_user=0):
+def events_general(start_day, end_day, query, tag_ids, feat_ids, creator, rsvp_user=0):
     events = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lte=end_day)
 
     if query:
@@ -57,7 +57,7 @@ def events_general(timeselect, start_day, end_day, query, tag_ids, feat_ids, cre
             raise Exception("Invalid argument: creator == %s" % creator)
         events = events.filter(event_cluster__cluster_user_created=caluser)
 
-    events = events.order_by('-event_date_time_start')
+    events = events.order_by('event_date_time_start')
     
     #group the events by date
     d1 = start_day.date()

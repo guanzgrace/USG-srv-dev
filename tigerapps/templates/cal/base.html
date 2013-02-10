@@ -96,7 +96,7 @@
        <li><a href="/evlist/spe/hot/">Popular</a></li>
        <li><a href="/evlist/spe/new/">New</a></li>
        <li><a href="/user/events/">My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</a></li>
-       <li><a href="/feeds/">Sync<img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></a></li>
+       <li><a href="/feeds/">Sync{% include 'cal/modules/sync.html' %}</a></li>
        <li style='float:right;font-weight:bold;margin-right:10px;'><a href="/events/add/">+ Add Event</a></li>
       </ul>
      </td>
@@ -118,7 +118,7 @@
     </div>  
    <div class="clear"></div>
   </div>
-  <div id="content">
+  <div class="content">
 
    {% if v_messages %}<div id="message">
     {% for msg in v_messages %}<p class="{{msg.type}}">{{msg.vm_contents|safe}}</p>{% endfor %}
