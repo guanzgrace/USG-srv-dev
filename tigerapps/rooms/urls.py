@@ -23,6 +23,7 @@ urlpatterns += patterns('rooms.views',
     (r'^user_settings.html$','settings'),
     (r'^confirm_phone.html$','confirm_phone'),
     (r'^manage_queues.html$','manage_queues'),
+    (r'^about/?$','about'),
 )
 
 # Real-time urls
