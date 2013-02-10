@@ -56,7 +56,7 @@ urlpatterns = patterns('',
     # General listing of events
     (r'^/?$', lambda x: HttpResponseRedirect('/evlist/gen/')),
     (r'^evlist/gen/?$', 'cal.views_events.evlist_gen'),
-    (r'^evlist/gen/ajax?$', 'cal.views_events.evlist_gen_ajax'),
+    (r'^evlist/gen/ajax/?$', 'cal.views_events.evlist_gen_ajax'),
     (r'^evlist/spe/hot/?$', 'cal.views_events.evlist_spe_hot'),
     (r'^evlist/spe/new/?$', 'cal.views_events.evlist_spe_new'),
     (r'^evlist/spe/myviewed/?$', 'cal.views_events.evlist_spe_myviewed'),

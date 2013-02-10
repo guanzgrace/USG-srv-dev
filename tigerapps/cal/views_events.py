@@ -41,8 +41,7 @@ from cal import query
 
 
 def evlist_gen(request):
-    out_dict = {}
-    out_dict['evlist_inner'] = evlist_gen_inner(request)
+    out_dict = evlist_gen_inner(request)
 
     # Tags: sort by most common
     tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
@@ -55,23 +54,78 @@ def evlist_gen(request):
     return evlist_render_page(request, out_dict)
 
 def evlist_gen_ajax(request):
-    inner_html = evlist_gen_inner(request)
-    return HttpResponse(inner_html, content_type="application/javascript")
+    out_dict = evlist_gen_inner(request)
+    out_json = json.dumps(out_dict)
+    return HttpResponse(out_json, content_type="application/json")
 
 def evlist_gen_inner(request):
     """
     Generate HTML of events list matching the filters in `request`
     """
-    params = {}
+    time_params, title, dates, start_day, end_day = evlist_parse_time_params(request)
+    filter_params, query_words, tag_ids, feat_ids, creator = evlist_parse_filter_params(request)
 
-    # Perform timeselect filtering
+    user = current_user(request)
+    grouped_events = query.events_general(start_day, end_day, query_words, tag_ids, feat_ids, creator, user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
+
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': title,
+        'evlist_dates': dates,
+        'evlist_time_dict': time_params,
+        'evlist_TS': ('upcoming', 'day', 'week', 'month'),
+        'evlist_filter_dict': filter_params,
+    }
+    return out_dict
+
+SPE_LIMIT = 10
+def evlist_spe_hot(request):
+    user = current_user(request)
+    grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Hottest Upcoming Events",
+    }
+    return evlist_render_page(request, out_dict)
+
+def evlist_spe_new(request):
+    user = current_user(request)
+    grouped_events = query.events_new(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Newest Upcoming Events",
+    }
+    return evlist_render_page(request, out_dict)
+
+def evlist_spe_myviewed(request):
+    user = current_user(request)
+    grouped_events = query.events_myviewed(user, SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Events I've Viewed",
+    }
+    return evlist_render_page(request, out_dict)
+
+
+def evlist_parse_time_params(request):
+    """Parse timeselect params from the GET request headers"""
+    time_params = {'show': True}
+
     if "ts" in request.GET:
         timeselect = request.GET['ts']
     else:
         timeselect = "upcoming"
-    params['ts'] = timeselect
+    time_params['ts'] = timeselect
 
-    if timeselect != "upcoming":
+    if timeselect == "upcoming":
+        start_day = datetime.now()
+        title = "Upcoming Events"
+    else:
+        title = "Events - %s" % timeselect.capitalize()
         if "sd" in request.GET:
             sd = request.GET['sd']
             sd_y = int(sd[0:4])
@@ -81,66 +135,57 @@ def evlist_gen_inner(request):
         else:
             td = datetime.today()
             start_day = datetime(td.year, td.month, td.day, 0, 0, 0)
-        params['sd'] = start_day.strftime("%Y%m%d")
-    else:
-        start_day = None
+    start_day, end_day = query.get_sded(timeselect, start_day)
+    end_day_show = end_day - timedelta(days=1) #since we want to display inclusive dates; otherwise we're showing [inclusive exclusive]
+    time_params['sd'] = start_day.strftime("%Y%m%d")
+    time_params['ed'] = end_day_show.strftime("%Y%m%d")
 
-    # Perform additional filtering
+    this_year = datetime.today().year
+    if start_day.year == this_year:
+        dates_title = start_day.strftime("%a, %b %e")
+    else:
+        dates_title = start_day.strftime("%a, %b %e, %Y")
+    if timeselect != "day":
+        if end_day_show.year == this_year:
+            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e"))
+        else:
+            dates_title = "%s - %s" % (dates_title, end_day_show.strftime("%a, %b %e, %Y"))
+
+    return time_params, title, dates_title, start_day, end_day
+
+def evlist_parse_filter_params(request):
+    """Parse event filter params from the GET request headers"""
+    filter_params = {'show': True}
+
     if "query" in request.GET:
-        query_string = request.GET['query'].strip().split(",")
+        query_string = request.GET['query']
+        query_string_fmt = query_string.strip().split(",")
         query_words = []
-        for entry in query_string:
+        for entry in query_string_fmt:
             query_words += entry.split(" ")
-        params['query'] = query_string
+        filter_params['query'] = query_string
     else:
         query_words = None
 
     if "tag" in request.GET:
         tag_ids = map(int, request.GET.getlist('tag'))
-        params['tags'] = tag_ids
+        filter_params['tags'] = tag_ids
     else:
         tag_ids = None
 
     if "feat" in request.GET:
         feat_ids = map(int, request.GET.getlist('feat'))
-        params['feats'] = feat_ids
+        filter_params['feats'] = feat_ids
     else:
         feat_ids = None
 
     if "creator" in request.GET:
         creator = request.GET['creator']
-        params['creator'] = creator
+        filter_params['creator'] = creator
     else:
         creator = None
 
-    user = current_user(request)
-    grouped_events = query.events_general(timeselect, start_day, query_words, tag_ids, feat_ids, creator, user)
-    out_dict = {
-        'grouped_events': grouped_events,
-        'params': params,
-        'params_json': json.dumps(params),
-        'evlist_title': "Upcoming Events",
-    }
-    return render_to_string("cal/evlist_inner.html", out_dict)
-
-SPE_LIMIT = 10
-def evlist_spe_hot(request):
-    user = current_user(request)
-    grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Hottest Events"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
-
-def evlist_spe_new(request):
-    user = current_user(request)
-    grouped_events = query.events_new(SPE_LIMIT, rsvp_user=user)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Newest Events"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
-
-def evlist_spe_myviewed(request):
-    user = current_user(request)
-    grouped_events = query.events_myviewed(user, SPE_LIMIT)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Events I've Viewed"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
+    return filter_params, query_words, tag_ids, feat_ids, creator
 
 
 def evlist_render_page(request, out_dict):

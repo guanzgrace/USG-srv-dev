@@ -252,9 +252,9 @@ class Event(models.Model):
     def getFormattedShortStartDate(self):
       now = datetime.now()
       if self.event_date_time_start.year == now.year:
-          return self.event_date_time_start.strftime("%B %e")
+          return self.event_date_time_start.strftime("%a %b %e")
       else:
-          return self.event_date_time_start.strftime("%B %e, %Y")
+          return self.event_date_time_start.strftime("%a %b %e, %Y")
     
     def getEndTime(self):
       return self.event_date_time_end.strftime("%l:%M %P")
@@ -265,7 +265,6 @@ class Event(models.Model):
           return self.event_date_time_end.strftime("%A, %B %e")
       else:
           return self.event_date_time_end.strftime("%A, %B %e, %Y")
-
 
     def getGCalSDate1(self):
        return self.event_date_time_start.strftime("%Y%m%dT")
@@ -317,8 +316,8 @@ class Event(models.Model):
     def getGCalEDate3(self):
        return self.event_date_time_end.strftime("%M%SZ")
 
-    #       def getGCalEndDate(self):
-#         return self.event_date_time_end.strftime("%Y%m%dT%H%M%SZ")
+    #def getGCalEndDate(self):
+    #  return self.event_date_time_end.strftime("%Y%m%dT%H%M%SZ")
 
     def getGCalLocation(self):
        if self.event_location_details != "":
