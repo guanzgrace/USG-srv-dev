@@ -57,17 +57,23 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
     if (rangepicker.dp != undefined) {
         /* Must change current date if switching to upcoming */
         if (timeselect == "upcoming")
-            this.datepicker('setDate', sd);
+            rangepicker.dp.datepicker('setDate', sd);
         /* Must click current date so beforeShowDay gets run */
         rangepicker.onlyAnUpdate = true;
-        $(this.find('.ui-datepicker-current-day a')[0]).click();
+        $(rangepicker.dp.find('.ui-datepicker-current-day a')[0]).click();
         rangepicker.onlyAnUpdate = false;
     }
 
     /* If this is the first time it's been called */
     else {
-        rangepicker.dp = this;
         rangepicker.onlyAnUpdate = false;
+
+        this.append("<div class='rangepicker-dp'></div>");
+        this.append("<div class='rangepicker-ts'></div>");
+        rangepicker.dp = this.children('.rangepicker-dp');
+        rangepicker.ts = this.children('.rangepicker-ts');
+        rangepicker.ts.css('margin', '6px auto');
+        rangepicker.ts.css('text-align', 'center');
 
         /* Set up timeselect tabs */
         var timeselects = ["upcoming", "day", "week", "month"];
@@ -77,10 +83,10 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
             if (timeselect == ts)
                 str += ' checked="checked"';
             str += ' /><label for="'+ts+'">'+ts.capitalize()+'</label>';
-            $('#evfilter-ts').append(str);
+            rangepicker.ts.append(str);
         }
-        $('#evfilter-ts').buttonset();
-        $('#evfilter-ts input').click(function(ev) {
+        rangepicker.ts.buttonsetsq();
+        rangepicker.ts.find('input').click(function(ev) {
             if (rangepicker.onlyAnUpdate) return;
             onSel();
         });
@@ -88,7 +94,6 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
         /* Set up prev+next buttons */
         /* TODO */
 
-        var dp = this;
         var selectDayRange = function(date) {
             var cssClass = '';
             if (date >= rangepicker.sd && date <= rangepicker.ed) {
@@ -98,7 +103,7 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
         };
         var highlightDayRange = function() {
             window.setTimeout(function () {
-                dp.find('.ui-datepicker-selected a').addClass('ui-state-active')
+                rangepicker.dp.find('.ui-datepicker-selected a').addClass('ui-state-active')
             }, 1);
         };
         var updateDatepicker = function(date) {
@@ -124,7 +129,7 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
             return false;
         };
         
-        dp.datepicker( {
+        rangepicker.dp.datepicker( {
             dateFormat: 'yymmdd',
             firstDay: 1,
             changeMonth: true,

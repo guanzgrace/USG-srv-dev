@@ -1,7 +1,3 @@
-$.fn.showSpinner = function() {
-    this.html('<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner">');
-}
-
 function evlistInit() {
     $('.rsvp_indicator').cluetip({
       showTitle: true, // hide the clueTip's heading
@@ -52,8 +48,8 @@ function evfilterFeatOnClick(ev) {
 function evlistReq(changedDates) {
     $('#evlist-inner').showSpinner();
 
-    var ts = $('#evfilter-ts input:checked')[0].id;
-    var sd = $.datepicker.formatDate("yymmdd", $('#evfilter-datepicker').datepicker('getDate'));
+    var ts = $('.rangepicker-ts input:checked')[0].id;
+    var sd = $.datepicker.formatDate("yymmdd", $('.rangepicker-dp').datepicker('getDate'));
     var data = {ts: ts, sd: sd};
 
     if (changedDates == undefined) {
@@ -84,7 +80,7 @@ function evlistReq(changedDates) {
 function evlistResp(data, textStatus, jqXHR) {
     var td = data.evlist_time_dict;
     console.log(td);
-    $('#evfilter-datepicker').rangepicker(td.ts, td.sd, td.ed);
+    $('#evfilter-rangepicker').rangepicker(td.ts, td.sd, td.ed);
 	$('#evlist-title').html(data.evlist_title);
 	$('#evlist-dates').html(data.evlist_dates);
     $('#evlist-inner').html(data.evlist_inner);

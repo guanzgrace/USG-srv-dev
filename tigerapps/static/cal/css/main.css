@@ -168,7 +168,7 @@ div.error {
     color: black;
     display: block;
     margin-top: 0;
-    padding: 0 25px;
+    padding: 16px 24px;
 }
 
 .content p {
@@ -231,9 +231,8 @@ p.subtitle {
 p.dates {
 	font-size: 15px;
 	color: #444;
-	font-style: italic;
 	padding: 0;
-	margin: 2px 10px 6px 0;
+	margin: 0 3px;
 	text-align:right;
 	font-weight: normal; !important
 }
@@ -370,22 +369,25 @@ a.text-button:hover, a.text-button:active {
 
 .evlist {
 	width: 640px;
-	padding-top: 16px;
 }
 
 .evlist-top {
 	overflow: auto;
+    margin-bottom:16px;
 }
-#evlist-title {
+.evlist .title {
 	padding: 0;
 }
+.evlist .title input {
+    font-size: 18px;
+}
+
 #evlist-time {
 	float: right;
-	margin: 4px 0;
 }
-#evlist-time form div label {
-    font-size: 15px;
-}    
+#evlist-time #evlist-title {
+    font-style: italic;
+}
 
 .events {
 	padding: 0;
@@ -451,8 +453,8 @@ a.text-button:hover, a.text-button:active {
 .event-title .text-button {
     float: right;
     margin-top: 7px;
-    margin-right: 4px;
-    margin-left: 4px;
+    margin-right: 2px;
+    margin-left: 2px;
 }
 
 .event-subtext {
@@ -802,7 +804,7 @@ color: #333;
 
 #rightcol {
   float: right;
-  padding: 20px 0;
+  padding: 0;
   width: 215px;
   display: inline-block;
 }
