@@ -1,0 +1,197 @@
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Parisienne|Poiret+One' rel='stylesheet' type='text/css'>
+        <link type="text/css" href="/static/rooms/reset.css" rel="Stylesheet" />
+        <style type="text/css">
+        
+        body
+        {
+            background-color: whiteSmoke;
+        }
+
+        #rays
+        {
+            position: absolute;
+            left: 50%;
+            margin-left: -480px;
+            top: 20px;
+            z-index: 9000
+        }
+
+        #mainImage
+        {
+            position: absolute;
+            left: 50%;
+            margin-left: -360px;
+            top: 30px; 
+            display: block; 
+            border: 10px solid transparent;
+            background: url('wash-white-30.png');
+            
+            -moz-box-shadow: 0 0 5px #888;
+            -webkit-box-shadow: 0 0 5px#888;
+            box-shadow: 0 0 5px #888;
+            
+            border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
+            z-index: 9001
+        }
+        
+   		.screenshot
+        {
+        	margin: 15px;
+        	display: block; 
+            border: 10px solid transparent;
+            background: url('wash-white-30.png');
+            
+            -moz-box-shadow: 0 0 5px #888;
+            -webkit-box-shadow: 0 0 5px#888;
+            box-shadow: 0 0 5px #888;
+            
+            border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
+            z-index: 9001
+        }
+        
+        .fullscreen
+        {
+        	width: 100%;
+        }
+        
+        #queuebox
+        {
+        	width: 50%;
+        	margin-left: auto;
+        	margin-right: auto;
+        }
+        
+        .bullet
+        {
+        	padding-top: 30px;
+        }
+
+        h1
+        {
+            text-align: center;
+            font-family: 'Parisienne', cursive;
+            font-size: 72px;
+            margin-top: 520px;
+            margin-bottom: 0;
+            padding-top: 30px;
+        }
+
+        h2
+        {
+            text-align: center;
+            font-family: "Helvetica", sans-serif;
+            font-weight: 100;
+            margin-top: 0px;
+            text-align: center;
+            display: inline;
+            vertical-align: middle;
+            font-size: 25px;
+        }
+
+        p
+        {
+            margin-top: -10px;
+            padding-bottom: 30px;
+            font-family: "Helvetica", sans-serif;
+            width: 581px;
+            margin: 0 auto;
+            text-align: justify;
+            font-size: 13px; 
+        }
+        
+       	.description
+        {
+        	margin-top:10px;
+        	text-align:left;
+        	font-weight: 100;
+        	padding-bottom: 0px;
+        }
+
+        .circle{
+            width:16px;
+            height:16px;
+            display:inline-block;
+            border-radius:8px;
+            -moz-border-radius:8px;
+            -webkit-border-radius:8px;
+            -khtml-border-radius:8px;
+            font-size:20px;
+            border-color: transparent;
+            line-height:16px;
+            text-align: center;
+            background: grey;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .divider
+        {
+            border-bottom: 1px dashed grey;
+            margin-bottom: 25px;
+        }
+
+        .bottomtext
+        {
+            text-align: center;
+            font-family: "Helvetica", sans-serif;
+        }
+
+        </style>
+    </head>
+    <body>
+    
+    <div style="width: 700px; margin: 0 auto">
+
+        <div id="mainImage" class="screenshot"><img src="/static/rooms/images/RoomGuideScreenshot.png" /></div>
+        <img id="rays" src="/static/rooms/images/pinwheel.png" />
+        
+
+        <h1>Welcome</h1>
+        <h2 style="display: block; text-align: center; font-size: 30px">To the New Student Room Guide</h2>
+        <br>
+<!--        <p>The New Student Room Guide is the </p> -->
+        <div class="divider"></div>
+
+        <br>
+		
+		
+        <div class="bullet"><div class="circle"></div><h2>Floor Plan Navigation</h2><br>
+        <p class="description">Locate rooms quickly, in a simple, visual way.</p></div>
+        <div class="screenshot"><img class="fullscreen"src="/static/rooms/images/floorplan.png" /></div>
+        
+        
+        <div class="bullet"><div class="circle"></div><h2>Real-time Collaborative Queue</h2><br>
+        <p class="description">Manage your preferred rooms with friends.</p></div>
+        <div class="screenshot" id="queuebox"><img class="fullscreen"src="/static/rooms/images/queue.png" /></div>
+        
+       
+        <div class="bullet"><div class="circle"></div><h2>Searching</h2><br>
+        <p class="description">Quickly locate rooms based on a number of different fields 
+        (building, type of room, etc.) and sort by those same fields.</p></div>
+         <div class="screenshot"><img class="fullscreen" src="/static/rooms/images/searching.png" /></div>
+         
+        
+        <div class="bullet"><div class="circle"></div><h2>Reviews</h2><br>
+        <p class="description">Read opinions from other students and find the best rooms, 
+        and help everyone out by reviewing the rooms you've lived in.</p></div>
+        <div class="screenshot"><img class="fullscreen" src="/static/rooms/images/review.png" /></div>
+        
+        <div class="bullet"><div class="circle"></div><h2>Notifications</h2><br>
+        <p class="description">Choose to either be notified of changes in your queue by email or SMS text message. 
+        Learn when your rooms are being taken, or when your friends change anything in the queue.</p></div>
+        <div class="screenshot"><img class="fullscreen" src="/static/rooms/images/email.png" /></div>
+        <div class="screenshot" id="queuebox"><img class="fullscreen" src="/static/rooms/images/sms.png" /></div>
+
+
+        <div class="divider"></div>
+
+        <div class="bottomtext">Built for Princetonians, by Princetonians:</div>
+        <br>
+        <div class="bottomtext">Willa Chen, Josh Giles, Lily Healey, Kevin Mantel, and John O'Neill &copy; 2012</p>
+
+    </div>    
+
+    </body>
+</html>

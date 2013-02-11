@@ -27,13 +27,6 @@ OLD_FEEDS = {
 }
 
 """
-replace:
-cal/{{}} -> cal/gen/{{}}/
-cal/upcoming -> cal/gen/upcoming/
-all.ics -> feeds/all.ics
-
-???????????????
-
 feeds/
     feeds_index
     - make feeds/tag, feeds/user in feeds/ ***
@@ -44,26 +37,20 @@ eventsby/{{user}}.ics -> feeds/user/{{user}.ics
 
 eventsby/{{user}} -> cal/spec/user/{{}}/
     filterByUser
-hotevents/ -> cal/spec/hot/
-    showHotEvents
-recentlyadded/ -> cal/spec/recentlyadded/
-    showRecentlyAddedEvents
-recentlyview/ -> cal/spec/recentlyviewed/
-    showRecentlyViewedEvents
 """
 
 urlpatterns = patterns('',
     # General listing of events
     (r'^/?$', lambda x: HttpResponseRedirect('/evlist/gen/')),
     (r'^evlist/gen/?$', 'cal.views_events.evlist_gen'),
-    (r'^evlist/gen/ajax?$', 'cal.views_events.evlist_gen_ajax'),
+    (r'^evlist/gen/ajax/?$', 'cal.views_events.evlist_gen_ajax'),
     (r'^evlist/spe/hot/?$', 'cal.views_events.evlist_spe_hot'),
     (r'^evlist/spe/new/?$', 'cal.views_events.evlist_spe_new'),
     (r'^evlist/spe/myviewed/?$', 'cal.views_events.evlist_spe_myviewed'),
 
     # Feeds
-    (r'^feeds/?$', 'cal.views_events.feeds_index'),
-    (r'^feeds/all.ics$', 'cal.views_events.events_feed'), #copy feedAllEvents, feedByUser
+    (r'^feeds/?$', 'cal.views_events.feeds_tmp'),
+    (r'^feeds/all.ics$', feedAllEvents),
     (r'^feeds/tag/(?P<tag>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
     (r'^feeds/user/(?P<user>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
 
@@ -155,12 +142,13 @@ urlpatterns = patterns('',
 
 
     # Ajax goodness
-    (r'^ajax/netidlookup/?$', 'cal.views_oldajax.netidlookup'),
-    (r'^ajax/allguests/?$', 'cal.views_oldajax.allguests'),
+    (r'^ajax/netidlookup/?$', 'cal.views_ajax.netidlookup'),
+    (r'^ajax/allguests/?$', 'cal.views_ajax.allguests'),
+    (r'^ajax/alltags/?$', 'cal.views_ajax.get_all_tags'),
+
     # I don't know what these do...
     (r'^test/adminfun/?$', 'cal.views_test.activityFeed'),
     (r'^test/lookup/?$', 'cal.views_test.userlookup'),
-
 
     # Admin - not upgradable since it doesn't use django_cas
     (r'^admin/', include(admin.site.urls)),

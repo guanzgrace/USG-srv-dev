@@ -1,25 +1,29 @@
 import re
+from functools import wraps
 from django.conf import settings as conf
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
-from utils.dsml import gdi
 from django.contrib.auth.decorators import login_required, user_passes_test
-from models import *
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django import forms
 import json
 import traceback
+from utils.dsml import gdi
+from models import *
 
-def check_undergraduate(username):
+def get_user(username):
     # Check if user can be here
     try:
         user = User.objects.get(netid=username)
     except:
         info = gdi(username)
-        user = User(netid=username, firstname=info.get('givenName'), lastname=info.get('sn'), pustatus=info.get('pustatus'))
+        user = User(netid=username, firstname=info.get('givenName'),
+                    lastname=info.get('sn'), pustatus=info.get('pustatus'))
         if info.get('puclassyear'):
             user.puclassyear = int(info.get('puclassyear'))
         if user.pustatus == 'undergraduate':
@@ -33,30 +37,45 @@ def check_undergraduate(username):
             return None
     return user
 
-@login_required
+def check_user(fn):
+    """Decorator for authenticating undergrads and handling first visits."""
+    @wraps(fn)
+    def fn_wrapper(request, *args, **kwargs):
+        """Redirect to welcome if not seen, patch request.user."""
+        user = get_user(request.user.username)
+        if not user:
+            return HttpResponseForbidden()
+        if not user.seen_welcome:
+            return HttpResponseRedirect('/about/')
+        request.user = user
+        return fn(request, *args, **kwargs)
+
+    return login_required(fn_wrapper)
+
+@check_user
+@cache_control(max_age=24*60*60, must_revalidate=True)
 def index(request):
     draw_list = Draw.objects.order_by('id')
-    mapscript = mapdata()
-    drawscript = drawdata()
-    #occlong = occlong()
-    #    return HttpResponse(request.user.username);
-    user = check_undergraduate(request.user.username)
-
-    if not user:
-        return HttpResponseForbidden()
     
-    response = render_to_response('rooms/base_dataPanel.html', locals())
-    response['Access-Control-Allow-Origin'] =  '*'
+    response = cache.get('rooms_index')
+    if not response:
+        mapscript = mapdata()
+        drawscript = drawdata()
+        response = render_to_response('rooms/base_dataPanel.html', locals())
+        cache.set('rooms_index', response)
     return response
 
-
-@login_required
+@check_user
+# May need to change if put in availability.
+@cache_control(max_age=24*60*60, must_revalidate=True)
 def draw(request, drawid):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
-    room_list = Room.objects.filter(building__draw__id=drawid)
-    return render_to_response('rooms/drawtab.html', locals())
+    key = 'rooms_draw%s' % drawid
+    response = cache.get(key)
+    if not response:
+        room_list = Room.objects.filter(building__draw__id=drawid)
+        response = render_to_response('rooms/drawtab.html', locals())
+        cache.set(key, response)
+    return response
 
 def mapdata():
     buildings = Building.objects.order_by('id')
@@ -115,14 +134,14 @@ def floorwordhelper(floor):
 	else:
 		floorword = 'Zebra'
 	return floorword;
-		
+
+@check_user
+def bad_room(request):
+    return HttpResponse("We are missing information for that room.")
 
 # Single room view function
-@login_required
+@check_user
 def get_room(request, roomid):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
     room = get_object_or_404(Room, pk=roomid)
     occlong = occlonghelper(room)
     floorword = floorwordhelper(room.floor)
@@ -133,7 +152,7 @@ def get_room(request, roomid):
     
     pastReview = None
     try:
-        pastReview = Review.objects.get(room=room, user=user)    #the review that the user has posted already (if it exists)
+        pastReview = Review.objects.get(room=room, user=request.user)    #the review that the user has posted already (if it exists)
     except Review.DoesNotExist:
         pass
         
@@ -160,7 +179,7 @@ def get_room(request, roomid):
             if form.is_valid():
                 print 'ok valid'
                 rev = form.save(commit=False)
-                rev.user = user
+                rev.user = request.user
                 rev.room = room
                 rev.save()
                 revs = Review.objects.filter(room=room)
@@ -179,23 +198,21 @@ def get_room(request, roomid):
     
     return render_to_response('rooms/room_view.html', {'room':room, 'occlong':occlong, 'floorword':floorword, 'reviews':revs})
     
-@login_required
+@check_user
 def create_queue(request, drawid):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
     draw = Draw.objects.get(pk=drawid)
     # Check if user already has queue for this draw
     if user.queues.filter(draw=draw):
         return HttpResponse("fail")
-    queue = Queue.make(draw=draw, user=user)
+    queue = Queue.make(draw=draw, user=request.user)
     queue.save()
-    user.queues.add(queue)
+    request.user.queues.add(queue)
     return HttpResponse("pass")
 
 # Send a queue invite
-@login_required
+@check_user
 def invite_queue(request):
+    user = request.user
     try:
         draws = Draw.objects.all()
         netid = request.POST['netid']
@@ -205,13 +222,9 @@ def invite_queue(request):
                 invited_draws.append(draw)
     except:
         return HttpResponse('Oops! Your form data is invalid. Try again!')
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
 
     try:
-        #receiver = User.objects.get(netid=netid)
-        receiver = check_undergraduate(netid)
+        receiver = get_user(netid)
     except:
         return manage_queues(request, 'Sorry, the netid "%s" is invalid. Try again!' % netid)
 
@@ -224,7 +237,7 @@ def invite_queue(request):
         invite.save();
 
     sender_name = "%s %s (%s@princeton.edu)" % (user.firstname, user.lastname, user.netid)
-    url = "http://dev.rooms.tigerapps.org:8099/manage_queues.html#received" #TODO - change this URL
+    url = conf.SITE_DOMAIN + "/manage_queues.html#received"
     subject = "Rooms: Queue Invitation"
     message = """Your friend %s invited you to share a room draw queue on the
 Princeton Room Draw Guide! Accept the request at the following URL: 
@@ -235,15 +248,13 @@ Princeton Room Draw Guide! Accept the request at the following URL:
     return render_to_response('rooms/invite_queue.html')
 
 # Respond to a queue invite
-@login_required
+@check_user
 def respond_queue(request):
+    user = request.user
     try:
         invite_id = int(request.POST['invite_id'])
         accepted = int(request.POST['accepted'])
     except:
-        return HttpResponseForbidden()
-    user = check_undergraduate(request.user.username)
-    if not user:
         return HttpResponseForbidden()
     try:
         invite = user.q_received_set.get(pk=invite_id)
@@ -272,15 +283,13 @@ to add. """ % (receiver_name, url)
     return manage_queues(request)
 
 # Leave a queue that was previously shared
-@login_required
+@check_user
 def leave_queue(request):
+    user = request.user
     try:
         draw = Draw.objects.get(pk=int(request.POST['draw_id']))
     except:
         return HttpResponse('')
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
     q1 = user.queues.get(draw=draw)
     if 1 == q1.user_set.count():
         return HttpResponse('')
@@ -294,77 +303,10 @@ def leave_queue(request):
     user.queues.remove(q1)
     user.queues.add(q2)
     return manage_queues(request);
-'''
-@login_required
-#for testing
-def review(request, roomid):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
-    try:
-        room = Room.objects.get(id=roomid)
-    except Room.DoesNotExist:
-        return HttpResponseRedirect(reverse(index))
-        
-    pastReview = None
-    try:
-        pastReview = Review.objects.get(room=room, user=user)    #the review that the user has posted already (if it exists)
-    except Review.DoesNotExist:
-        pass
-        
-    if request.method == 'POST':
-        review = request.POST.get('review', None)
-        submit = request.POST.get('submit', None)
-        display = request.POST.get('display', None)
-        delete = request.POST.get('delete', None)
-        
-        # user asked to review the current room
-        if review:
-            if pastReview:
-                form = ReviewForm(instance=pastReview)
-                return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'form': form, 'submitted': False, 'edit': True})
-            else:   
-                form = ReviewForm()
-                return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'form': form, 'submitted': False})
-                
-        #user asked to display current reviews
-        elif display:
-            revs = Review.objects.filter(room=room)
-            print 'num reviews found: %d' % (len(revs))
-            return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'reviews': revs, 'display': display})
-        # user submitted the review
-        elif submit:
-            if pastReview:
-                form = ReviewForm(request.POST, instance=pastReview)
-            else:
-                form = ReviewForm(request.POST)
-                
-            if form.is_valid():
-                print 'ok valid'
-                rev = form.save(commit=False)
-                rev.user = user
-                rev.room = room
-                rev.save()
-                return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'submitted': True})
-            else:
-                form = ReviewForm()
-                return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'form': form, 'submitted': True, 'error': 'Invalid submit data'})
-        elif delete:
-            if pastReview:
-                pastReview.delete()
-                return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'deleted': True})
-        else:
-            #someone's messing with the post params
-            return HttpResponseRedirect(reverse(index))
-    else:
-        return render_to_response('rooms/reviewtest.html', {'roomid' : roomid, 'submitted': False})
-'''
-@login_required
+
+@check_user
 def settings(request):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
-        
+    user = request.user
     if request.method == 'POST':
         if request.POST['form_type'] == 'settings':
             handle_settings_form(request, user)
@@ -416,12 +358,9 @@ def handle_confirmphone_form(confirmation, user):
         return False
 
  
-@login_required
+@check_user
 def confirm_phone(request):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
-
+    user = request.user
     if request.method == 'POST':
         if request.POST['form_type'] == 'settings':
             handle_settings_form(request, user)
@@ -437,13 +376,9 @@ def confirm_phone(request):
     return render_to_response('rooms/confirm_phone.html', {'user': user, 'first_try':first_try})
 
 
-@login_required
+@check_user
 def manage_queues(request, error=""):
-    user = check_undergraduate(request.user.username)
-    if not user:
-        return HttpResponseForbidden()
-
-
+    request.user = user
     received_invites = QueueInvite.objects.filter(receiver=user)
     sent_invites = QueueInvite.objects.filter(sender=user)
     user_queues = user.queues.all()
@@ -457,6 +392,14 @@ def manage_queues(request, error=""):
                                                            'sent_invites' : sent_invites,
                                                            'shared_queues' : shared_queues,
                                                            'error' : error })
+
+@login_required
+def about(request):
+    user = get_user(request.user.username)
+    if user:
+        user.seen_welcome = True
+        user.save()
+    return render_to_response('rooms/about.html')
 
 #helper function
 def notify(user, subject, message):

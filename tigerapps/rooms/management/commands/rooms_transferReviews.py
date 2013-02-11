@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from tigerapps.rooms.views import check_undergraduate
+from tigerapps.rooms.views import get_user
 from tigerapps.rooms.models import *
 
 from os import environ
@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     newBuildID = newBuildingCursor.fetchone()
                     
                     try:
-                        user = check_undergraduate(review['User'])
+                        user = get_user(review['User'])
                     except:
                         try:
                             user = User.objects.get(netid='old_user')

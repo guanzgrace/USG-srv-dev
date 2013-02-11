@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_protect
 from utils.dsml import gdi
 from django.contrib.auth.decorators import login_required, user_passes_test
 from models import *
-from views import check_undergraduate
+from views import get_user
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django import forms
@@ -26,7 +26,7 @@ def json_response(value, **kwargs):
     
 @login_required
 def update_queue(request, drawid):
-    user = check_undergraduate(request.user.username)
+    user = get_user(request.user.username)
     if not user:
         return HttpResponse('forbidden')
     draw = Draw.objects.get(pk=drawid)
@@ -42,7 +42,7 @@ def update_queue(request, drawid):
 # Ajax for displaying this user's queue
 @login_required
 def get_queue(request, drawid, timestamp = 0):
-    user = check_undergraduate(request.user.username)
+    user = get_user(request.user.username)
     timestamp = int(timestamp)
     if not user:
         return HttpResponse('no user')

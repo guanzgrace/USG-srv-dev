@@ -1,36 +1,44 @@
 {% extends "cal/base.html" %}
 {% load app_extras %}
 
-{% block title %}{{tabtitle}}{% endblock %}
-{% block headercss %}<link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />{% endblock %}
+{% block title %}{{evlist_title}}{% endblock %}
+{% block headercss %}
+<link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
+{% endblock %}
 {% block headerscript %}
 <script type="text/javascript" src="/static/cal/js/coin-slider.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#coin-slider').coinslider({ width: 260, delay: 5000 });
-        $('#coin-slider2').coinslider({ width: 260, delay: 5000 });
-    });
-</script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('.rsvp_indicator').cluetip({
-    showTitle: true, // hide the clueTip's heading
-    splitTitle: '|',
-    width: 540,
-    clickThrough: true,
-    cluetipClass: 'jtip', 
-    arrows: false, 
-    dropShadow: true,
-    hoverIntent: false,
-    sticky: false,
-    mouseOutClose: true,
-  });
-});
-</script>
-<link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
 <script type="text/javascript" src="/static/cal/js/shadowbox/shadowbox.js"></script>
+<script type="text/javascript" src="/static/cal/js/rangepicker.js"></script>
+<script type="text/javascript" src="/static/cal/js/evfilter.js"></script>
 <script type="text/javascript">
-Shadowbox.init();
+  $(document).ready(function() {
+    $('#coin-slider').coinslider({ width: 260, delay: 5000 });
+    $('#coin-slider2').coinslider({ width: 260, delay: 5000 });
+  });
+  $(document).ready(evlistInit);
+  {% if evlist_time_dict %}
+  $(document).ready(function() {
+    $('#evfilter-main').button().css({
+      'font': 'inherit',
+      'color': 'inherit',
+      'text-align': 'left',
+      'outline': 'none',
+      'cursor': 'text',
+      'padding': '2px 6px',
+    });
+  });
+  $(function() {
+	  var ts = '{{evlist_time_dict.ts}}';
+	  var sd = '{{evlist_time_dict.sd}}';
+	  var ed = '{{evlist_time_dict.ed}}';
+    $('#evfilter-rangepicker').rangepicker(ts, sd, ed, function() { evlistReq(true); });
+    $('#evfilter-query-form').submit(function() { evlistReq(); return false; });
+    $('.evfilter-tag').click(evfilterTagOnClick);
+    $('.evfilter-feat').click(evfilterFeatOnClick);
+    $('#evfilter-clear').click(evfilterClear);
+  });
+  {% endif %}
 </script>
 {% endblock %}
 
@@ -46,9 +54,7 @@ Shadowbox.init();
 {% for pev in poster_events %}
     <a href="/events/{{pev.pk}}">
         <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
-        <span>
-            {{pev.displayname}}
-        </span>
+        <span>{{pev.displayname}}</span>
     </a>
 {% endfor %}
 </div>
@@ -57,9 +63,7 @@ Shadowbox.init();
 {% for pev in hotest_events %}
     <a href="/events/{{pev.pk}}">
         <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
-        <span>
-            {{pev.displayname}}
-        </span>
+        <span>{{pev.displayname}}</span>
     </a>
 {% endfor %}
 </div>
@@ -72,52 +76,73 @@ Shadowbox.init();
 
 {% block content %}
 
-{% if tag_opts %}
+{% comment %}
+for myevents
+{% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
+{% endcomment %}
+
+{% if evlist_filter_dict %}{% with D=evlist_filter_dict %}
 <div id="rightcol">
+  <div id="evfilter-rangepicker"></div> {% comment %}will always have evlist_time_dict when we have evlist_filter_dict{% endcomment %}
   <div class="sidebar">
     <div class="sidebar-title">
-      <h3>Popular Tags</h3>
+      <h3 id="evfilter-exists">Filter Events</h3>
     </div>
     <div class="sidebar-content">
-      <ul class="sidebar-menu">
-        {% for tag,count in tag_opts %}
-        <li><a href="/cal/{{timeselect}}/?tag={{tag}}">{{tag}} ({{count}})</span></a></li>
-        {% endfor %}
-      </ul>
+      <p class="sidebar-desc-mini">Narrow down the list of events displayed with these options</p>
+      <hr/>
+      <p class="sidebar-desc">Filter by tags:</p>
+      <div id="evfilter-tags">{{D.tagsHtml}}</div>
+      <hr/>
+      <p class="sidebar-desc">Filter by event features:</p>
+      <div id="evfilter-feats">{{D.featsHtml}}</div>
+      <hr/>
+      <p class="sidebar-desc">Filter by search:</p>
+      <form id="evfilter-query-form">
+        <p><input type="text" name="query" id="evfilter-query" size="26" placeholder="ex: dance, free food"/></p>
+        <p><input type="submit" value="Filter" class="jqu-button" style="display:none;"/></p>
+      </form>
+      <hr/>
+      <form>
+        <p><input value="Show All" class="jqu-button evfilter-clear" id="evfilter-clear" type="submit" /></p>
+      </form>
     </div>
   </div>
 </div>
-{% endif %}
+{% endwith %}{% endif %}
 
-{% comment %}
-<div class="evlist-filter">
-  <form method="GET" action="{%if timeselect%}/cal/{{timeselect}}/{%else%}/{%endif%}">
-    <p>
-      <input type="text" name ="query" id="id_q" maxlength="40" />
-      <input type="submit" value="Search Events" />
-     </p>
-  </form>
-</div>
-{% endcomment %}
+<div class="evlist">
 
-<div id="evlist-general">
-  {{evlist_inner}}
+<div class="evlist-top">
+  {% if evlist_dates %}
+    <div id="evlist-time">
+      <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
+      <p class="dates" id="evlist-title">{{evlist_title}}</p>
+    </div>
+    <h1 class="title"><input id="evfilter-main" type="text" value="All"/> Events</h1>
+  {% else %}
+    <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
+  {% endif %}
 </div>
+
+<div id="evlist-inner">{{evlist_inner}}</div>
 
 <div style="height: 24px; clear: both;"></div>
 
-<div style="width: 70%; padding: 8px; margin-top: 12px; background-color: #f0f0ff; border: 1px Solid #ccccff;">
-<p style="font-size: 16px; font-weight: bold;"><a href="/feeds/"><img src="/static/cal/css/img/200px-Feed-icon.svg.png" style="float: right;"/></a>Want easier access to your events?</p>
-<p>Have these events show up in your personal Google Calendar, iCal, or Outlook. <a href="/feeds/">Subscribe here.</a></p>
+<div style="padding: 8px; margin-top: 12px; background-color: #f0f0ff; border: 1px Solid #ccccff;">
+<p style="font-size: 16px; font-weight: bold;">
+  <span style="float:right;"><a href="/feeds/">{% include 'cal/modules/sync.html' %}</a></span>
+  Want easier access to your events?</p>
+<p>Have these events show up in your Google Calendar, iCal, or Outlook. <a href="/feeds/">Sync your events here.</a></p>
 </div>
 
-<div class="legend" style="width: 70%; padding: 8px; margin-top: 12px;">
-<h2 class="legend-title">Features</h2>
-<div style="padding-top: 16px;">
-{% for feat in feat_opts %}
-<span style="white-space:nowrap; padding-right: 12px;"><a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" alt="{{feat.feature_name}}" style="height: 24px; width: 24px;"/></a> <a href="/cal/{{timeselect}}/?feat={{feat.feature_name}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
-{% endfor %}
+<div class="legend" style="padding: 8px; margin-top: 12px;">
+  <h2 class="legend-title">Features</h2>
+  <div style="padding-top: 16px;">{% for feat in feat_opts %}
+    <span style="white-space:nowrap; padding-right: 12px;"><a class="events-feat events-feat-img" href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a> <a class="events-feat" href="/evlist/gen/?feat={{feat.id}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
+  {% endfor %}</div>
 </div>
+
 </div>
 
 {% endblock %}

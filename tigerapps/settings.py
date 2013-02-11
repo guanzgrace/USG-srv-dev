@@ -175,11 +175,10 @@ INSTALLED_APPS = (
     'ccc',
     'elections',
     'pam',
+    'pounce',
     'rooms',
     'pom',
     'storage',
-# This app is NOT sync'd with South
-    'pounce',
 # These apps were never launched and there are no plans to launch them
 # This means that they ARE NOT sync'd with South
 #    'facebook',

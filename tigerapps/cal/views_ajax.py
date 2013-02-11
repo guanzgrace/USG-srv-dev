@@ -11,6 +11,11 @@
 from django.http import *
 from models import *
 from utils.dsml import namelookup
+import json
+
+def get_all_tags(request):
+    tags = [tag.category_name for tag in EventCategory.objects.all()]
+    return HttpResponse(json.dumps(tags), content_type="application/json")
 
 def netidlookup(request):
 	""" Return a formatted HTML chunk of the names found using the DSML for the query """

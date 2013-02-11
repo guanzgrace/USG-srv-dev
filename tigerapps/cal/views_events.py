@@ -38,40 +38,93 @@ from cal.forms import *
 from cal.mailer import *
 from cal.usermsg import MsgMgr
 from cal import query
+from cal import cal_util
 
 
 def evlist_gen(request):
-    out_dict = {}
-    out_dict['evlist_inner'] = evlist_gen_inner(request)
-
-    # Tags: sort by most common
-    tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
-    tag_opts = defaultdict(int)
-    for tag in tag_list:
-        tag_opts[tag] += 1
-    tag_opts = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
-    out_dict['tag_opts'] = tag_opts
-
+    out_dict = evlist_gen_inner(request, True)
     return evlist_render_page(request, out_dict)
 
 def evlist_gen_ajax(request):
-    inner_html = evlist_gen_inner(request)
-    return HttpResponse(inner_html, content_type="application/javascript")
+    out_dict = evlist_gen_inner(request, 'changedDates' in request.GET)
+    out_json = json.dumps(out_dict)
+    return HttpResponse(out_json, content_type="application/json")
 
-def evlist_gen_inner(request):
+def evlist_gen_inner(request, loadEvfilter):
     """
     Generate HTML of events list matching the filters in `request`
     """
-    params = {}
+    time_params, title, dates, start_day, end_day = evlist_parse_time_params(request)
+    filter_params, query_words, tags, feat_ids, creator = evlist_parse_filter_params(request)
 
-    # Perform timeselect filtering
+    user = current_user(request)
+    grouped_events = query.events_general(start_day, end_day, query_words, tags, feat_ids, creator, user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
+
+    if loadEvfilter:
+        filter_params['tagsHtml'] = render_to_string(
+            "cal/modules/evfilter_tags.html",
+            {'evfilter_tags': query.tags_general(start_day, end_day)})
+        filter_params['featsHtml'] = render_to_string(
+            "cal/modules/evfilter_feats.html",
+            {'evfilter_feats': query.feats_general(start_day, end_day)})
+
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': title,
+        'evlist_dates': dates,
+        'evlist_time_dict': time_params,
+        'evlist_filter_dict': filter_params,
+    }
+
+    return out_dict
+
+
+SPE_LIMIT = 10
+def evlist_spe_hot(request):
+    user = current_user(request)
+    grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Hottest Upcoming Events",
+    }
+    return evlist_render_page(request, out_dict)
+
+def evlist_spe_new(request):
+    user = current_user(request)
+    grouped_events = query.events_new(SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Newest Upcoming Events",
+    }
+    return evlist_render_page(request, out_dict)
+
+def evlist_spe_myviewed(request):
+    user = current_user(request)
+    grouped_events = query.events_myviewed(user, SPE_LIMIT, rsvp_user=user)
+    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_show_date': True})
+    out_dict = {
+        'evlist_inner': inner_html,
+        'evlist_title': "Events I've Viewed",
+    }
+    return evlist_render_page(request, out_dict)
+
+
+def evlist_parse_time_params(request):
+    """Parse timeselect params from the GET request headers"""
+    time_params = {'show': True}
+
     if "ts" in request.GET:
         timeselect = request.GET['ts']
     else:
         timeselect = "upcoming"
-    params['ts'] = timeselect
+    time_params['ts'] = timeselect
 
-    if timeselect != "upcoming":
+    if timeselect == "upcoming":
+        start_day = datetime.now()
+    else:
         if "sd" in request.GET:
             sd = request.GET['sd']
             sd_y = int(sd[0:4])
@@ -81,66 +134,60 @@ def evlist_gen_inner(request):
         else:
             td = datetime.today()
             start_day = datetime(td.year, td.month, td.day, 0, 0, 0)
-        params['sd'] = start_day.strftime("%Y%m%d")
-    else:
-        start_day = None
+    ts_ind, start_day, end_day = query.get_sded(timeselect, start_day)
+    end_day_show = end_day - timedelta(days=1) #since we want to display inclusive dates; otherwise we're showing [inclusive exclusive]
+    time_params['sd'] = start_day.strftime("%Y%m%d")
+    time_params['ed'] = end_day_show.strftime("%Y%m%d")
 
-    # Perform additional filtering
+    if ts_ind == 0:
+        title = "Upcoming Events"
+        dates_title = "%s - %s" % (
+            cal_util.strftime_yearopt(start_day, "%a, %b %e"),
+            cal_util.strftime_yearopt(end_day_show, "%a, %b %e"))
+    else:
+        title = "Events - %s" % timeselect.capitalize()
+        if ts_ind == 1:
+            dates_title = cal_util.strftime_yearopt(start_day, "%A, %B %e")
+        elif ts_ind == 2:
+            dates_title = "Week of %s" % start_day.strftime("%B %e, %Y")
+        elif ts_ind == 3:
+            dates_title = "Month of %s" % start_day.strftime("%B %Y")
+
+    return time_params, title, dates_title, start_day, end_day
+
+def evlist_parse_filter_params(request):
+    """Parse event filter params from the GET request headers"""
+    filter_params = {'show': True}
+
     if "query" in request.GET:
-        query_string = request.GET['query'].strip().split(",")
+        query_string = request.GET['query']
+        query_string_fmt = query_string.strip().split(",")
         query_words = []
-        for entry in query_string:
+        for entry in query_string_fmt:
             query_words += entry.split(" ")
-        params['query'] = query_string
+        filter_params['query'] = query_string
     else:
         query_words = None
 
     if "tag" in request.GET:
-        tag_ids = map(int, request.GET.getlist('tag'))
-        params['tags'] = tag_ids
+        tags = request.GET.getlist('tag')
+        filter_params['tags'] = tags
     else:
-        tag_ids = None
+        tags = None
 
     if "feat" in request.GET:
         feat_ids = map(int, request.GET.getlist('feat'))
-        params['feats'] = feat_ids
+        filter_params['feats'] = feat_ids
     else:
         feat_ids = None
 
     if "creator" in request.GET:
         creator = request.GET['creator']
-        params['creator'] = creator
+        filter_params['creator'] = creator
     else:
         creator = None
 
-    user = current_user(request)
-    grouped_events = query.events_general(timeselect, start_day, query_words, tag_ids, feat_ids, creator, user)
-    out_dict = {
-        'grouped_events': grouped_events,
-        'params': params,
-        'params_json': json.dumps(params),
-        'evlist_title': "Upcoming Events",
-    }
-    return render_to_string("cal/evlist_inner.html", out_dict)
-
-SPE_LIMIT = 10
-def evlist_spe_hot(request):
-    user = current_user(request)
-    grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Hottest Events"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
-
-def evlist_spe_new(request):
-    user = current_user(request)
-    grouped_events = query.events_new(SPE_LIMIT, rsvp_user=user)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Newest Events"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
-
-def evlist_spe_myviewed(request):
-    user = current_user(request)
-    grouped_events = query.events_myviewed(user, SPE_LIMIT)
-    inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events, 'evlist_title': "Events I've Viewed"})
-    return evlist_render_page(request, {'evlist_inner': inner_html})
+    return filter_params, query_words, tags, feat_ids, creator
 
 
 def evlist_render_page(request, out_dict):
@@ -390,42 +437,55 @@ def events_forwardtocampusevents(request):
 
 @login_required
 def events_add(request):
-   user = current_user(request)
-   EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
+    user = current_user(request)
+    EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
 
-   if request.method == 'POST':
-       formset = EventFormSet(request.POST, request.FILES)
-       clusterForm = EventClusterForm(request.POST, request.FILES)
-       if formset.is_valid() and clusterForm.is_valid():
-           new_cluster = clusterForm.save(commit=False)
-           new_cluster.cluster_user_created = user
-           new_cluster.save()
-           clusterForm.save_m2m()
+    if request.method == 'POST':
+        tags_in = request.POST['cluster_tags']
+        request.POST['cluster_tags'] = []
+        formset = EventFormSet(request.POST, request.FILES)
+        clusterForm = EventClusterForm(request.POST, request.FILES)
+        if formset.is_valid() and clusterForm.is_valid():
+            new_cluster = clusterForm.save(commit=False)
+            new_cluster.cluster_user_created = user
+            new_cluster.save()
+            clusterForm.save_m2m()
+            tag_names = json.loads(tags_in)
+            for tag_name in tag_names:
+                try:
+                    tag = EventCategory.objects.get(category_name=tag_name)
+                except EventCategory.DoesNotExist:
+                    tag = EventCategory(category_name=tag_name)
+                    tag.save()
+                new_cluster.cluster_tags.add(tag)
+            new_cluster.save()
        
-           for form in formset.forms:
-               new_event = form.save(commit=False)
-               new_event.event_cluster = new_cluster
-               new_event.event_user_last_modified = user
-               new_event.event_attendee_count = 0
-               new_event.save()
-               email_creator(user,new_event)
+            for form in formset.forms:
+                new_event = form.save(commit=False)
+                new_event.event_cluster = new_cluster
+                new_event.event_user_last_modified = user
+                new_event.event_attendee_count = 0
+                new_event.save()
+                email_creator(user,new_event)
 
-           # Added for interfacing with Student Groups
-           if 'post_groups' in request.POST and request.POST['post_groups']:
-               group = Group.objects.get(id=request.POST['post_groups'])
-               entry = Entry(title=new_cluster.cluster_title,text='',event=new_event,group=group)
-               entry.save()
-               mships = Membership.objects.filter(group=group,feed_notifications=True)
-               list = []
-               for m in mships:
-                   list.append(str(m.student.email))
-                   send_mail(EMAIL_HEADER_PREFIX+'\"%s\" Posted to its Feed'%group.name, FEED_NOTIFICATION_EMAIL % (group.name,entry.title,entry.text,group.url), SITE_EMAIL, list, fail_silently=False)
+            # Added for interfacing with Student Groups
+            if 'post_groups' in request.POST and request.POST['post_groups']:
+                group = Group.objects.get(id=request.POST['post_groups'])
+                entry = Entry(title=new_cluster.cluster_title,text='',event=new_event,group=group)
+                entry.save()
+                mships = Membership.objects.filter(group=group,feed_notifications=True)
+                list = []
+                for m in mships:
+                    list.append(str(m.student.email))
+                    send_mail(EMAIL_HEADER_PREFIX+'\"%s\" Posted to its Feed'%group.name, FEED_NOTIFICATION_EMAIL % (group.name,entry.title,entry.text,group.url), SITE_EMAIL, list, fail_silently=False)
 
-           if 'submit' in request.POST:
-              return HttpResponseRedirect('/events/%s?forwardtoevents' % (new_event.event_id))
-   else:   
-    formset = EventFormSet()
-    clusterForm = EventClusterForm()
+            if 'submit' in request.POST:
+                return HttpResponseRedirect('/events/%s?forwardtoevents' % (new_event.event_id))
+
+    else:   
+        formset = EventFormSet()
+        clusterForm = EventClusterForm()
+
     try:
         most_recent_submission = Event.objects.filter(event_cluster__cluster_user_created=user).latest('event_cluster__cluster_date_time_created')
         if datetime.now() - most_recent_submission.event_cluster.cluster_date_time_created <= timedelta(minutes=240):
@@ -443,7 +503,13 @@ def events_add(request):
             pass
     tag_opts = [tag.category_name for tag in EventCategory.objects.all().order_by('category_name')]
     tag_sugs = json.dumps(tag_opts)
-    return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'tag_sugs':tag_sugs})
+    return render_to_response(request, 'cal/events_add.html', {
+        'formset': formset,
+        'clusterForm': clusterForm,
+        'group_mships':group_mships,
+        'group':group,
+        'tag_sugs':tag_sugs
+    })
 
 
 @login_required
@@ -1028,4 +1094,9 @@ def xml_feed(request):
 def nocookie():
     dict = {}
     return render_to_response(request, 'cal/nocookie.html', dict)
+
+@login_required
+def feeds_tmp(request):
+    user = current_user(request)
+    return HttpResponseRedirect('/mycal/%d/%s.ics' % (user.pk, user.user_netid))
 
