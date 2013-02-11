@@ -155,12 +155,13 @@ urlpatterns = patterns('',
 
 
     # Ajax goodness
-    (r'^ajax/netidlookup/?$', 'cal.views_oldajax.netidlookup'),
-    (r'^ajax/allguests/?$', 'cal.views_oldajax.allguests'),
+    (r'^ajax/netidlookup/?$', 'cal.views_ajax.netidlookup'),
+    (r'^ajax/allguests/?$', 'cal.views_ajax.allguests'),
+    (r'^ajax/alltags/?$', 'cal.views_ajax.get_all_tags'),
+
     # I don't know what these do...
     (r'^test/adminfun/?$', 'cal.views_test.activityFeed'),
     (r'^test/lookup/?$', 'cal.views_test.userlookup'),
-
 
     # Admin - not upgradable since it doesn't use django_cas
     (r'^admin/', include(admin.site.urls)),

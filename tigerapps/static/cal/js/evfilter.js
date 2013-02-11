@@ -1,3 +1,7 @@
+$.fn.showSpinner = function() {
+    this.html('<img src="/static/shared/img/spinner.gif" class="loading-spinner">');
+}
+
 function evlistInit() {
     $('.rsvp_indicator').cluetip({
       showTitle: true, // hide the clueTip's heading
@@ -14,79 +18,86 @@ function evlistInit() {
     Shadowbox.init();
 }
 
-function timeselectChangeInit() {
-    $('.evfilter-tag').click(evfilterTagOnClick);
-}
-
 function evfilterClear() {
     $('#evfilter-query').val('');
     $('#evfilter-tag-current').attr('id', '');
     $('#evfilter-feat-current').attr('id', '');
-    evfilterReq();
+    evlistReq();
     return false;
 }
 
 function evfilterTagOnClick(ev) {
     if (this.id == 'evfilter-tag-current') {
         $(this).attr('id', '');
-        evfilterReq();
+        evlistReq();
     } else {
         $('#evfilter-tag-current').attr('id', '');
         $(this).attr('id', 'evfilter-tag-current');
-        evfilterReq();
+        evlistReq();
     }
 }
 
 function evfilterFeatOnClick(ev) {
     if (this.id == 'evfilter-feat-current') {
         $(this).attr('id', '');
-        evfilterReq();
+        evlistReq();
     } else {
         $('#evfilter-feat-current').attr('id', '');
         $(this).attr('id', 'evfilter-feat-current');
-        evfilterReq();
+        evlistReq();
     }
 }
 
-function evfilterReq() {
-    if (rangepicker.onlyAnUpdate) return;
+
+function evlistReq(changedDates) {
+    $('#evlist-inner').showSpinner();
 
     var ts = $('#evfilter-ts input:checked')[0].id;
     var sd = $.datepicker.formatDate("yymmdd", $('#evfilter-datepicker').datepicker('getDate'));
     var data = {ts: ts, sd: sd};
 
-    var hasStuff = false;
-    var query = $('#evfilter-query').val();
-    if (query) { data.query = query; hasStuff = true; }
-    var tag = $('#evfilter-tag-current').attr('rel');
-    if (tag) { data.tag = tag; hasStuff = true; }
-    var feat = $('#evfilter-feat-current').attr('rel');
-    if (feat) { data.feat = feat; hasStuff = true; }
-
-    if (hasStuff) $('.evfilter-clear').show();
-    else $('.evfilter-clear').hide();
+    if (changedDates == undefined) {
+        var query = $('#evfilter-query').val();
+        if (query) { data.query = query; hasStuff = true; }
+        var tag = $('#evfilter-tag-current').attr('rel');
+        if (tag) { data.tag = tag; hasStuff = true; }
+        var feat = $('#evfilter-feat-current').attr('rel');
+        if (feat) { data.feat = feat; hasStuff = true; }
+    } else {
+        data.changedDates = true;
+        $('#evfilter-query').val('');
+        $('#evfilter-tags').showSpinner();
+        $('#evfilter-feats').showSpinner();
+    }
 
     console.log(data);
-
     $.ajax({
         url: '/evlist/gen/ajax/',
         beforeSend: function(xhr) {
-            $('#evlist-loading').show();
-            $('#evlist-inner').html('');
         },
         data: data,
-        success: evfilterResp,
+        success: evlistResp,
         dataType: 'json',
     });
 }
 
-function evfilterResp(data, textStatus, jqXHR) {
+function evlistResp(data, textStatus, jqXHR) {
     var td = data.evlist_time_dict;
     console.log(td);
-    $('#evfilter-datepicker').rangepicker(td.ts, td.sd, td.ed, td.dp);
+    $('#evfilter-datepicker').rangepicker(td.ts, td.sd, td.ed);
 	$('#evlist-title').html(data.evlist_title);
 	$('#evlist-dates').html(data.evlist_dates);
     $('#evlist-inner').html(data.evlist_inner);
     evlistInit();
-    $('#evlist-loading').hide();
+
+    var fd = data.evlist_filter_dict;
+    console.log(fd);
+    if (fd.tagsHtml) {
+        $('#evfilter-tags').html(fd.tagsHtml);
+        $('.evfilter-tag').click(evfilterTagOnClick);
+    }
+    if (fd.featsHtml) {
+        $('#evfilter-feats').html(fd.featsHtml);
+        $('.evfilter-feat').click(evfilterFeatOnClick);
+    }
 }

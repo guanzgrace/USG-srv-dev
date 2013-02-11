@@ -22,8 +22,8 @@
 	  var ts = '{{evlist_time_dict.ts}}';
 	  var sd = '{{evlist_time_dict.sd}}';
 	  var ed = '{{evlist_time_dict.ed}}';
-    $('#evfilter-datepicker').rangepicker(ts, sd, ed, evfilterReq);
-    $('#evfilter-query-form').submit(function() { evfilterReq(); return false; });
+    $('#evfilter-datepicker').rangepicker(ts, sd, ed, function() { evlistReq(true); });
+    $('#evfilter-query-form').submit(function() { evlistReq(); return false; });
     $('.evfilter-tag').click(evfilterTagOnClick);
     $('.evfilter-feat').click(evfilterFeatOnClick);
     $('#evfilter-clear').click(evfilterClear);
@@ -79,26 +79,21 @@ for myevents
       <h3 id="evfilter-exists">Filter Events</h3>
     </div>
     <div class="sidebar-content">
-      <p class="sidebar-desc-mini">Narrow down the list of events displayed to the left with these options</p>
+      <p class="sidebar-desc-mini">Narrow down the list of events displayed with these options</p>
+      <form>
+        <p><input value="Show All" class="jqu-button evfilter-clear" id="evfilter-clear" type="submit" /></p>
+      </form>
       <hr/>
-      <p class="sidebar-desc">Filter by popular tags:</p>
-      <ul class="sidebar-menu">{% for tag,count in tag_opts %}
-        <li><a class="evfilter-tag events-tag" rel="{{tag}}" href="javascript:void(0);">{{tag}} ({{count}})</span></a></li>
-      {% endfor %}</ul>
+      <p class="sidebar-desc">Filter by tags:</p>
+      <div id="evfilter-tags">{{D.tagsHtml}}</div>
       <hr/>
       <p class="sidebar-desc">Filter by event features:</p>
-      <ul class="sidebar-grid">{% for feat in feat_opts %}
-        <li><a class="evfilter-feat events-feat events-feat-img" rel="{{feat.id}}" href="javascript:void(0);"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a></li>
-      {% endfor %}</ul>
+      <div id="evfilter-feats">{{D.featsHtml}}</div>
       <hr/>
       <p class="sidebar-desc">Filter by search:</p>
       <form id="evfilter-query-form">
         <p><input type="text" name="query" id="evfilter-query" size="26" placeholder="ex: dance, free food"/></p>
         <p><input type="submit" value="Filter" class="jqu-button" style="display:none;"/></p>
-      </form>
-      <hr style="display:none;" class="evfilter-clear"/>
-      <form>
-        <p><input value="Clear Filters" class="jqu-button evfilter-clear" id="evfilter-clear" style="display:none;" type="submit" /></p>
       </form>
     </div>
   </div>
@@ -116,10 +111,7 @@ for myevents
   <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
 </div>
 
-<div style="position:relative;">
-    <img src="/static/shared/img/spinner.gif" style="position:absolute;top:50%;left:50%;display:none;" id="evlist-loading"/>
-    <div id="evlist-inner">{{evlist_inner}}</div>
-</div>
+<div id="evlist-inner">{{evlist_inner}}</div>
 
 <div style="height: 24px; clear: both;"></div>
 

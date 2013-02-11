@@ -1,0 +1,4 @@
+        <ul class="sidebar-menu">{% for tag,count in evfilter_tags %}
+          <li><a class="evfilter-tag events-tag" rel="{{tag}}" href="javascript:void(0);">{{tag}} ({{count}})</span></a></li>
+        {% endfor %}</ul>
+

@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from collections import defaultdict
+from operator import itemgetter
 from django.db.models import Q
 from cal.models import Event, View, RSVP, EventFeature, EventCategory
 from cal.templatetags.app_extras import time_difference
@@ -38,9 +40,29 @@ def events_myviewed(user, limit=0, group=True, rsvp_user=0):
         return events2grouped(events, group_myviewed, rsvp_user)
     return events
 
+
 #####
-# To fetch events
+# To fetch events - general tab
 #####
+
+def tags_general(start_day, end_day):
+    # Tags: sort by most common
+    tags = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lt=end_day).values_list('event_cluster__cluster_tags__category_name',flat=True)
+    tag_counter = defaultdict(int)
+    for tag in tags:
+        tag_counter[tag] += 1
+    tag_counts = sorted(tuple((tag,count) for tag,count in tag_counter.iteritems()), key=itemgetter(1), reverse=True)
+    return tag_counts
+
+def feats_general(start_day, end_day):
+    feats = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lt=end_day).values_list('event_cluster__cluster_features__id',flat=True)
+    feat_counter = defaultdict(int)
+    for feat in feats:
+        if feat:
+            feat_counter[feat] += 1
+    feat_counts = tuple((EventFeature.objects.get(id=id),count) for id,count in feat_counter.iteritems())
+    return feat_counts
+
 
 def get_sded(timeselect, start_day):
     if timeselect == "upcoming":
@@ -82,7 +104,7 @@ DAY_GROUPS = (
 )
 
 def events_general(start_day, end_day, query=None, tags=None, feat_ids=None, creator=None, rsvp_user=0):
-    events = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lte=end_day)
+    events = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lt=end_day)
 
     if query:
         q = Q()
@@ -139,6 +161,10 @@ def events_general(start_day, end_day, query=None, tags=None, feat_ids=None, cre
                 grouped_events[ind][1].append(event)
     return grouped_events
 
+
+#####
+# To fetch events - special tabs
+#####
 
 def events_hot(limit=0, group=True, rsvp_user=0):
     events = Event.objects.filter(event_date_time_end__gte=datetime.now(), event_attendee_count__gte=1).exclude(event_date_time_start=dtdeleteflag).order_by('-event_attendee_count')

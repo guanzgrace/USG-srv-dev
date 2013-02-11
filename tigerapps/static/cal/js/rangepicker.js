@@ -14,10 +14,8 @@ rangepicker = {}
 range of dates for the timeselect. Uses sd, ed as a hack
 so we don't have to calculate sd/ed for 'upcoming'. This
 function is called once at page load, and then every time
-timeselect is changed.  Note: extraArg is the onSelect handler
-when rangepicker is initialized, and is the date selected when
-rangepicker is only being updated */
-$.fn.rangepicker = function(timeselect, sd, ed, extraArg) {
+timeselect is changed. */
+$.fn.rangepicker = function(timeselect, sd, ed, onSel) {
     /* Don't update if not needed */
     if (rangepicker.ts == timeselect)
         return false;
@@ -60,8 +58,6 @@ $.fn.rangepicker = function(timeselect, sd, ed, extraArg) {
         /* Must change current date if switching to upcoming */
         if (timeselect == "upcoming")
             this.datepicker('setDate', sd);
-        else
-            this.datepicker('setDate', extraArg);
         /* Must click current date so beforeShowDay gets run */
         rangepicker.onlyAnUpdate = true;
         $(this.find('.ui-datepicker-current-day a')[0]).click();
@@ -84,7 +80,10 @@ $.fn.rangepicker = function(timeselect, sd, ed, extraArg) {
             $('#evfilter-ts').append(str);
         }
         $('#evfilter-ts').buttonset();
-        $('#evfilter-ts input').click(extraArg);
+        $('#evfilter-ts input').click(function(ev) {
+            if (rangepicker.onlyAnUpdate) return;
+            onSel();
+        });
 
         /* Set up prev+next buttons */
         /* TODO */
@@ -136,7 +135,7 @@ $.fn.rangepicker = function(timeselect, sd, ed, extraArg) {
             beforeShowDay: selectDayRange,
             onSelect: function(dateText, inst) {
                 var date = $(this).datepicker('getDate');
-                if (updateDatepicker(date)) extraArg();
+                if (updateDatepicker(date)) onSel();
             },
             onChangeMonthYear: function(year, month, inst) {
                 highlightDayRange();

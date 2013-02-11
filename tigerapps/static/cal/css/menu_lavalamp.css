@@ -34,7 +34,7 @@
 .lavaLampWithImage li a:hover, .lavaLampWithImage li a:active, .lavaLampWithImage li a:visited {
     border: none;
 }
-.lavaLampWithImage li a span {
+.lavaLampWithImage li a .sync {
 	display: inline-block;
     vertical-align: middle;
     margin: 0 6px;

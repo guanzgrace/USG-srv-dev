@@ -42,24 +42,15 @@ from cal import cal_util
 
 
 def evlist_gen(request):
-    out_dict = evlist_gen_inner(request)
-
-    # Tags: sort by most common
-    tag_list = Event.objects.filter(event_date_time_start__gte=datetime.now()).values_list('event_cluster__cluster_tags__category_name',flat=True)
-    tag_opts = defaultdict(int)
-    for tag in tag_list:
-        tag_opts[tag] += 1
-    tag_opts = sorted(tuple((tag,count) for tag,count in tag_opts.iteritems()), key=itemgetter(1), reverse=True)
-    out_dict['tag_opts'] = tag_opts
-
+    out_dict = evlist_gen_inner(request, True)
     return evlist_render_page(request, out_dict)
 
 def evlist_gen_ajax(request):
-    out_dict = evlist_gen_inner(request)
+    out_dict = evlist_gen_inner(request, 'changedDates' in request.GET)
     out_json = json.dumps(out_dict)
     return HttpResponse(out_json, content_type="application/json")
 
-def evlist_gen_inner(request):
+def evlist_gen_inner(request, loadEvfilter):
     """
     Generate HTML of events list matching the filters in `request`
     """
@@ -70,6 +61,14 @@ def evlist_gen_inner(request):
     grouped_events = query.events_general(start_day, end_day, query_words, tags, feat_ids, creator, user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
 
+    if loadEvfilter:
+        filter_params['tagsHtml'] = render_to_string(
+            "cal/modules/evfilter_tags.html",
+            {'evfilter_tags': query.tags_general(start_day, end_day)})
+        filter_params['featsHtml'] = render_to_string(
+            "cal/modules/evfilter_feats.html",
+            {'evfilter_feats': query.feats_general(start_day, end_day)})
+
     out_dict = {
         'evlist_inner': inner_html,
         'evlist_title': title,
@@ -77,7 +76,9 @@ def evlist_gen_inner(request):
         'evlist_time_dict': time_params,
         'evlist_filter_dict': filter_params,
     }
+
     return out_dict
+
 
 SPE_LIMIT = 10
 def evlist_spe_hot(request):

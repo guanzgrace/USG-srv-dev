@@ -54,7 +54,8 @@ ul.tagit {
     margin-bottom: 16px;
     border: 1px solid #E5E5E5;
     background: #fff;
-    color: #996633;
+    /* color: #996633; */
+    color: #111111;
 }
 
 ul.tagit li {
@@ -74,7 +75,7 @@ ul.tagit.ui-sortable li.tagit-choice a.ui-icon.ui-icon-grip-dotted-vertical{
 }
 
 ul.tagit li.tagit-choice {
-    border: 1px solid #DDA13C;
+    /* border: 1px solid #DDA13C; */
     display: inline-block;
     text-decoration: none;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);

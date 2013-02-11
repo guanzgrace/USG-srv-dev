@@ -27,7 +27,8 @@
    <script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
    <script type="text/javascript" src="/static/cal/js/datetimepicker_css.js"></script>
    
-   <script type="text/javascript" src="/static/cal/js/textext.js"></script>
+   <script type="text/javascript" src="/static/shared/js/tagit.js"></script>
+   <link href="/static/shared/css/tagit-awesome-orange.css" rel="stylesheet" type="text/css">
    
 <script type="text/javascript">
   $(function() {
@@ -70,6 +71,8 @@
          $("label[for='id_form-0-event_subtitle']").parent().show();
          $('#id_form-0-event_subdescription').show();
          $("label[for='id_form-0-event_subdescription']").parent().show();
+
+         
       }
     })
 });
@@ -93,11 +96,17 @@ $(document).ready(function(){
    $("input[name*='cluster_board_enabled']").attr('checked', 'checked');
    $("input[name*='cluster_notify_boardpost']").attr('checked', 'checked');
    
-   $('.tags').textext({
-        plugins : 'tags prompt focus autocomplete suggestions',
-		suggestions: {{ tag_sugs|safe }},
-		prompt: 'e.g. disiac or freefood',
-    });		
+   $.ajax({
+       url: '/ajax/alltags/',
+       dataType: 'json',
+       success: function(data) {
+           $("#id_cluster_tags_ui").tagit({
+               tagSource: data,
+               select: true,
+               sortable: true
+           });
+       },
+   });
 });
 
 
@@ -136,14 +145,31 @@ There was an error with the submission.<br />
          <tr>
             <th class="tableLabel">{{ field.label_tag }}: 
             {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-            <td>{% if field.errors %}
+            <td>
+                  {% if field.name == "cluster_tags" %}
+                    <ul id="id_cluster_tags_ui" class="tagit ui-sortable"></ul> 
+                  {% endif %}
+
+
+            
+            {% if field.errors %}
                <ul class="errorlist">
                {% for error in field.errors %}
                <li>{{ error }}</li>
                {% endfor %}
                </ul>
+            {% endif %}
+              
+               {% if field.name == "cluster_tags" %}
+               <div style="display:none;">
                {% endif %}
                {{ field }}
+               {% if field.name == "cluster_tags" %}
+               </div>
+               {% endif %}
+
+                 
+
                {% if field.help_text %}
                <br />
                {{ field.help_text }}
@@ -192,7 +218,8 @@ There was an error with the submission.<br />
             <tr>
                <th class="tableLabel">{{ field.label_tag }}: 
                {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-               <td>{% if field.errors %}
+               <td>
+                  {% if field.errors %}
                   <ul class="errorlist">
                   {% for error in field.errors %}
                   <li>{{ error }}</li>

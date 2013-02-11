@@ -1,0 +1,4 @@
+      <ul class="sidebar-grid">{% for feat,count in evfilter_feats %}
+        <li><a class="evfilter-feat events-feat events-feat-img" rel="{{feat.id}}" href="javascript:void(0);"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a><div class="evfilter-feat-count">({{count}})</div></li>
+      {% endfor %}</ul>
+

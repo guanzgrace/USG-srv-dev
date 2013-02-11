@@ -13,7 +13,6 @@ from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
 from datetime import datetime, timedelta
 from models import *
-from cal import widgets
 
 goodInputs = ('%m/%d/%Y %I:%M %p','%m/%d/%Y %I:%M%p', '%m/%d/%Y')
 RSVPInputs = ('%m/%d/%Y',)
@@ -136,6 +135,7 @@ class EventClusterForm(forms.ModelForm):
     cluster_title = forms.CharField(widget=forms.TextInput(attrs={'size':'40'}), label='Event Title')
     cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000) 
     cluster_tags = forms.CharField(widget=forms.TextInput(attrs={'class':'tags','size':'40'}), label='Tags')
+
     
     def clean_cluster_tags(self):
     	"""Transforms a comma-separated string of tags into a list of EventCategory objects""" 

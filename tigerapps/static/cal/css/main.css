@@ -238,6 +238,15 @@ p.dates {
 	font-weight: normal; !important
 }
 
+.loading-spinner {
+    height: 24px;
+    width: 24px;
+}
+#evlist-inner .loading-spinner {
+    position:relative;
+    left: 50%;
+    margin-left: -12px;
+}
 
 /* ------------ Accordion ------------- */
 
@@ -740,6 +749,22 @@ div.bm_container:hover>p>a#bm_tinylink {
    line-height:90%;
 }
 
+/*
+.tagit {
+cursor: text;
+overflow: auto;
+font-size: 14px;
+width: 97%;
+padding: 3px;
+margin-top: 2px;
+margin-right: 6px;
+margin-bottom: 16px;
+border: 1px solid #E5E5E5;
+background: #fff;
+color: #333;
+}
+*/
+
 
 /* ------------ Sidebar ------------- */
 
@@ -818,7 +843,16 @@ ul.sidebar-grid li {
 	color: black;
 }
 #evfilter-feat-current {
-	border: 2px solid #333;
+	border: 2px solid #555;
+	background-color: #eee;
+	-moz-box-shadow: 1px 1px 1px #888;
+	-webkit-box-shadow: 1px 1px 1px #888;
+	box-shadow: 1px 1px 1px #888;
+}
+.evfilter-feat-count {
+    font-size: 10px;
+    margin: -1px 0;
+    padding: 0;
 }
 
 /* ------------ Spotlight ------------- */
