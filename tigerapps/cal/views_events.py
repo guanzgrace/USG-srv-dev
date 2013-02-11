@@ -134,7 +134,6 @@ def evlist_parse_time_params(request):
         else:
             td = datetime.today()
             start_day = datetime(td.year, td.month, td.day, 0, 0, 0)
-    time_params['dp'] = start_day.strftime("%Y%m%d") #so datepicker knows what date was clicked
     ts_ind, start_day, end_day = query.get_sded(timeselect, start_day)
     end_day_show = end_day - timedelta(days=1) #since we want to display inclusive dates; otherwise we're showing [inclusive exclusive]
     time_params['sd'] = start_day.strftime("%Y%m%d")
@@ -438,42 +437,55 @@ def events_forwardtocampusevents(request):
 
 @login_required
 def events_add(request):
-   user = current_user(request)
-   EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
+    user = current_user(request)
+    EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
 
-   if request.method == 'POST':
-       formset = EventFormSet(request.POST, request.FILES)
-       clusterForm = EventClusterForm(request.POST, request.FILES)
-       if formset.is_valid() and clusterForm.is_valid():
-           new_cluster = clusterForm.save(commit=False)
-           new_cluster.cluster_user_created = user
-           new_cluster.save()
-           clusterForm.save_m2m()
+    if request.method == 'POST':
+        tags_in = request.POST['cluster_tags']
+        request.POST['cluster_tags'] = []
+        formset = EventFormSet(request.POST, request.FILES)
+        clusterForm = EventClusterForm(request.POST, request.FILES)
+        if formset.is_valid() and clusterForm.is_valid():
+            new_cluster = clusterForm.save(commit=False)
+            new_cluster.cluster_user_created = user
+            new_cluster.save()
+            clusterForm.save_m2m()
+            tag_names = json.loads(tags_in)
+            for tag_name in tag_names:
+                try:
+                    tag = EventCategory.objects.get(category_name=tag_name)
+                except EventCategory.DoesNotExist:
+                    tag = EventCategory(category_name=tag_name)
+                    tag.save()
+                new_cluster.cluster_tags.add(tag)
+            new_cluster.save()
        
-           for form in formset.forms:
-               new_event = form.save(commit=False)
-               new_event.event_cluster = new_cluster
-               new_event.event_user_last_modified = user
-               new_event.event_attendee_count = 0
-               new_event.save()
-               email_creator(user,new_event)
+            for form in formset.forms:
+                new_event = form.save(commit=False)
+                new_event.event_cluster = new_cluster
+                new_event.event_user_last_modified = user
+                new_event.event_attendee_count = 0
+                new_event.save()
+                email_creator(user,new_event)
 
-           # Added for interfacing with Student Groups
-           if 'post_groups' in request.POST and request.POST['post_groups']:
-               group = Group.objects.get(id=request.POST['post_groups'])
-               entry = Entry(title=new_cluster.cluster_title,text='',event=new_event,group=group)
-               entry.save()
-               mships = Membership.objects.filter(group=group,feed_notifications=True)
-               list = []
-               for m in mships:
-                   list.append(str(m.student.email))
-                   send_mail(EMAIL_HEADER_PREFIX+'\"%s\" Posted to its Feed'%group.name, FEED_NOTIFICATION_EMAIL % (group.name,entry.title,entry.text,group.url), SITE_EMAIL, list, fail_silently=False)
+            # Added for interfacing with Student Groups
+            if 'post_groups' in request.POST and request.POST['post_groups']:
+                group = Group.objects.get(id=request.POST['post_groups'])
+                entry = Entry(title=new_cluster.cluster_title,text='',event=new_event,group=group)
+                entry.save()
+                mships = Membership.objects.filter(group=group,feed_notifications=True)
+                list = []
+                for m in mships:
+                    list.append(str(m.student.email))
+                    send_mail(EMAIL_HEADER_PREFIX+'\"%s\" Posted to its Feed'%group.name, FEED_NOTIFICATION_EMAIL % (group.name,entry.title,entry.text,group.url), SITE_EMAIL, list, fail_silently=False)
 
-           if 'submit' in request.POST:
-              return HttpResponseRedirect('/events/%s?forwardtoevents' % (new_event.event_id))
-   else:   
-    formset = EventFormSet()
-    clusterForm = EventClusterForm()
+            if 'submit' in request.POST:
+                return HttpResponseRedirect('/events/%s?forwardtoevents' % (new_event.event_id))
+
+    else:   
+        formset = EventFormSet()
+        clusterForm = EventClusterForm()
+
     try:
         most_recent_submission = Event.objects.filter(event_cluster__cluster_user_created=user).latest('event_cluster__cluster_date_time_created')
         if datetime.now() - most_recent_submission.event_cluster.cluster_date_time_created <= timedelta(minutes=240):
@@ -491,7 +503,13 @@ def events_add(request):
             pass
     tag_opts = [tag.category_name for tag in EventCategory.objects.all().order_by('category_name')]
     tag_sugs = json.dumps(tag_opts)
-    return render_to_response(request, 'cal/events_add.html', {'formset': formset, 'clusterForm': clusterForm, 'group_mships':group_mships, 'group':group, 'tag_sugs':tag_sugs})
+    return render_to_response(request, 'cal/events_add.html', {
+        'formset': formset,
+        'clusterForm': clusterForm,
+        'group_mships':group_mships,
+        'group':group,
+        'tag_sugs':tag_sugs
+    })
 
 
 @login_required
@@ -1076,4 +1094,9 @@ def xml_feed(request):
 def nocookie():
     dict = {}
     return render_to_response(request, 'cal/nocookie.html', dict)
+
+@login_required
+def feeds_tmp(request):
+    user = current_user(request)
+    return HttpResponseRedirect('/mycal/%d/%s.ics' % (user.pk, user.user_netid))
 

@@ -340,6 +340,31 @@ p.dates {
 	background-color: #ddd;
 }
 
+.text-button {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid #9daccc;
+    background: rgb(250, 224, 158) !important;
+    color: #444;
+    padding: 1px 3px;
+    margin: 0 2px 2px 0;
+    cursor: pointer;
+    height: 18px;
+    font: 11px "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+a.text-button, a.text-button:visited {
+    display: inline-block;
+    text-decoration: none;
+}
+a.text-button:hover, a.text-button:active {
+    background: rgb(243, 214, 138) !important;
+}
+
 
 /* ---------- Events listing ---------- */
 
@@ -423,6 +448,13 @@ p.dates {
 	float: right;
 	margin: 3px 0 0 2px;
 }
+.event-title .text-button {
+    float: right;
+    margin-top: 7px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
 .event-subtext {
 	display: block;
 	text-align: left;
@@ -820,9 +852,6 @@ color: #333;
 ul.sidebar-menu, ul.sidebar-grid {
     list-style: none;
 }
-ul.sidebar-menu li {
-    padding-bottom: 2px;
-}
 ul.sidebar-grid {
 	width: 62%;
 	margin: auto;
@@ -839,11 +868,16 @@ ul.sidebar-grid li {
 }
 
 #evfilter-tag-current {
-	font-weight: bold;
-	color: black;
+	border: 1px solid #555;
+    background-color: #eee;
+	-moz-box-shadow: 1px 1px 1px #888;
+	-webkit-box-shadow: 1px 1px 1px #888;
+	box-shadow: 1px 1px 1px #888;
+    background-color: rgb(233, 192, 103) !important;
+    color: black;
 }
 #evfilter-feat-current {
-	border: 2px solid #555;
+	border: 1px solid #555;
 	background-color: #eee;
 	-moz-box-shadow: 1px 1px 1px #888;
 	-webkit-box-shadow: 1px 1px 1px #888;

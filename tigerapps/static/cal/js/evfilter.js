@@ -1,5 +1,5 @@
 $.fn.showSpinner = function() {
-    this.html('<img src="/static/shared/img/spinner.gif" class="loading-spinner">');
+    this.html('<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner">');
 }
 
 function evlistInit() {
@@ -19,9 +19,9 @@ function evlistInit() {
 }
 
 function evfilterClear() {
-    $('#evfilter-query').val('');
     $('#evfilter-tag-current').attr('id', '');
     $('#evfilter-feat-current').attr('id', '');
+    $('#evfilter-query').val('');
     evlistReq();
     return false;
 }
@@ -65,9 +65,9 @@ function evlistReq(changedDates) {
         if (feat) { data.feat = feat; hasStuff = true; }
     } else {
         data.changedDates = true;
-        $('#evfilter-query').val('');
         $('#evfilter-tags').showSpinner();
         $('#evfilter-feats').showSpinner();
+        $('#evfilter-query').val('');
     }
 
     console.log(data);
