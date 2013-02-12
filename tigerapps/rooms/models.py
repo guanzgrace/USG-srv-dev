@@ -166,7 +166,7 @@ class Review(models.Model):
     user = models.ForeignKey('User')
     
     def __unicode__(self):
-        return summary
+        return self.summary
         
 class ReviewForm(ModelForm):
     class Meta:

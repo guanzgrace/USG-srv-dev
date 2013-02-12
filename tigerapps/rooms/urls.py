@@ -18,6 +18,7 @@ urlpatterns += patterns('rooms.views',
     (r'^respond_queue/?$', 'respond_queue'),
     (r'^leave_queue/?$', 'leave_queue'),
     (r'^get_room/(?P<roomid>\d+)', 'get_room'),
+    (r'^get_room/', 'bad_room'),
     # Admin interface
     (r'^admin/', include(admin.site.urls)),
     (r'^user_settings.html$','settings'),

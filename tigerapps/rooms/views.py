@@ -134,7 +134,10 @@ def floorwordhelper(floor):
 	else:
 		floorword = 'Zebra'
 	return floorword;
-		
+
+@check_user
+def bad_room(request):
+    return HttpResponse("We are missing information for that room.")
 
 # Single room view function
 @check_user

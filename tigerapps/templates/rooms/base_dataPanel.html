@@ -8,11 +8,10 @@
   var id = ui.tab.find('a')[0].id;
   current_draw = id.substring(id.length-1);
   $.publish("draw", current_draw);
-  ui.panel.find("tbody").html("");
   },
   load: function(event, ui) {
-  $("#drawtable").tablesorter({headers: { 0: { sorter: false}}});
-  $("#drawtable").tableFilter();
+  $("#drawtable" + current_draw).tablesorter({headers: { 0: { sorter: false}}});
+  $("#drawtable" + current_draw).tableFilter();
   }});
   });
   $("#tabs").tabs("option", "cache", true);
