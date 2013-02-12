@@ -1,0 +1,71 @@
+@font-face {
+	font-family: Aliquam;
+	src: url('Aliquam.ttf');
+}
+
+.container-fluid {
+	background-color: white; 
+	margin:25px; 
+	-webkit-box-shadow: 0 0 10px black; 
+	-moz-box-shadow: 0 0 10px black; 
+	border-radius:10px; 
+	padding: 0px 20px;
+}
+
+tr {
+	cursor: pointer;
+}
+
+#sidebar table {
+	margin-bottom: 0 !important;
+}
+
+body {
+	background-color: orange;
+/* 	background-image: url('background.gif'); */
+	color: black;
+	font-family: Helvetica;
+}
+
+.course {
+	background-color: white;
+}
+
+.affix {
+	position: fixed;
+	top: 20px;
+}
+
+#arrow-up, #arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	margin: 0 auto;
+}
+
+#arrow-up {
+	border-bottom: 10px solid #CCC;
+	margin-bottom: 5px;
+}
+
+#arrow-down {
+	border-top: 10px solid #CCC;
+	margin-top: 5px;
+}
+
+#space-up, #space-down {
+	height: 15px;
+}
+
+#course-detail-scroll {
+	background-color: white;
+}
+
+#course-detail-scroll th {
+	padding: 0 !important;
+}
+
+.filled {
+	background-color: #fddc92;
+}

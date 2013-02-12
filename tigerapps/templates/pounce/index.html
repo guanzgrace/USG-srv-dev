@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;">
+<title>Princeton Pounce</title>
+<link href="/static/pounce/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/pounce/style.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/static/pounce/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+ 		<div class="container-fluid">
+			<div class="row-fluid" style="padding: 20px 0;">
+				<h1 style="text-align: center; font-family: aliquam; font-size: 70px;">Princeton Pounce</h1>
+			</div>
+			<div class="row-fluid">
+ 				<div class="alert alert-info">
+ 					<b>Welcome to Princeton Pounce!</b> We'll send you an email or text message when your desired class opens up on SCORE. 
+ 					<a class="close" data-dismiss="alert" href="#">&times;</a>
+ 				</div>
+ 			</div>
+ 			<div id="alert-row" class="row-fluid">
+			</div>
+ 			<div class="row-fluid">
+				<form class="form-search" style="text-align: center">
+					<input type="text" id="search-input" placeholder="Course Name or Code" class="input-large search-query"
+					data-toggle="popover" data-placement="left" data-content="Search for a course!" data-trigger="focus">
+					<a id="search-button" class="btn" data-toggle="popover" data-content="Search for a course!" data-trigger="hover"><i class="icon-search"></i></a>
+				</form>	
+			</div>
+			<div class="row-fluid">
+					<div class="span7">
+					<div>
+						<table id="table-courses" class="table table-bordered table-hover hide">
+							<thead>
+								<tr>
+									<th style="width:25%"> Course Code</th>
+									<th style="width:75%"> Course Name</th>
+								</tr>
+							</thead>
+							<tbody id="table-courses-body">
+							</tbody>
+						</table>
+					</div>
+				</div>
+ 				<div id="sidebar-wrapper" class="span5">
+ 					<div id="sidebar">
+ 						<div id="filter-help" class="alert alert-info hide"><b>Click</b> on a course to see available sections.</div>
+						<div id="course-detail" class="hide">
+							<div class="well">
+								<h3 id="course-detail-id"></h3>
+								<h4 id="course-detail-title"></h4>
+								<div id="arrow-up" class="hide"></div>
+								<div id="space-up" class="show"></div>
+								<div id="course-detail-scroll" style="max-height: 200px !important; overflow: auto;">
+									<table class="table">
+										<thead>
+											<tr>
+												<th style="width: 10%"></th>
+												<th style="width: 17%"></th>
+												<th style="width: 28%"></th>
+												<th style="width: 15%"></th>
+											</tr>
+										</thead>
+										<tbody id="course-detail-table">									
+										</tbody>
+									</table>
+								</div>
+								<div id="space-down" class="show"></div>
+								<div id="arrow-down" class="hide"></div>
+							</div>
+							<div id="course-detail-help" class="alert alert-info"><b>Closed</b> sections appear in orange.  Click to subscribe.</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	<!-- Pounce modal -->
+	<div id="pounce-modal" class="modal hide fade" tabindex="-1" role="dialog">
+		<div class="modal-header">
+			<h3>Subscribe to <span class="course-name"></span></h3>
+		</div>
+		<div class="modal-body">
+			<form class="form">
+				<p>You'll receive an email at {{emailAddress}} once a spot in <strong class="course-name"></strong> opens up.</p>
+				<label class="checkbox">
+					<input id="text-checkbox" type="checkbox">Send me a text, too!</input>
+				</label>
+				<div id="text-div" class="hide">
+					<input type="text" id="phone-number" class="span2" placeholder="(###) ###-####"></input>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn" data-dismiss="modal">Cancel</a>
+			<a id="pounce-modal-button" class="btn btn-warning">Pounce</a>
+		</div>
+	</div>
+
+<script src="/static/pounce/pounce.js"></script>
+
+</html>
