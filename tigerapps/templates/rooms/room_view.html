@@ -6,11 +6,14 @@
 
 </head>
 <body id="room_view">
+{% comment %}
+    Removed pending university info.
     {% if room.avail %}
     <div id="room_view_avail">Room Available</div>
     {% else %}
     <div id="room_view_unavail">Room Taken</div>
     {% endif %}
+{% endcomment %}
     <h1 id="room_view_head">{{ room.building }}, Room {{room.number}}: {{ room.numrooms}}-room {{ occlong }}</h1>
     
     
