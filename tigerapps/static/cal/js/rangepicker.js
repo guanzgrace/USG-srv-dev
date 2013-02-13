@@ -112,21 +112,16 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
                 return false;
             }
 
-            if (date < rangepicker.sd || date > rangepicker.ed) {
-                if (rangepicker.ts == 'upcoming') {
-                    /* We must click to update, setting checked=true doesn't
-                    work for some reason... */
-                    rangepicker.onlyAnUpdate = true;
-                    $('#day').click();
-                    rangepicker.onlyAnUpdate = false;
-                } else {
-                    rangepicker.setSdEd(date);
-                    highlightDayRange();
-                }
+            if (rangepicker.ts != 'upcoming' && (date < rangepicker.sd || date > rangepicker.ed)) {
+                rangepicker.setSdEd(date);
+                highlightDayRange();
                 return true;
             }
-            highlightDayRange();
-            return false;
+            /* We must click to update, setting checked=true doesn't work for some reason... */
+            rangepicker.onlyAnUpdate = true;
+            $('#day').click();
+            rangepicker.onlyAnUpdate = false;
+            return true;
         };
         
         rangepicker.dp.datepicker( {
