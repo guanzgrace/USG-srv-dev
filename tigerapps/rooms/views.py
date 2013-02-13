@@ -41,13 +41,13 @@ def check_user(fn):
     """Decorator for authenticating undergrads and handling first visits."""
     @wraps(fn)
     def fn_wrapper(request, *args, **kwargs):
-        """Redirect to welcome if not seen, patch request.user."""
+        """Redirect to welcome if not seen, add Rooms user to request."""
         user = get_user(request.user.username)
         if not user:
             return HttpResponseForbidden()
         if not user.seen_welcome:
             return HttpResponseRedirect('/about/')
-        request.user = user
+        request.rooms_user = user
         return fn(request, *args, **kwargs)
 
     return login_required(fn_wrapper)
@@ -152,7 +152,7 @@ def get_room(request, roomid):
     
     pastReview = None
     try:
-        pastReview = Review.objects.get(room=room, user=request.user)    #the review that the user has posted already (if it exists)
+        pastReview = Review.objects.get(room=room, user=request.rooms_user)    #the review that the user has posted already (if it exists)
     except Review.DoesNotExist:
         pass
         
@@ -179,7 +179,7 @@ def get_room(request, roomid):
             if form.is_valid():
                 print 'ok valid'
                 rev = form.save(commit=False)
-                rev.user = request.user
+                rev.user = request.rooms_user
                 rev.room = room
                 rev.save()
                 revs = Review.objects.filter(room=room)
@@ -204,15 +204,15 @@ def create_queue(request, drawid):
     # Check if user already has queue for this draw
     if user.queues.filter(draw=draw):
         return HttpResponse("fail")
-    queue = Queue.make(draw=draw, user=request.user)
+    queue = Queue.make(draw=draw, user=request.rooms_user)
     queue.save()
-    request.user.queues.add(queue)
+    request.rooms_user.queues.add(queue)
     return HttpResponse("pass")
 
 # Send a queue invite
 @check_user
 def invite_queue(request):
-    user = request.user
+    user = request.rooms_user
     try:
         draws = Draw.objects.all()
         netid = request.POST['netid']
@@ -226,10 +226,10 @@ def invite_queue(request):
     try:
         receiver = get_user(netid)
     except:
-        return manage_queues(request, 'Sorry, the netid "%s" is invalid. Try again!' % netid)
+        return manage_queues_helper(request, 'Sorry, the netid "%s" is invalid. Try again!' % netid)
 
     if len(invited_draws) == 0:
-        return manage_queues(request, 'You didn\'t select any draws. Try again!')
+        return manage_queues_helper(request, 'You didn\'t select any draws. Try again!')
 
     for draw in invited_draws:
         invite = QueueInvite(sender=user, receiver=receiver, draw=draw,
@@ -250,7 +250,7 @@ Princeton Room Draw Guide! Accept the request at the following URL:
 # Respond to a queue invite
 @check_user
 def respond_queue(request):
-    user = request.user
+    user = request.rooms_user
     try:
         invite_id = int(request.POST['invite_id'])
         accepted = int(request.POST['accepted'])
@@ -264,7 +264,7 @@ def respond_queue(request):
         if accepted:
             queue = invite.accept()
             if not queue:
-                return manage_queues(request)
+                return manage_queues_helper(request)
             friends = queue.user_set.all()
             for friend in friends:
                 if user != friend:
@@ -280,12 +280,12 @@ to add. """ % (receiver_name, url)
         return HttpResponse(e)
 
 
-    return manage_queues(request)
+    return manage_queues_helper(request)
 
 # Leave a queue that was previously shared
 @check_user
 def leave_queue(request):
-    user = request.user
+    user = request.rooms_user
     try:
         draw = Draw.objects.get(pk=int(request.POST['draw_id']))
     except:
@@ -302,11 +302,11 @@ def leave_queue(request):
         qtr.save()
     user.queues.remove(q1)
     user.queues.add(q2)
-    return manage_queues(request);
+    return manage_queues_helper(request);
 
 @check_user
 def settings(request):
-    user = request.user
+    user = request.rooms_user
     if request.method == 'POST':
         if request.POST['form_type'] == 'settings':
             handle_settings_form(request, user)
@@ -360,7 +360,7 @@ def handle_confirmphone_form(confirmation, user):
  
 @check_user
 def confirm_phone(request):
-    user = request.user
+    user = request.rooms_user
     if request.method == 'POST':
         if request.POST['form_type'] == 'settings':
             handle_settings_form(request, user)
@@ -375,10 +375,12 @@ def confirm_phone(request):
 
     return render_to_response('rooms/confirm_phone.html', {'user': user, 'first_try':first_try})
 
-
 @check_user
 def manage_queues(request, error=""):
-    request.user = user
+    return manage_queues_helper(request, error)
+
+def manage_queues_helper(request, error=""):
+    user = request.rooms_user
     received_invites = QueueInvite.objects.filter(receiver=user)
     sent_invites = QueueInvite.objects.filter(sender=user)
     user_queues = user.queues.all()
