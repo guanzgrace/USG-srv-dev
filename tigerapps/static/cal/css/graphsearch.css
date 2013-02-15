@@ -1,0 +1,23 @@
+.evfilter-gs {
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    outline: none;
+    cursor: text;
+    margin: 0 0 16px;
+}
+input.evfilter-gs {
+    padding: 5px 8px 6px;
+    width: 320px;
+}
+div.evfilter-gs {
+    height: 32px;
+    width: 32px;
+    padding: 3px;
+    display: inline-block;
+    vertical-align: top;
+}
+div.evfilter-gs img {
+    height: 32px;
+    width: 32px;
+}

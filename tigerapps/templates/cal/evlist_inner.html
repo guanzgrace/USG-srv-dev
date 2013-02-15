@@ -16,7 +16,7 @@
       	<a class="events-feat events-feat-img" href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a>
       {% endfor %}
       {% for tag in event.event_cluster.cluster_tags.all %}
-        <a class="text-button" href="/evlist/gen/?tag={{tag}}">{{tag}}</a>
+        <a class="text-button" href="/evlist/gen/?tag={{tag}}">#{{tag}}</a>
       {% endfor %}
       <a {% ifequal user_data event.event_cluster.cluster_user_created %}class="event-owner"{% endifequal %}href="/events/{{event.event_id}}">{{event}}</a>
       {% if event.event_cluster.cluster_image %}<a rel="shadowbox[Gallery]" href="{{event.event_cluster.cluster_image.url}}" title="{{ event.displayname }}"><img src="/static/cal/img/design/icon-clip.png" /></a>{% endif %}

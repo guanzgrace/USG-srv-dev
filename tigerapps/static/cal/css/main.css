@@ -373,10 +373,11 @@ a.text-button:hover, a.text-button:active {
 
 .evlist-top {
 	overflow: auto;
-    margin-bottom:16px;
 }
 .evlist .title {
 	padding: 0;
+    margin-top:6px;
+    margin-bottom:12px;
 }
 .evlist .title input {
     font-size: 18px;

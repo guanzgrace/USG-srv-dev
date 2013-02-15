@@ -9,6 +9,7 @@
 ################################################################
 
 from django.http import *
+from django.db.models import Count
 from models import *
 from utils.dsml import namelookup
 import json
@@ -16,6 +17,41 @@ import json
 def get_all_tags(request):
     tags = [tag.category_name for tag in EventCategory.objects.all()]
     return HttpResponse(json.dumps(tags), content_type="application/json")
+
+def get_all_graphsearch(request):
+    """
+    Returns json list of rels:
+        entry type (all, tags, feats, creators)
+        entry id (in database)
+        entry image
+    of search:
+        entry search name
+        count of clusters matching entry
+    THIS SHOULD BE CACHED
+    """
+        
+    rels = [(0, 0)]
+    search = [('all', 9999999)]
+
+    #TODO: use ids instead of names in tag/crceator
+    tags = EventCategory.objects.all().annotate(c=Count('tag_clusters'))
+    rels += [(1, tag.category_name.lower()) for tag in tags]
+    search += [(tag.category_name.lower(), tag.c) for tag in tags]
+
+    feats = EventFeature.objects.all().annotate(c=Count('feature_clusters'))
+    rels += [(2, feat.id, feat.feature_icon) for feat in feats]
+    search += [(feat.feature_name.lower(), feat.c) for feat in feats]
+
+    creators = CalUser.objects.all().annotate(c=Count('creator_clusters'))
+    rels = [(3, u.user_netid.lower()) for u in creators]
+    search += [(u.user_netid.lower(), u.c) for u in creators]
+
+    data = {
+        'rels': rels,
+        'search': search,
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
 
 def netidlookup(request):
 	""" Return a formatted HTML chunk of the names found using the DSML for the query """

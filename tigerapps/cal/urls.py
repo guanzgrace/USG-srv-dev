@@ -145,6 +145,7 @@ urlpatterns = patterns('',
     (r'^ajax/netidlookup/?$', 'cal.views_ajax.netidlookup'),
     (r'^ajax/allguests/?$', 'cal.views_ajax.allguests'),
     (r'^ajax/alltags/?$', 'cal.views_ajax.get_all_tags'),
+    (r'^ajax/graphsearch/?$', 'cal.views_ajax.get_all_graphsearch'),
 
     # I don't know what these do...
     (r'^test/adminfun/?$', 'cal.views_test.activityFeed'),

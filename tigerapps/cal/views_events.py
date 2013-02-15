@@ -450,10 +450,10 @@ def events_add(request):
             new_cluster.cluster_user_created = user
             new_cluster.save()
             clusterForm.save_m2m()
-            tag_names = json.loads(tags_in)
             for tag_name in tag_names:
+                tag_name = re.sub("^\W", "", tag_name)
                 try:
-                    tag = EventCategory.objects.get(category_name=tag_name)
+                    tag = EventCategory.objects.get(category_name__iexact=tag_name)
                 except EventCategory.DoesNotExist:
                     tag = EventCategory(category_name=tag_name)
                     tag.save()

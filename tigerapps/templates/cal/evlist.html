@@ -5,12 +5,14 @@
 {% block headercss %}
 <link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />
 <link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
+<link rel="stylesheet" type="text/css" href="/static/cal/css/graphsearch.css">
 {% endblock %}
 {% block headerscript %}
 <script type="text/javascript" src="/static/cal/js/coin-slider.min.js"></script>
 <script type="text/javascript" src="/static/cal/js/shadowbox/shadowbox.js"></script>
 <script type="text/javascript" src="/static/cal/js/rangepicker.js"></script>
 <script type="text/javascript" src="/static/cal/js/evfilter.js"></script>
+<script type="text/javascript" src="/static/cal/js/graphsearch.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#coin-slider').coinslider({ width: 260, delay: 5000 });
@@ -18,16 +20,6 @@
   });
   $(document).ready(evlistInit);
   {% if evlist_time_dict %}
-  $(document).ready(function() {
-    $('#evfilter-main').button().css({
-      'font': 'inherit',
-      'color': 'inherit',
-      'text-align': 'left',
-      'outline': 'none',
-      'cursor': 'text',
-      'padding': '2px 6px',
-    });
-  });
   $(function() {
 	  var ts = '{{evlist_time_dict.ts}}';
 	  var sd = '{{evlist_time_dict.sd}}';
@@ -37,7 +29,15 @@
     $('.evfilter-tag').click(evfilterTagOnClick);
     $('.evfilter-feat').click(evfilterFeatOnClick);
     $('#evfilter-clear').click(evfilterClear);
+
   });
+  $(function() {
+    $('#evfilter-main').graphsearch({
+        field: [0, 0],
+        name: 'all',
+    });
+  });
+
   {% endif %}
 </script>
 {% endblock %}
@@ -119,7 +119,7 @@ for myevents
       <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
       <p class="dates" id="evlist-title">{{evlist_title}}</p>
     </div>
-    <h1 class="title"><input id="evfilter-main" type="text" value="All"/> Events</h1>
+    <h1 class="title"><span id="evfilter-main"></span></h1>
   {% else %}
     <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
   {% endif %}
