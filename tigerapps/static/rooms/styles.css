@@ -135,6 +135,22 @@ b
     background: url('images/sprites/plusminus.png') -71px 0;
 }
 
+.helplink
+{
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: url('images/sprites/plusminus.png') -114px 0;
+}
+
+.helplink:hover
+{
+    background-position:  -136px 0;
+}
+
 #settings:hover
 {
     background-position: -93px 0;
