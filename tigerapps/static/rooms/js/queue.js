@@ -25,7 +25,7 @@ var QueueModule = (function($) {
     var saveurl = REAL_TIME_ADDR + '/update_queue/';
     
     // Last update for this draw
-    var update_timestamp = 0;
+    var update_id = 0;
     // Currently waiting request
     var update_xhr = 0;
     // Are we sending queue
@@ -129,7 +129,7 @@ var QueueModule = (function($) {
     var handler = function(data) {
         console.log('got queue');
         console.log(data)
-        update_timestamp = data.timestamp;
+        update_id = data.id;
         clear();
         add_helper(data.rooms);
         if (data.kind == 'EDIT')
@@ -149,18 +149,18 @@ var QueueModule = (function($) {
     }
 
 
-    var get_queue = function(drawid, timestamp) {
+    var get_queue = function(drawid, last_id) {
         if (update_xhr && update_xhr.readystate != 4)
             update_xhr.abort();
         console.log('Getting queue');
-        update_xhr = ExternAjax('/get_queue/'+drawid+'/'+timestamp,
+        update_xhr = ExternAjax('/get_queue/'+drawid+'/'+last_id,
                                 'json', null, handler);
                                 //function(){setTimeout(get_update, 1000)});
     }
 
     get_update = function() {
         console.log('get_update called');
-        get_queue(current_draw, update_timestamp);
+        get_queue(current_draw, update_id);
     }
 
         
