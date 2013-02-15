@@ -138,6 +138,8 @@ def check(user, queue, timestamp):
     response = manager.check(user, queue, timestamp)
     while not response:
         response = manager.check(user, queue, int(time.time()))
+    # Add in queue invitation notification.
+    response['invites'] = QueueInvite.objects.filter(receiver=user).count()
     return response
 
 edit = manager.edit

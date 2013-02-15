@@ -137,6 +137,14 @@ var QueueModule = (function($) {
         else
             $('#queue_note').html('new queue');
         update_idlist();
+        // Include an invite notification as needed.
+        if (data.invites == 0)
+            $("#managequeues a").html("Share Queue");
+        else if (data.invites == 1)
+            $("#managequeues a").html("Share Queue - 1 invite");
+        else
+            $("#managequeues a").html("Share Queue - " + data.invites + " invites");
+
         setTimeout(get_update, 100);
     }
 

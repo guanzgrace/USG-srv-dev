@@ -223,9 +223,8 @@ def invite_queue(request):
     except:
         return HttpResponse('Oops! Your form data is invalid. Try again!')
 
-    try:
-        receiver = get_user(netid)
-    except:
+    receiver = get_user(netid)
+    if not receiver:
         return manage_queues_helper(request, 'Sorry, the netid "%s" is invalid. Try again!' % netid)
 
     if len(invited_draws) == 0:
