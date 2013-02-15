@@ -103,7 +103,7 @@ DAY_GROUPS = (
     ("Night (after 7:30 pm)", 24, 0),
 )
 
-def events_general(start_day, end_day, query=None, tags=None, feat_ids=None, creator=None, rsvp_user=0):
+def events_general(start_day, end_day, query=None, tags=None, feats=None, creator=None, rsvp_user=0):
     events = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lt=end_day)
 
     if query:
@@ -112,17 +112,11 @@ def events_general(start_day, end_day, query=None, tags=None, feat_ids=None, cre
             q |= Q(event_cluster__cluster_title__icontains=word) | Q(event_cluster__cluster_description__icontains=word) | Q(event_cluster__cluster_tags__category_name__icontains=word) | Q(event_cluster__cluster_features__feature_name__icontains=word)
         events = events.filter(q)
     if tags:
-        tag_objs = EventCategory.objects.filter(category_name__in=tags)
-        events = events.filter(event_cluster__cluster_tags__in=tag_objs)
-    if feat_ids:
-        feats = EventFeature.objects.filter(id__in=feat_ids)
+        events = events.filter(event_cluster__cluster_tags__in=tags)
+    if feats:
         events = events.filter(event_cluster__cluster_features__in=feats)
     if creator:
-        try:
-            caluser = CalUser.objects.get(user_netid=creator)
-        except:
-            raise Exception("Invalid argument: creator == %s" % creator)
-        events = events.filter(event_cluster__cluster_user_created=caluser)
+        events = events.filter(event_cluster__cluster_user_created=creator)
 
     events = events.order_by('event_date_time_start')
     

@@ -137,7 +137,7 @@ Shadowbox.init();
 			{% if event.event_max_attendance %}<li><span class="field">Max Attendees:</span> {{event.event_max_attendance}}</li>{% endif %}
 			<li><span class="field">RSVP Required:</span> {{event.event_cluster.cluster_rsvp_enabled|yesno:"Yes,No,No"}}</li>
 			{% if event.event_cluster.cluster_rsvp_enabled %}<li><span class="field">RSVP Deadline:</span> {{event.event_date_rsvp_deadline|naturalday|capfirst}}</li>{% endif %}
-			<li><span class="field">Added by:</span> <a href="/eventsby/{{event.event_cluster.cluster_user_created.user_netid}}">{{event.event_cluster.cluster_user_created.full_name_suffix}}</a><a href="mailto:{{event.event_cluster.cluster_user_created.user_email}}"><img style="padding-left: 4px;" src="/static/cal/img/icons/icon_email.png"></a></li>
+			<li><span class="field">Added by:</span> <a href="/evlist/gen/?creator={{event.event_cluster.cluster_user_created.user_netid}}">{{event.event_cluster.cluster_user_created.full_name_suffix}}</a><a href="mailto:{{event.event_cluster.cluster_user_created.user_email}}"><img style="padding-left: 4px;" src="/static/cal/img/icons/icon_email.png"></a></li>
 			{% if associatedEvents %}
 			<li><span class="field">Related Events:</span></li>
 			<ul>

@@ -17,9 +17,9 @@ function is called once at page load, and then every time
 timeselect is changed. */
 $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
     /* Don't update if not needed */
-    if (rangepicker.ts == timeselect)
+    if (rangepicker.timeselect == timeselect)
         return false;
-    rangepicker.ts = timeselect;
+    rangepicker.timeselect = timeselect;
 
     sd = dateStringToDate(sd);
     ed = dateStringToDate(ed);
@@ -112,7 +112,7 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
                 return false;
             }
 
-            if (rangepicker.ts != 'upcoming' && (date < rangepicker.sd || date > rangepicker.ed)) {
+            if (rangepicker.timeselect != 'upcoming' && (date < rangepicker.sd || date > rangepicker.ed)) {
                 rangepicker.setSdEd(date);
                 highlightDayRange();
                 return true;

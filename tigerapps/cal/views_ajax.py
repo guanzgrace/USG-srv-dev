@@ -31,19 +31,19 @@ def get_all_graphsearch(request):
     """
         
     rels = [(0, 0)]
-    search = [('all', 9999999)]
+    search = [('all', 99999999)]
 
     #TODO: use ids instead of names in tag/crceator
     tags = EventCategory.objects.all().annotate(c=Count('tag_clusters'))
-    rels += [(1, tag.category_name.lower()) for tag in tags]
-    search += [(tag.category_name.lower(), tag.c) for tag in tags]
+    rels += [(1, tag.category_name) for tag in tags]
+    search += [(tag.category_name, tag.c) for tag in tags]
 
     feats = EventFeature.objects.all().annotate(c=Count('feature_clusters'))
     rels += [(2, feat.id, feat.feature_icon) for feat in feats]
     search += [(feat.feature_name.lower(), feat.c) for feat in feats]
 
     creators = CalUser.objects.all().annotate(c=Count('creator_clusters'))
-    rels = [(3, u.user_netid.lower()) for u in creators]
+    rels = [(3, u.user_netid) for u in creators]
     search += [(u.user_netid.lower(), u.c) for u in creators]
 
     data = {

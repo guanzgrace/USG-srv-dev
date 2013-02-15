@@ -2,13 +2,12 @@ GS = {};
 
 $.fn.graphsearch = function(opts) {
     GS.whole = this;
-    this.append('<form><div class="evfilter-gs"></div><input class="evfilter-gs" type="text" disabled="disabled"></form>');
+    this.append('<form><div class="evfilter-gs"></div><input title="Feature coming soon..." class="evfilter-gs" type="text" disabled="disabled"></form>');
     GS.div = this.find('div');
-    GS.divspan = this.find('div span');
     GS.gs = this.find('input');
-
     GS.div.button().removeClass('ui-corner-all').addClass('ui-corner-left');
     GS.gs.button().removeClass('ui-corner-all').addClass('ui-corner-right');
+    GS.divspan = this.find('div span');
 
 
     var showAutocomplete = function(inds) {
@@ -35,7 +34,7 @@ this.click(showActiveField(....));
         var serverId = field[1];
         
         if (type == 0) {   /* all */
-            GS.divspan.html('<img src="/static/cal/img/gs-all.png"/>');
+            GS.divspan.html('<img src="/static/cal/img/gs-allevents.png"/>');
             GS.activeType = null;
             GS.gs.val('All Events');
         }

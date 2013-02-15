@@ -89,7 +89,7 @@ class StdImageField(ImageField):
             ext = os.path.splitext(filename)[1].lower().replace('jpg', 'jpeg')
             dst = self.generate_filename(instance, '%s%s' % (instance._get_pk_val(), ext))
             dst_fullpath = os.path.join(settings.MEDIA_ROOT, dst)
-            if os.path.abspath(filename) != os.path.abspath(dst_fullpath):
+            if os.path.abspath(filename) != os.path.abspath(dst_fullpath) and os.path.exists(filename):
                 os.rename(filename, dst_fullpath)
                 if self.size:
                     self._resize_image(dst_fullpath, self.size)
