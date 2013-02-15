@@ -10,21 +10,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 
 DEFAULT_CLEAR_INTERVAL = 10*60
 
-init_time = int(time.time())
-
-timing_event = Event()
-
-def triggertime():
-    timing_event.set()
-    timing_event.clear()
-
-def testtime():
-    started = int(time.time())
-    print "Hello %d" % started
-    timing_event.wait()
-    return '%d %d %d' % (init_time, started, int(time.time()))
-
-
 class LastQueueUpdate(object):
     def __init__(self, queue_id=0, update=None):
         self.event = Event()
@@ -105,39 +90,37 @@ class QueueManager(object):
                               'building':room.building.name})
         return {'rooms':room_list}
 
-    def check(self, user, queue, timestamp):
-        print user, queue, timestamp
+    def check(self, user, queue, last_id):
+        print user, queue, last_id
         latest = self._load(queue.id)
-        if timestamp != 0 and timestamp >= latest.update.timestamp:
+        if last_id == latest.update.id:
             print 'going to wait'
-            print latest.update.timestamp
+            print latest.update.id
             latest.event.wait()
             latest = self._load(queue.id)
         print 'past wait'
         queueToRooms = QueueToRoom.objects.filter(queue=queue).order_by('ranking')
         if not queueToRooms:
-            return {'timestamp':int(time.time()), 'rooms':[]}
+            return {'id':latest.update.id, 'rooms':[]}
         room_list = []
         if latest.update.kind == QueueUpdate.EDIT:
-            if latest.update.kind_id == user.id and timestamp != 0:
-                return None
             netid = User.objects.get(pk=latest.update.kind_id).netid
         else:
             netid = ''
         for qtr in queueToRooms:
             room_list.append({'id':qtr.room.id, 'number':qtr.room.number,
                               'building':qtr.room.building.name})
-        return {'timestamp':int(time.time()),
+        return {'id':latest.update.id,
                 'kind':QueueUpdate.UPDATE_KINDS[latest.update.kind][1],
                 'netid':netid,
                 'rooms':room_list}
 
 manager = QueueManager()
 
-def check(user, queue, timestamp):
-    response = manager.check(user, queue, timestamp)
-    while not response:
-        response = manager.check(user, queue, int(time.time()))
+def check(user, queue, last_id):
+    response = manager.check(user, queue, last_id)
+    while response.get('netid') == user.netid and last_id != 0:
+        response = manager.check(user, queue, response['id'])
     # Add in queue invitation notification.
     response['invites'] = QueueInvite.objects.filter(receiver=user).count()
     return response

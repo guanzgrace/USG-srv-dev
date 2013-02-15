@@ -12,7 +12,10 @@ class RealTimeMiddleware(object):
         from other tigerapps domains.
         """
         response['Access-Control-Allow-Credentials'] =  "true"
-        origin = request.META['HTTP_ORIGIN']
+        try:
+            origin = request.META['HTTP_ORIGIN']
+        except:
+            return response
         if origin.find(BASE_DOMAIN) != -1:
             response['Access-Control-Allow-Origin'] = origin
         return response
