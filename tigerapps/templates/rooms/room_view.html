@@ -2,7 +2,6 @@
 <head>
 <link type="text/css" href="/static/rooms/reset.css" rel="Stylesheet" />
 <link type="text/css" href="/static/rooms/styles.css" rel="Stylesheet" />
-<script type="text/javascript" src="jquery.js"></script>
 
 </head>
 <body id="room_view">
@@ -86,6 +85,7 @@
     {% if reviews.count == 0 %}
         <p><div align=center>Sorry, there are no reviews for this room.</div></p>
     {% endif %}
+
 
     {% if form %}
         <form action = "" method="POST">

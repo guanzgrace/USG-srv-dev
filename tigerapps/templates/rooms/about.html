@@ -26,7 +26,7 @@
             top: 50px; 
             display: block; 
             border: 10px solid transparent;
-            background: url('wash-white-30.png');
+            background: url('/static/rooms/images/wash-white-30.png');
             
             -moz-box-shadow: 0 0 5px #888;
             -webkit-box-shadow: 0 0 5px#888;
@@ -41,7 +41,7 @@
         	margin: 15px;
         	display: block; 
             border: 10px solid transparent;
-            background: url('wash-white-30.png');
+            background: url('/static/rooms/images/wash-white-30.png');
             
             -moz-box-shadow: 0 0 5px #888;
             -webkit-box-shadow: 0 0 5px#888;
@@ -145,9 +145,10 @@
     
     <div style="width: 700px; margin: 0 auto">
 
+      <a href="/">
         <div id="mainImage" class="screenshot"><img src="/static/rooms/images/RoomGuideScreenshot.png" /></div>
         <img id="rays" src="/static/rooms/images/pinwheel.png" />
-        
+      </a>
 
         <h1>Welcome</h1>
         <h2 style="display: block; text-align: center; font-size: 30px">To the New Student Room Guide</h2>
@@ -157,12 +158,13 @@
 		
 		
         <div class="bullet"><div class="circle"></div><h2>Floor Plan Navigation</h2><br>
-        <p class="description">Locate rooms and facilities quickly, in a simple, visual way.</p></div>
+        <p class="description">Locate rooms and facilities quickly, in a simple, visual way.</p>
+        <p class="description">Click a building pin on the map to see floorplans. Click a room on the floorplan image to see its details.</p></div>
         <div class="screenshot"><img class="fullscreen"src="/static/rooms/images/floorplan.png" /></div>
         
         
         <div class="bullet"><div class="circle"></div><h2>Real-time Collaborative Queue</h2><br>
-        <p class="description">Manage your preferred rooms with friends and immediately see any changes made by your room draw group members.</p></div>
+        <p class="description">Manage your preferred rooms with friends. Add or remove rooms, drag and drop to reorder, and immediately see any changes made by your room draw group members.</p></div>
         <div class="screenshot" id="queuebox"><img class="fullscreen"src="/static/rooms/images/queue.png" /></div>
         
        
@@ -190,10 +192,12 @@
             <p>The New Student Room Guide is an unofficial, student-run resource providing information on a best-effort basis. Make sure to visit the official <a href="http://www.princeton.edu/us/housing/undergraduate_info/draw-guide/">Undergraduate Housing Guide</a> for the most accurate information regarding room attributes and availability.</p>
         <div class="divider"></div>
 
-        <div style="color: rgb(255, 133, 44)" class="bottomtext">Built for Princetonians, by Princetonians.</div>
+        <div style="color: rgb(255, 133, 44)" class="bottomtext">Built for Princetonians, by Princetonians. Originally a COS 333 project.</div>
         <br>
-        <div class="bottomtext">Willa Chen, Josh Giles, Lily Healey, Kevin Mantel, and John O'Neill &copy; 2012</div>
+        <div class="bottomtext">Willa Chen, Josh Giles, Lily Healey, Kevin Mantel, and John O'Neill &copy; 2013</div>
         <br>
+
+        <a href="/"><div class="bottomtext">Take me to the site!</div></a>
 
     </div>    
 
