@@ -68,6 +68,7 @@ function initialize() {
                 position: new google.maps.LatLng(mapdata[i]['lat'], mapdata[i]['lon']),
                 map: map,
                 visible: false,
+                title: 'Click for ' + mapdata[i]['name'] + ' floorplans.',
             });
         google.maps.event.addListener(markers[i], 'click', 
                                       clicklistener(mapdata[i]['name']));
