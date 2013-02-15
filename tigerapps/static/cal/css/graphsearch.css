@@ -17,7 +17,14 @@ div.evfilter-gs {
     display: inline-block;
     vertical-align: top;
 }
-div.evfilter-gs img {
+div.evfilter-gs span.ui-button-text {
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+div.evfilter-gs span img {
     height: 32px;
     width: 32px;
 }
