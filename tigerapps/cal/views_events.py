@@ -43,6 +43,19 @@ from cal import cal_util
 
 def evlist_gen(request):
     out_dict = evlist_gen_inner(request, True)
+    D = out_dict['evlist_filter_dict']
+    if 'tag' in D:
+        out_dict['gs_field'] = json.dumps((1, D['tag'].category_name))
+        out_dict['gs_name'] = json.dumps(D['tag'].category_name)
+    elif 'feat' in D:
+        out_dict['gs_field'] = json.dumps((2, D['feat'].id, str(D['feat'].feature_icon)))
+        out_dict['gs_name'] = json.dumps(D['feat'].feature_name)
+    elif 'creator' in D:
+        out_dict['gs_field'] = json.dumps((3, D['creator'].user_netid))
+        out_dict['gs_name'] = json.dumps(D['creator'].user_netid)
+    else:
+        out_dict['gs_field'] = json.dumps((0, 0))
+        out_dict['gs_name'] = json.dumps('all')
     return evlist_render_page(request, out_dict)
 
 def evlist_gen_ajax(request):
@@ -55,10 +68,10 @@ def evlist_gen_inner(request, loadEvfilter):
     Generate HTML of events list matching the filters in `request`
     """
     time_params, title, dates, start_day, end_day = evlist_parse_time_params(request)
-    filter_params, query_words, tags, feat_ids, creator = evlist_parse_filter_params(request)
+    filter_params, query_words, tags, feats, creator = evlist_parse_filter_params(request)
 
     user = current_user(request)
-    grouped_events = query.events_general(start_day, end_day, query_words, tags, feat_ids, creator, user)
+    grouped_events = query.events_general(start_day, end_day, query_words, tags, feats, creator, user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
 
     if loadEvfilter:
@@ -165,29 +178,36 @@ def evlist_parse_filter_params(request):
         query_words = []
         for entry in query_string_fmt:
             query_words += entry.split(" ")
-        filter_params['query'] = query_string
     else:
         query_words = None
 
     if "tag" in request.GET:
-        tags = request.GET.getlist('tag')
-        filter_params['tags'] = tags
+        tags_in = request.GET.getlist('tag')
+        tags = EventCategory.objects.filter(category_name__in=tags_in)
+        if tags:
+            filter_params['tag'] = tags[0]
     else:
         tags = None
 
     if "feat" in request.GET:
         feat_ids = map(int, request.GET.getlist('feat'))
-        filter_params['feats'] = feat_ids
+        feats = EventFeature.objects.filter(id__in=feat_ids)
+        if feats:
+            filter_params['feat'] = feats[0]
     else:
-        feat_ids = None
+        feats = None
 
     if "creator" in request.GET:
-        creator = request.GET['creator']
-        filter_params['creator'] = creator
+        creator_in = request.GET['creator']
+        try:
+            creator = CalUser.objects.get(user_netid=creator_in)
+            filter_params['creator'] = creator
+        except CalUser.DoesNotExist:
+            creator = None
     else:
         creator = None
 
-    return filter_params, query_words, tags, feat_ids, creator
+    return filter_params, query_words, tags, feats, creator
 
 
 def evlist_render_page(request, out_dict):

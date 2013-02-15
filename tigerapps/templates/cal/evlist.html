@@ -31,11 +31,11 @@
     $('#evfilter-clear').click(evfilterClear);
 
   });
-  $(function() {
+  $(function() { {% autoescape off %}
     $('#evfilter-main').graphsearch({
-        field: [0, 0],
-        name: 'all',
-    });
+        field: {{gs_field}},
+        name: {{gs_name}},
+    }); {% endautoescape %}
   });
 
   {% endif %}
