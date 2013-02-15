@@ -3,11 +3,11 @@ from functools import wraps
 from django.conf import settings as conf
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, cache_page
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.gzip import gzip_page
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django import forms
@@ -54,27 +54,23 @@ def check_user(fn):
 
 @check_user
 @cache_control(max_age=24*60*60, must_revalidate=True)
+@cache_page(24*60*60)
+@gzip_page
 def index(request):
     draw_list = Draw.objects.order_by('id')
-    
-    response = cache.get('rooms_index')
-    if not response:
-        mapscript = mapdata()
-        drawscript = drawdata()
-        response = render_to_response('rooms/base_dataPanel.html', locals())
-        cache.set('rooms_index', response)
+    mapscript = mapdata()
+    drawscript = drawdata()
+    response = render_to_response('rooms/base_dataPanel.html', locals())
     return response
 
 @check_user
 # May need to change if put in availability.
 @cache_control(max_age=24*60*60, must_revalidate=True)
+@cache_page(24*60*60)
+@gzip_page
 def draw(request, drawid):
-    key = 'rooms_draw%s' % drawid
-    response = cache.get(key)
-    if not response:
-        room_list = Room.objects.filter(building__draw__id=drawid)
-        response = render_to_response('rooms/drawtab.html', locals())
-        cache.set(key, response)
+    room_list = Room.objects.filter(building__draw__id=drawid)
+    response = render_to_response('rooms/drawtab.html', locals())
     return response
 
 def mapdata():
