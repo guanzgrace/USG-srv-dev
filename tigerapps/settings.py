@@ -21,6 +21,14 @@ else:
     CURRENT_HOME = "http://www.tigerapps.org"
 
 
+if 'IS_REAL_TIME_SERVER' in os.environ:
+    IS_REAL_TIME_SERVER = True
+else:
+    IS_REAL_TIME_SERVER = False
+
+
+REAL_TIME_PORT = os.environ.get('REAL_TIME_PORT', '8031')
+
 #For django_cas
 LOGIN_URL = '/login/'
 #For paypal
@@ -126,6 +134,9 @@ MIDDLEWARE_CLASSES = (
 
 )
 
+if IS_REAL_TIME_SERVER:
+    MIDDLEWARE_CLASSES += ('middleware.RealTimeMiddleware',)
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -164,10 +175,10 @@ INSTALLED_APPS = (
     'ccc',
     'elections',
     'pam',
+    'pounce',
     'rooms',
     'pom',
     'storage',
-
 # These apps were never launched and there are no plans to launch them
 # This means that they ARE NOT sync'd with South
 #    'facebook',

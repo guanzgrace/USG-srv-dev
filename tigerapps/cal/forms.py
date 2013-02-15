@@ -11,9 +11,8 @@
 from django import forms
 from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets as adminwidgets
-from models import *
-#import datetime
 from datetime import datetime, timedelta
+from models import *
 
 goodInputs = ('%m/%d/%Y %I:%M %p','%m/%d/%Y %I:%M%p', '%m/%d/%Y')
 RSVPInputs = ('%m/%d/%Y',)
@@ -133,12 +132,14 @@ class SingleEventForm(forms.ModelForm):
         return event_date_rsvp_deadline
 
 class EventClusterForm(forms.ModelForm):
+    cluster_title = forms.CharField(widget=forms.TextInput(attrs={'size':'40'}), label='Event Title')
     cluster_description = forms.CharField(widget=forms.Textarea, label='Description', max_length=10000)
+    cluster_tags = forms.CharField(required=False)
     
     class Meta:
         model=EventCluster
         exclude = ('cluster_user_created')
-        fields = ['cluster_title', 'cluster_description', 'cluster_category', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
+        fields = ['cluster_title', 'cluster_description', 'cluster_tags', 'cluster_features', 'cluster_image', 'cluster_rsvp_enabled', 'cluster_board_enabled', 'cluster_notify_boardpost']
 
 class EditUserForm(forms.ModelForm):
    class Meta:

@@ -1,0 +1,148 @@
+{% extends "cal/base.html" %}
+{% load app_extras %}
+
+{% block title %}{{evlist_title}}{% endblock %}
+{% block headercss %}
+<link rel="stylesheet" href="/static/cal/css/coin-slider-styles.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/static/cal/js/shadowbox/shadowbox.css">
+<link rel="stylesheet" type="text/css" href="/static/cal/css/graphsearch.css">
+{% endblock %}
+{% block headerscript %}
+<script type="text/javascript" src="/static/cal/js/coin-slider.min.js"></script>
+<script type="text/javascript" src="/static/cal/js/shadowbox/shadowbox.js"></script>
+<script type="text/javascript" src="/static/cal/js/rangepicker.js"></script>
+<script type="text/javascript" src="/static/cal/js/evfilter.js"></script>
+<script type="text/javascript" src="/static/cal/js/graphsearch.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#coin-slider').coinslider({ width: 260, delay: 5000 });
+    $('#coin-slider2').coinslider({ width: 260, delay: 5000 });
+  });
+  $(document).ready(evlistInit);
+  {% if evlist_time_dict %}
+  $(function() {
+	  var ts = '{{evlist_time_dict.ts}}';
+	  var sd = '{{evlist_time_dict.sd}}';
+	  var ed = '{{evlist_time_dict.ed}}';
+    $('#evfilter-rangepicker').rangepicker(ts, sd, ed, function() { evlistReq(true); });
+    $('#evfilter-query-form').submit(function() { evlistReq(); return false; });
+    $('.evfilter-tag').click(evfilterTagOnClick);
+    $('.evfilter-feat').click(evfilterFeatOnClick);
+    $('#evfilter-clear').click(evfilterClear);
+
+  });
+  $(function() {
+    $('#evfilter-main').graphsearch({
+        field: [0, 0],
+        name: 'all',
+    });
+  });
+
+  {% endif %}
+</script>
+{% endblock %}
+
+
+{% block top %}
+{% if poster_events %}
+<div style="display: block; padding: 6px;">
+<table style="border-spacing: 30px;">
+<tr><td style="font-size: 18px; text-align: center;">Upcoming Events</td><td style="font-size: 18px; text-align: center;">Popular Events</td></tr>
+<tr>
+<td>
+<div id='coin-slider' style="width: 260px;">
+{% for pev in poster_events %}
+    <a href="/events/{{pev.pk}}">
+        <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
+        <span>{{pev.displayname}}</span>
+    </a>
+{% endfor %}
+</div>
+</td><td>
+<div id='coin-slider2' style="width: 260px;">
+{% for pev in hotest_events %}
+    <a href="/events/{{pev.pk}}">
+        <img src='{{pev.event_cluster.cluster_image.thumbnail.url}}' >
+        <span>{{pev.displayname}}</span>
+    </a>
+{% endfor %}
+</div>
+</td></tr>
+</table>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+{% comment %}
+for myevents
+{% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
+{% endcomment %}
+
+{% if evlist_filter_dict %}{% with D=evlist_filter_dict %}
+<div id="rightcol">
+  <div id="evfilter-rangepicker"></div> {% comment %}will always have evlist_time_dict when we have evlist_filter_dict{% endcomment %}
+  <div class="sidebar">
+    <div class="sidebar-title">
+      <h3 id="evfilter-exists">Filter Events</h3>
+    </div>
+    <div class="sidebar-content">
+      <p class="sidebar-desc-mini">Narrow down the list of events displayed with these options</p>
+      <hr/>
+      <p class="sidebar-desc">Filter by tags:</p>
+      <div id="evfilter-tags">{{D.tagsHtml}}</div>
+      <hr/>
+      <p class="sidebar-desc">Filter by event features:</p>
+      <div id="evfilter-feats">{{D.featsHtml}}</div>
+      <hr/>
+      <p class="sidebar-desc">Filter by search:</p>
+      <form id="evfilter-query-form">
+        <p><input type="text" name="query" id="evfilter-query" size="26" placeholder="ex: dance, free food"/></p>
+        <p><input type="submit" value="Filter" class="jqu-button" style="display:none;"/></p>
+      </form>
+      <hr/>
+      <form>
+        <p><input value="Show All" class="jqu-button evfilter-clear" id="evfilter-clear" type="submit" /></p>
+      </form>
+    </div>
+  </div>
+</div>
+{% endwith %}{% endif %}
+
+<div class="evlist">
+
+<div class="evlist-top">
+  {% if evlist_dates %}
+    <div id="evlist-time">
+      <p class="dates" id="evlist-dates">{{evlist_dates}}</p>
+      <p class="dates" id="evlist-title">{{evlist_title}}</p>
+    </div>
+    <h1 class="title"><span id="evfilter-main"></span></h1>
+  {% else %}
+    <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
+  {% endif %}
+</div>
+
+<div id="evlist-inner">{{evlist_inner}}</div>
+
+<div style="height: 24px; clear: both;"></div>
+
+<div style="padding: 8px; margin-top: 12px; background-color: #f0f0ff; border: 1px Solid #ccccff;">
+<p style="font-size: 16px; font-weight: bold;">
+  <span style="float:right;"><a href="/feeds/">{% include 'cal/modules/sync.html' %}</a></span>
+  Want easier access to your events?</p>
+<p>Have these events show up in your Google Calendar, iCal, or Outlook. <a href="/feeds/">Sync your events here.</a></p>
+</div>
+
+<div class="legend" style="padding: 8px; margin-top: 12px;">
+  <h2 class="legend-title">Features</h2>
+  <div style="padding-top: 16px;">{% for feat in feat_opts %}
+    <span style="white-space:nowrap; padding-right: 12px;"><a class="events-feat events-feat-img" href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}"/></a> <a class="events-feat" href="/evlist/gen/?feat={{feat.id}}" style="vertical-align: top;">{{feat.feature_name}}</a></span>
+  {% endfor %}</div>
+</div>
+
+</div>
+
+{% endblock %}

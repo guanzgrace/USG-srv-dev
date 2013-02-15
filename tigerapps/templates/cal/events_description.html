@@ -69,14 +69,6 @@ Shadowbox.init();
 		<a rel="shadowbox" href="{{event.event_cluster.cluster_image.url}}"><img id="poster" src="{{event.event_cluster.cluster_image.thumbnail.url}}" /></a>
 		{% endif %}
 		
-		{% if user_data.is_site_admin %}
-		<h3>Site Administrator Tools</h3>
-		<div class="content">
-		Hey!  You're a site admin.  Don't you feel special?  <a href="/adminfun">Here's what's happened recently on the calendar</a>.
-		</div>
-		{% endif %}
-		
-		
 		{% if not event.isDeleted %}{% if authorized %}
 		<h3>Event Administrator Tools</h3>
 		<div class="content">
@@ -137,9 +129,9 @@ Shadowbox.init();
 		<h3>Details<a name="details"></a></h3>
 		<div class="content">
 		<ul>
-			<li><span class="field">Category:</span> <a href="/category/{{event.event_cluster.cluster_category}}">{{event.event_cluster.cluster_category}}</a></li>
+			<li><span class="field">Tags:</span> {% for tag in event.event_cluster.cluster_tags.all %}<a href="/evlist/gen/?tag={{tag}}">{{tag}}</a>&nbsp;&nbsp;{% endfor %}</li>
 			{% if event.event_cluster.cluster_features.all %}
-			<li><span class="field">Features:</span> {% for feature in event.event_cluster.cluster_features.all %}<a href="/features/{{ feature }}">{{ feature }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+			<li><span class="field">Features:</span> {% for feat in event.event_cluster.cluster_features.all %}<a href="/evlist/gen/?feat={{feat.id}}">{{feat}}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
 			{% endif %}
 			<li><span class="field">Attendees:</span> {{event.getAttendeeCount}}</li>
 			{% if event.event_max_attendance %}<li><span class="field">Max Attendees:</span> {{event.event_max_attendance}}</li>{% endif %}
@@ -181,7 +173,7 @@ Shadowbox.init();
 </div>
 <div id="event_body">
 {% for feat in event.event_cluster.cluster_features.all %}
-<a href="/features/{{feat.feature_name}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat.feature_name}}" alt="{{feat.feature_name}}" style="float: right; height: 24px; width: 24px;"/></a>
+<a href="/evlist/gen/?feat={{feat.id}}"><img src="/static/cal/{{feat.feature_icon}}" title="{{feat}}" alt="{{feat}}" style="float: right; height: 24px; width: 24px;"/></a>
 {% endfor %}
 {% if event.event_cluster.cluster_rsvp_enabled %}<span style="color: #777;">This event requires an RSVP. See <a href="#details">below</a> for more information.</span>{% endif %}
 {% if authorized and forwardtoevents %}
@@ -200,9 +192,6 @@ Shadowbox.init();
 {% endif %}
 <h3>Description</h3>
 
-<!-- 
-{% for feature in event.event_cluster.cluster_features.all %}{% ifequal feature.feature_name "Free Food" %}<a href="/features/free_food"><img src="/static/cal/img/icons/icon_food.png" style="float: right; height: 24px; width: 24px;" alt="This event features free food" /></a>{% endifequal %}{% ifequal feature.feature_name "Alcoholic Drinks" %}<a href="/features/alcohol"><img src="/static/cal/img/icons/icon_beer.png" style="float: right; height: 24px; width: 24px;" alt="This event features alcoholic drinks" /></a>{% endifequal %}{% ifequal feature.feature_name "Outdoors" %}<a href="/features/outdoors"><img src="/static/cal/img/icons/icon_tree.png" style="float: right; height: 24px; width: 24px;" alt="This event features the outdoors" /></a>{% endifequal %}{% ifequal feature.feature_name "Tiger Tickets" %}<a href="/features/tiger_tickets"><img src="/static/cal/img/icons/icon_ticket.png" style="float: right; height: 24px; width: 24px;" alt="This event accepts Tiger Tickets" /></a>{% endifequal %}{% endfor %}
- -->
 <p class="descr_text">{{event.event_cluster.cluster_description|linebreaksbr}}</p>
 {% if event.event_subdescription %}<p class="descr_text">{{event.event_subdescription|linebreaksbr}}</p>{% endif %}
 </div>
@@ -226,7 +215,7 @@ No users have added this to their calendar yet.
 <div style="clear: left;"></div>
 
 {% if event.event_cluster.cluster_board_enabled %}
-<h3>Message Board</h3>
+<h3>Comments</h3>
 
 {% if boardMessages %}
 {% for message in boardMessages %}

@@ -1,7 +1,7 @@
 from pam.models import *
 from ttrade.search import get_query
 from pam.forms import EventForm
-from dsml import gdi
+from utils.dsml import gdi
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseForbidden
 from datetime import datetime, timedelta, date

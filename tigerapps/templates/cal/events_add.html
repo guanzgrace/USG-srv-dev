@@ -6,6 +6,7 @@
 {% block title %}Add Event{% endblock %}
 
 {% block headercss %}
+
 <style type="text/css">
     .add-row {
         padding-left:18px;
@@ -25,7 +26,9 @@
 
    <script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
    <script type="text/javascript" src="/static/cal/js/datetimepicker_css.js"></script>
-
+   
+   <script type="text/javascript" src="/static/shared/js/textext.js"></script>
+   
 <script type="text/javascript">
   $(function() {
     $('.evForm').formset({
@@ -67,10 +70,22 @@
          $("label[for='id_form-0-event_subtitle']").parent().show();
          $('#id_form-0-event_subdescription').show();
          $("label[for='id_form-0-event_subdescription']").parent().show();
+
+         
       }
     })
 });
 
+function clearTag() {
+         var tag_element = $('#id_cluster_tags_ui');
+         tag_element.val(tag_element.val().replace(/\W/g, ''));
+}
+
+function submitTag() {
+        $('#id_cluster_tags_ui').textext()[0].tags().addTags([ $.trim($('#id_cluster_tags_ui').val().replace(/\W/g, '')) ]);
+        $('#id_cluster_tags_ui').val('');
+}
+    
 $(document).ready(function(){
    $('.evForm').find('.delete-row').remove();
    startfield = $("input[name*='event_date_time_start']");
@@ -89,9 +104,30 @@ $(document).ready(function(){
    
    $("input[name*='cluster_board_enabled']").attr('checked', 'checked');
    $("input[name*='cluster_notify_boardpost']").attr('checked', 'checked');
+   
+   $('#id_cluster_tags_ui').textext({
+        plugins : 'tags prompt focus autocomplete ajax arrow',
+        prompt : 'Add one...',
+        ajax : {
+          url : '/ajax/alltags/',
+          dataType : 'json',
+          cacheResults : true
+        }
+    });  
+
+   
+    $("#id_cluster_tags_ui").keyup(function () {
+      if ((event.which == 32 || event.which == 44) && $.trim($('#id_cluster_tags_ui').val().replace(/\W/g, '')) != "") {
+        submitTag();
+      }
+       clearTag();
+    });
+
+    $("#id_cluster_tags_ui").focusout( function () {
+        setTimeout("submitTag()", 250);
+    });
+
 });
-
-
 
 </script>
 
@@ -118,21 +154,33 @@ There was an error with the submission.<br />
 {% endif %}
 
 <form id="eventForm" action="" method="POST" enctype="multipart/form-data" >
+
    {% if clusterForm %}
    <table class="formTable">
       <tbody>
+
       {% for field in clusterForm %}
          <tr>
             <th class="tableLabel">{{ field.label_tag }}: 
             {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-            <td>{% if field.errors %}
+            <td>
+
+            {% if field.errors %}
                <ul class="errorlist">
                {% for error in field.errors %}
                <li>{{ error }}</li>
                {% endfor %}
                </ul>
-               {% endif %}
+            {% endif %}
+ 
+               {% if field.name == "cluster_tags" %}
+                 <textarea id="id_cluster_tags_ui" name="cluster_tags" rows="1"></textarea> 
+               {% else %}
                {{ field }}
+               {% endif %}
+
+                 
+
                {% if field.help_text %}
                <br />
                {{ field.help_text }}
@@ -181,7 +229,8 @@ There was an error with the submission.<br />
             <tr>
                <th class="tableLabel">{{ field.label_tag }}: 
                {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-               <td>{% if field.errors %}
+               <td>
+                  {% if field.errors %}
                   <ul class="errorlist">
                   {% for error in field.errors %}
                   <li>{{ error }}</li>

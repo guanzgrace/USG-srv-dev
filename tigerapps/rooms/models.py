@@ -73,8 +73,9 @@ class User(models.Model):
     do_email = models.BooleanField(default=True)
     phone = models.CharField(max_length=12, blank=True)
     do_text = models.BooleanField(default=False)
-    carrier = models.ForeignKey('Carrier', null=True)
+    carrier = models.ForeignKey('Carrier', null=True, blank=True)
     confirmed = models.BooleanField('Confirmed', default=False) #whether or not has confirmed phone number
+    seen_welcome = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.netid
@@ -165,7 +166,7 @@ class Review(models.Model):
     user = models.ForeignKey('User')
     
     def __unicode__(self):
-        return summary
+        return self.summary
         
 class ReviewForm(ModelForm):
     class Meta:
@@ -214,37 +215,3 @@ class Carrier(models.Model):
     address = models.CharField(max_length=30)
     def __unicode__(self):
         return self.name
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

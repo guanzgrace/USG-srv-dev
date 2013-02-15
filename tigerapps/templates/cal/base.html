@@ -13,39 +13,68 @@
 	      href="/static/images/favicon.ico">
  <title>{% block title %}Princeton Events Calendar{% endblock %}</title>
  <link rel="alternate" type="application/rss+xml" title="Princeton Events Calendar" href="/feeds/latest" />
- <link href="/static/cal/css/main.css?version=2.1" rel="stylesheet" type="text/css" />
- <link href="/static/cal/css/lavalamp_test.css" rel="stylesheet" type="text/css" />
+
+ <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/humanity/jquery-ui.css" rel="stylesheet" type="text/css" />
+ <link href="/static/shared/css/jqueryui-mod.css" rel="stylesheet" type="text/css" />
  <link href="/static/cal/css/typo.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/jquery.cluetip.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/menu_lavalamp.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/menu_sub.css" rel="stylesheet" type="text/css" />
+ <link href="/static/cal/css/main.css?version=2.1" rel="stylesheet" type="text/css" />
  {% block headercss %}{% endblock %}
- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
  <script src="/static/cal/js/jquery.easing.min.js" type="text/javascript"></script>
  <script src="/static/cal/js/jquery.lavalamp.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(function() {
-            $("#topmenu").lavaLamp({
-                fx: "backout",
-                speed: 700,
-                click: function(event, menuItem) {
-                    return true;
-                }
-            });
-        });
-         
-    </script>
+ <script src="/static/cal/js/jquery.cluetip.min.js" type="text/javascript"></script>
  <script src="/static/cal/js/jquery.ThreeDots.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+ <script src="/static/shared/js/jquery-util.js" type="text/javascript"></script>
+ <script type="text/javascript">
+  $(function() {
+    var found = false;
+    var tm = $("#topmenu");
+    var thisHref = window.location.href;
+    var ind  = thisHref.indexOf("#");
+    if (ind != -1)
+        thisHref = thisHref.substr(0, ind);
+    else {
+        ind = thisHref.indexOf("?");
+        if (ind != -1)
+            thisHref = thisHref.substr(0, ind);
+    }
+    tm.children().each(function(i,ele) {
+      if (thisHref == $(ele).children()[0].href) {
+        $(ele).addClass('current');
+        found = true;
+        return false;
+      }
+    });
+    if (!found) tm.children("#topmenu-dummy").addClass('current');
+    tm.lavaLamp({
+      fx: "backout",
+      speed: 700,
+      click: function(event, menuItem) {
+        return true;
+      }
+    });
+  });
+  $(function() {
+      $('.jqu-radio').buttonset();
+      $('.jqu-button').button();
+  });
   $(document).ready(function () {var the_obj1 = $('.centerellipsis').ThreeDots({max_rows: 1, whole_word: false});});
   $(document).ready(function () {var the_obj2 = $('.leftellipsis').ThreeDots({max_rows: 1, whole_word:false});});
   $(document).ready(function () {var the_obj3 = $('.rc_ellipsis').ThreeDots({max_rows: 1, whole_word:false});});
- </script> 
- <script src="/static/cal/js/jquery.cluetip.min.js" type="text/javascript"></script>
- <link rel="stylesheet" href="/static/cal/css/jquery.cluetip.css" type="text/css" />
+ </script>
  
- <script src="/static/cal/js/menu.js" type="text/javascript"></script>
- <link rel="stylesheet" href="/static/cal/css/menu.css" type="text/css" />
- 
- <script type="text/javascript">
+ {% block headerscript %}{% endblock %}
 
+ <!--[if lt IE 8]>
+ <script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
+ <![endif]-->
+
+ <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-8189583-3']);
   _gaq.push(['_trackPageview']);
@@ -55,47 +84,32 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
-</script>
+ </script>
  
- {% block headerscript %}{% endblock %}
-
- <!--[if lt IE 8]>
- <script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js" type="text/javascript"></script>
- <![endif]-->
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
       
 <body id="{% block id %}base{% endblock %}">
+{% include "toolbar/links.html" %}
 
  <div id="overlay"></div>
-	{% include "main/jquery.html" %}
-  <div id="container">
+ <div class="container">
   <h1 id="header">
   <a href="/">Princeton Events Calendar</a>
   </h1>
    <table id="nav">
     <tr>
      <td>
-      <ul class="lavaLampWithImage"{{uses_lava|safe}}>
-       <li{{lavanone|safe}} style='position: absolute; left: -40px;'><a href="/"></a></li>
-       <li{{front|safe}}><a href="/">Front</a></li>
-       <li{{today|safe}}><a href="/today">Today</a></li>
-       <li{{week|safe}}><a href="/week">Week</a></li>
-       <li{{weekend|safe}}><a href="/weekend">Weekend</a></li>
-       <li{{all|safe}}><a href="/all">All</a></li>
-       <li><a href="/feeds/latest"/><img src="/static/cal/css/img/200px-Feed-icon.svg.png" alt="Feed"/></li>
+      <ul class="lavaLampWithImage" id="topmenu">
+       <li id="topmenu-dummy" style='position: absolute; left: -40px;'><a href="/"></a></li>
+       <li><a href="/evlist/gen/">Front</a></li>
+       <li><a href="/evlist/spe/hot/">Popular</a></li>
+       <li><a href="/evlist/spe/new/">New</a></li>
+       <li><a href="/user/events/">My Events{% if user_data %} ({{n_my_events}}){% endif %}{% if n_my_invites %}<span class="umsgct">{{n_my_invites}}{% endif %}</a></li>
+       <li><a href="/feeds/">Sync{% include 'cal/modules/sync.html' %}</a></li>
+       <li style='float:right;font-weight:bold;margin-right:10px;'><a href="/events/add/">+ Add Event</a></li>
       </ul>
      </td>
-     {% if user_data %}
-     <td id="search">
-      <form method="GET" action="/search/">
-       <p>
-        <input type="text" name ="query" id="id_q" maxlength="40" />
-        <input type="submit" value="Search Events" />
-       </p>
-      </form>
-     </td>
-     {% endif %}
     </tr>
    </table>  
    
@@ -104,56 +118,47 @@
     <div id="menu">
      <ul class="menu">
      {% if user_data %}
-          <li><a href="/logout"><span>Logout</span></a></li>      
-          <li><a href="/user" class="parent"><span>{{user_data.full_name}}{% if umsgs %}<span class="umsgct">{{umsgs.count}}</span>{% endif %}</span></a>
-           <div>
-            <ul>
-             <li><a href="/user/messages" class="parent"><span>{% if umsgs %}{{umsgs.count|apnumber|capfirst}} New Message{{umsgs.count|pluralize}} {% else %}Personal Messages{% endif %}</span></a></li>
-             <li><a href="/mycal/{{user_data.pk}}/{{user_data.user_netid}}.ics"><span>Sync with Google, iCal, Outlook</span></a></li>
-             <li><a href="/user"><span>Manage Profile</span></a></li>
-            </ul>
-           </div>
-          </li>                  
-          <li><a href="/user/events" class="parent"><span>My Events{% if my_invites %}<span class="umsgct">{{my_invites.count}}</span>{% endif %}</span></a>
-           <div>
-            <ul>
-             <li><a href="/user/invitations" class="parent"><span>{% if my_invites.count %}{{my_invites.count|apnumber|capfirst}} New Invitation{{my_invites.count|pluralize}}{% else %}My Invitations{% endif %}</span></a>
-              <div>
-               <ul>
-               {% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
-              </ul>
-             </div>
-            </li>  
-            <li><a href="/user/events"><span>Upcoming Events</span></a></li>
-            <li><a href="/user/oldevents"><span>Previous Events</span></a></li>    
-            <li><a href="/user/eventadmin"><span>Events I've Submitted</span></a></li>
-           </ul>
-          </div>
-         </li>
-         <li><a href="/events/add"><span>Add Event</span></a></li>
-    {% else %}<li class="last"><a href="/login" class="parent"><span>Log In</span></a></li>{% endif %}
-    </ul>
-   </div>  
-  <div class="clear"></div>
- </div>
- <div id="content">
-  {% if v_messages %}<div id="message">
+       <li><a href="/logout"><span>Logout ({{user_data.full_name}})</span></a></li>
+       <li><a href="/user"><span>My Profile</span></a></li>
+       <li><a href="/user/messages"><span>{% if unread_msgs %}{{unread_msgs.count}} New Message{{unread_msgs.count|pluralize}}<span class="umsgct">{{unread_msgs.count}}</span>{% else %}My Messages{% endif %}</span></a></li>
+    {% else %}
+       <li class="last"><a href="/login"><span>Log In</span></a></li>
+    {% endif %}
+     </ul>
+    </div>  
+   <div class="clear"></div>
+  </div>
+  <div class="content">
+
+   {% if v_messages %}<div id="message">
     {% for msg in v_messages %}<p class="{{msg.type}}">{{msg.vm_contents|safe}}</p>{% endfor %}
-  </div>{% endif %}
-  <noscript><div id="message"><p class="error">Warning: You have JavaScript disabled. Please enable JavaScript to experience all of our site's features.</p></div></noscript>
-  {% if showrightcol %}{% include "cal/modules/rightcol.html" %}{% endif %}
-  {% block content %}{% endblock %} 
-  <div style="clear: both; display: block; height: 8px; width: 100%;"></div>
-  {% include "cal/modules/spotlight.html" %}
+   </div>{% endif %}
+   <noscript><div id="message"><p class="error">Warning: You have JavaScript disabled. Please enable JavaScript to experience all of our site's features.</p></div></noscript>
+
+{% comment %}
+        {% if user_data.is_site_admin %}
+        <h3>Site Administrator Tools</h3>
+        <div class="content">
+        Hey!  You're a site admin.  Don't you feel special?  <a href="/adminfun">Here's what's happened recently on the calendar</a>.
+        </div>
+        {% endif %}
+{% endcomment %}
+
+   {% block content %}{% endblock %} 
+
+   <div style="clear: both; display: block; height: 8px; width: 100%;"></div>
+   {% include "cal/modules/spotlight.html" %}
   </div>
   <div id="footer">
    <p>
     Custom-built for Princeton by Ethan Goldstein, Samantha Hantman, Dana Hoffman, Adriana Susnea, and Michael Yaroshefsky
    </p>
    <p>
-    Original design by <a href="http://www.trinston.com/">Trinston</a>.
+    Further developed by Josh Chen '14, Adam Suczewski '15, and Jeremy Cohen '16</p>
+   <p>
+    Original design by <a href="http://www.trinston.com/">Trinston</a>
    </p>
-   <p>&copy; 2010 Princeton USG and Authors</p>
+   <p>&copy; 2010-2013 Princeton USG and Authors</p>
   </div>
  </div> 
 </body>

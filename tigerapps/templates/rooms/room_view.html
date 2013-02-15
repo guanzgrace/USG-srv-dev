@@ -2,15 +2,17 @@
 <head>
 <link type="text/css" href="/static/rooms/reset.css" rel="Stylesheet" />
 <link type="text/css" href="/static/rooms/styles.css" rel="Stylesheet" />
-<script type="text/javascript" src="jquery.js"></script>
 
 </head>
 <body id="room_view">
+{% comment %}
+    Removed pending university info.
     {% if room.avail %}
     <div id="room_view_avail">Room Available</div>
     {% else %}
     <div id="room_view_unavail">Room Taken</div>
     {% endif %}
+{% endcomment %}
     <h1 id="room_view_head">{{ room.building }}, Room {{room.number}}: {{ room.numrooms}}-room {{ occlong }}</h1>
     
     
@@ -83,6 +85,7 @@
     {% if reviews.count == 0 %}
         <p><div align=center>Sorry, there are no reviews for this room.</div></p>
     {% endif %}
+
 
     {% if form %}
         <form action = "" method="POST">

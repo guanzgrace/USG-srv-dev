@@ -49,16 +49,13 @@ b
 {
     display: none;
     position: absolute;
-    top: 4%;
-    left: 37px;
-    padding: 10px;
+    top: 31px;
+    left: 33px;
     background: url('images/wash-white-30.png');
 
     -moz-box-shadow: 0 0 5px #888;
-    -webkit-box-shadow: 0 0 5px#888;
+    -webkit-box-shadow: 0 0 5px #888;
     box-shadow: 0 0 5px #888;
-
-    border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -87,11 +84,9 @@ b
 {
     max-height: 35%;
     position: absolute;
-    top: 4%;
-    right: 37px;
+    top: 31px;
+    right: 33px;
     padding: 0px;
-    border: 10px solid transparent;
-    background: url('images/wash-white-30.png');
     width: 250px;
     overflow: auto;
 
@@ -99,16 +94,12 @@ b
     -webkit-box-shadow: 0 0 5px#888;
     box-shadow: 0 0 5px #888;
 
-    border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
-
 }
 
 #queue
 {
     background: white;
     padding: 10px;
-
-    border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
 }
 
 #queues
@@ -142,6 +133,22 @@ b
     width: 20px;
     height: 20px;
     background: url('images/sprites/plusminus.png') -71px 0;
+}
+
+.helplink
+{
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: url('images/sprites/plusminus.png') -114px 0;
+}
+
+.helplink:hover
+{
+    background-position:  -136px 0;
 }
 
 #settings:hover
@@ -285,6 +292,13 @@ input
     width: 43px;
 }
 
+#traycontrols
+{
+    position: absolute;
+    top: 19px;
+    right: 6px;
+}
+
 #expandMap, #contractMap, #restoreMap
 {
     -webkit-touch-callout: none;
@@ -294,15 +308,11 @@ input
     -ms-user-select: none;
     user-select: none;
 
-    width: 26px;
-    height: 16px;
-    position: absolute;
-    top: 6px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 4px 9px;
     border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px;
     text-align: center;
     font-size: 16px;
+    margin-right: 13px;
 } 
 
 #expandMap:active, #contractMap:active, #restoreMap:active, .queue_button:active
@@ -405,7 +415,6 @@ input
 {
     /*overflow: scroll;*/
 }
-
 
 /* Floor plan styles */
 

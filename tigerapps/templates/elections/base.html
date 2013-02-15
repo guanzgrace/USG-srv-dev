@@ -13,10 +13,13 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 	{% block headercss %}{% endblock %}
 	<link rel="stylesheet" type="text/css" href="/static/elections/css/new-styles.css" />
+
+{% include 'tigerapps/tigerapps_gaq.html' %}
 </head>
     
 <body>
-	{% include "main/jquery.html" %}
+{% include "toolbar/links.html" %}
+
 	<div class="wrapper">
 		
     	<!--Header-->

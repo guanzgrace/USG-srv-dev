@@ -1,46 +1,47 @@
 from django.conf.urls.defaults import *
+from django.conf import settings
 from django.contrib import admin
-import os
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    
-    url(r'^$', 'rooms.views.index'),
-    (r'^login/?$', 'django_cas.views.login'),
-    (r'^logout/?$', 'django_cas.views.logout'),
-    (r'^drawid/(?P<drawid>\d{1})$', 'rooms.views.draw'),
-    (r'^create_queue/(?P<drawid>\d{1})$', 'rooms.views.create_queue'),
-    (r'^invite_queue/?$', 'rooms.views.invite_queue'),
-    (r'^respond_queue/?$', 'rooms.views.respond_queue'),
-    (r'^leave_queue/?$', 'rooms.views.leave_queue'),
-    (r'^get_room/(?P<roomid>\d+)', 'rooms.views.get_room'),
-    # Admin interface
-    (r'^admin/', include(admin.site.urls)),
-    
-    #for testing purposes
-    #(r'^review/(?P<roomid>\d+)$', 'rooms.views.review'),
-    
-    (r'^test','rooms.views.test'),
-    (r'^trigger','rooms.views.trigger'),
-    (r'^user_settings.html$','rooms.views.settings'),
-    (r'^confirm_phone.html$','rooms.views.confirm_phone'),
-    (r'^manage_queues.html$','rooms.views.manage_queues'),
+# Authentication urls
+urlpatterns = patterns('django_cas.views',
+    (r'^login/?$', 'login'),
+    (r'^logout/?$', 'logout'),
 )
 
+# Normal urls
+urlpatterns += patterns('rooms.views',
+    (r'^$', 'index'),
+    (r'^drawid/(?P<drawid>\d{1})$', 'draw'),
+    (r'^create_queue/(?P<drawid>\d{1})$', 'create_queue'),
+    (r'^invite_queue/?$', 'invite_queue'),
+    (r'^respond_queue/?$', 'respond_queue'),
+    (r'^leave_queue/?$', 'leave_queue'),
+    (r'^get_room/(?P<roomid>\d+)', 'get_room'),
+    (r'^get_room/', 'bad_room'),
+    # Admin interface
+    (r'^admin/', include(admin.site.urls)),
+    (r'^user_settings.html$','settings'),
+    (r'^confirm_phone.html$','confirm_phone'),
+    (r'^manage_queues.html$','manage_queues'),
+    (r'^about/?$','about'),
+)
 
-if 'IS_REAL_TIME_SERVER' in os.environ:
-    # Real-time endpoints
-    urlpatterns += patterns('',
-                            (r'^update_queue/(?P<drawid>\d{1})$',
-                             'rooms.views.update_queue'),
-                            (r'^get_queue/(?P<drawid>\d{1})$', 'rooms.views.get_queue'),
-                            (r'^get_queue/(?P<drawid>\d{1})/(?P<timestamp>\d+)$',
-                             'rooms.views.get_queue'),
-                            (r'^start_simulation/(?P<delay>\d+)/(?P<size>\d+)$',
-                             'rooms.views.start_simulation'),
-                            (r'^start_simulation/(?P<delay>\d+)$',
-                             'rooms.views.start_simulation'),
-                            (r'^stop_simulation/?$', 'rooms.views.stop_simulation'),
-                            (r'^check_availability/(?P<timestamp>\d+)$',
-                             'rooms.views.check_availability'),
-                            )
+# Real-time urls
+real_time_patterns = patterns('rooms.real_time_views',
+                              (r'^update_queue/(?P<drawid>\d{1})$',
+                               'update_queue'),
+                              (r'^get_queue/(?P<drawid>\d{1})$', 'get_queue'),
+                              (r'^get_queue/(?P<drawid>\d{1})/(?P<timestamp>\d+)$',
+                               'get_queue'),
+                              (r'^start_simulation/(?P<delay>\d+)/(?P<size>\d+)$',
+                               'start_simulation'),
+                              (r'^start_simulation/(?P<delay>\d+)$',
+                               'start_simulation'),
+                              (r'^stop_simulation/?$', 'stop_simulation'),
+                              (r'^check_availability/(?P<timestamp>\d+)$',
+                               'check_availability'),
+)
+
+if settings.IS_REAL_TIME_SERVER:
+    urlpatterns += real_time_patterns

@@ -6,7 +6,7 @@
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.db.models import Q
 from models import *
-from dsml import gdi
+from utils.dsml import gdi
 
 alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 

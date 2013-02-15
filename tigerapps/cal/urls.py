@@ -9,58 +9,62 @@
 ################################################################
 
 from django.conf.urls.defaults import *
-from views import *
-from views_events import *
-from views_users import *
-from views_ajax import *
-from csvdump import *
-from attendee_email import *
-from rssfeed import LatestEvents
 from django.views.generic.simple import direct_to_template
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+
+from views_events import *
+from views_users import *
+from csvdump import *
+from attendee_email import *
+from cal import rssfeed
 
 admin.autodiscover()
 
-feeds = {
-'latest': LatestEvents,
+OLD_FEEDS = {
+    'latest': rssfeed.LatestEvents,
 }
 
+"""
+feeds/
+    feeds_index
+    - make feeds/tag, feeds/user in feeds/ ***
+feeds/all.ics, feeds/tag/{{}}.ics, feeds/user/{{}}.ics
+    events_feed
+eventsby/{{user}}.ics -> feeds/user/{{user}.ics
+    feedByUser -> events_feed
+
+eventsby/{{user}} -> cal/spec/user/{{}}/
+    filterByUser
+"""
+
 urlpatterns = patterns('',
-    # Front Page and Top Tabs
-    (r'^$',events),
-    (r'^today/?$',todays_events),
-    (r'^week/?$', weeks_events),
+    # General listing of events
+    (r'^/?$', lambda x: HttpResponseRedirect('/evlist/gen/')),
+    (r'^evlist/gen/?$', 'cal.views_events.evlist_gen'),
+    (r'^evlist/gen/ajax/?$', 'cal.views_events.evlist_gen_ajax'),
+    (r'^evlist/spe/hot/?$', 'cal.views_events.evlist_spe_hot'),
+    (r'^evlist/spe/new/?$', 'cal.views_events.evlist_spe_new'),
+    (r'^evlist/spe/myviewed/?$', 'cal.views_events.evlist_spe_myviewed'),
 
-    (r'^all.ics$', feedAllEvents),
-    (r'^all/?$', all_events),
+    # Feeds
+    (r'^feeds/?$', 'cal.views_events.feeds_tmp'),
+    (r'^feeds/all.ics$', feedAllEvents),
+    (r'^feeds/tag/(?P<tag>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
+    (r'^feeds/user/(?P<user>[A-Za-z]+).ics$', 'cal.views_events.events_feed'),
 
-    (r'^weekend/?$', weekends_events),
-    (r'^events/?$',events),
-    (r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/?$', events_date),
+    # Feeds - old: Not sure how this one works
+    (r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed', {'feed_dict': OLD_FEEDS}),
+    # Feeds - old: Not sure how this one works
+    (r'^xml/?$', xml_feed),
+    # Feeds - old: Need a redirect
+    (r'^all.ics$', lambda x: HttpResponseRedirect('/feeds/all.ics')),
 
-    (r'^features/(?P<feature>.*).ics$', feedByFeature),
-    (r'^features/(?P<feature>.*)/?$', filterByFeature),
-
-    (r'^category/(?P<category>.*).ics$', feedByCategory),
-    (r'^category/(?P<category>.*)$', filterByCategory),
-
-    (r'^eventsby/(?P<user>.*).ics$', feedByUser),
-    (r'^eventsby/(?P<user>.*)$', filterByUser),
-
-    (r'^hotevents/?$', showHotEvents),
-    (r'^recentlyadded/?$', showRecentlyAddedEvents),
-    (r'^recentlyviewed/?$', showRecentlyViewedEvents),
-
-    (r'^feedlanding/?$', feedLanding),
-
-
-    #No Cookie!
-    (r'^nocookie/?$',nocookie),
-
-    # CAS
+    # Authentication
     (r'^login/?$',login),
     (r'^logout/?$',logout),
+    (r'^nocookie/?$',nocookie),
 
     # Event Description Page
     (r'^events/(?P<event_id>\d+)/?$',events_description),
@@ -75,7 +79,7 @@ urlpatterns = patterns('',
     (r'^events/add/?$',events_add),
     (r'^events/add/(?P<event_id>\d+)/?$', events_add_another),
 
-    #Forward to campus events list
+    # Forward to campus events list
     (r'^events/forwardtocampusevents/?$', events_forwardtocampusevents),
 
     # Manage Event Page  (specific number of numbers?)
@@ -90,13 +94,14 @@ urlpatterns = patterns('',
     (r'^events/delete_confirm/(?P<event_ID>\d+)/?$', events_delete_confirm),
 
     # Search Results
-    (r'^search/?$',events_search),
+    #(r'^search/?$',events_search),
 
     # Manage Profile
     (r'^user/?$',user_profile),
 
     # My Events
-    (r'^user/events/?$',user_upcoming_events),
+    (r'^user/events/?$', user_upcoming_events),
+    #<span id="no_upcoming">You have no upcoming events</span>
 
     # My Past Events
     (r'^user/oldevents/?$', user_past_events),
@@ -114,14 +119,10 @@ urlpatterns = patterns('',
     (r'^user/messages/?$',user_messages),
     (r'^user/messages/hover.html$',user_messages_hover),
 
-    #Feeds of type ics
-    (r'category/(?P<category>.*).ics$', feedByCategory),
-    #(r'^feeds/category/(?P<category>\d+).ics$', feedCategory),
-
     # iCal   
     (r'^ical/(?P<event_id>\d+)/?$', ical),
-    (r'^(?P<category>.*)/subscription.ics$', icalFeed),
-    (r'^subscribe/(?P<category>.*).ics$', subscribe),
+    (r'^(?P<tag>.*)/subscription.ics$', icalFeed),
+    (r'^subscribe/(?P<tag>.*).ics$', subscribe),
     (r'^mycal/(?P<id>\d+)/(?P<netid>.*).ics$', feedMyEvents),
     (r'^follow/(?P<netid>.*).ics$', followCalendar),
 
@@ -129,29 +130,26 @@ urlpatterns = patterns('',
     (r'^events/(?P<event_id>\d+)/sendmsg/?$', form_email_attendees),
     (r'^events/(?P<event_id>\d+)/msgsent/?$', email_attendees),
 
-    #Get attendee list
+    # Get attendee list
     (r'^events/(?P<event_id>\d+)/attendees.csv$', downloadAttendeeList),
 
     # Send custom invitations
     (r'^events/(?P<event_id>\d+)/custominvite/?$', custom_invite_message),
     (r'^events/(?P<event_id>\d+)/custominvitesent/?$', custom_invite_message_sent),
 
-    #QR Code
+    # QR Code
     (r'^events/(?P<event_id>\d+)/qr/?$', showQR),
 
+
     # Ajax goodness
-    (r'^ajax/netidlookup/?$',netidlookup),
-    (r'^ajax/allguests/?$',allguests),
+    (r'^ajax/netidlookup/?$', 'cal.views_ajax.netidlookup'),
+    (r'^ajax/allguests/?$', 'cal.views_ajax.allguests'),
+    (r'^ajax/alltags/?$', 'cal.views_ajax.get_all_tags'),
+    (r'^ajax/graphsearch/?$', 'cal.views_ajax.get_all_graphsearch'),
 
-    # Feed
-    (r'^feeds/(?P<url>.*)/?$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-
-    (r'^adminfun/?$',activityFeed),
-    (r'^lookup/?$',userlookup),
-
-
-    # XML Feed
-    (r'^xml/?$', xml_feed),
+    # I don't know what these do...
+    (r'^test/adminfun/?$', 'cal.views_test.activityFeed'),
+    (r'^test/lookup/?$', 'cal.views_test.userlookup'),
 
     # Admin - not upgradable since it doesn't use django_cas
     (r'^admin/', include(admin.site.urls)),

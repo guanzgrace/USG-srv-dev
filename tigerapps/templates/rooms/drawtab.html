@@ -1,4 +1,4 @@
-<table id="drawtable" class="tablesorter" border="0" cellpadding="0" cellspacing="1">    
+<table id="drawtable{{ drawid }}" class="tablesorter" border="0" cellpadding="0" cellspacing="1">    
   <thead>
     <tr>
     <th></th>
@@ -9,7 +9,10 @@
     <th id="floorTab">Floor</th>
     <th id="numRoomsTab">Num Rooms</th>
     <th id="genderTab">Gender</th>    
+    {% comment %}
+    <!-- Availability removed pending university info. -->
     <th id="availTab">Available?</th>
+    {% endcomment %}
     </tr>
   </thead>
     <tbody id="scrollarea">
@@ -85,6 +88,9 @@
         {% endifequal %}
         {% endcomment %}
       </a></td>
+
+      {% comment %}
+      <!-- Availability removed pending university info. -->
       <td><a class="fancyroom" title="Room Overview" data-fancybox-type="iframe" href="/get_room/{{ room.id }}"><div id="avail-{{ room.id }}">
         {% if room.avail %}
         Yes
@@ -93,6 +99,8 @@
         {% endif %}
         </div>
      </a></td>
+      {% endcomment %}
+
     </tr>
     {% endfor %}
     </tbody>
