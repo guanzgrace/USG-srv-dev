@@ -459,7 +459,7 @@ def events_add(request):
     EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
 
     if request.method == 'POST':
-        tags_in = request.POST['cluster_tags']
+        tags_in = request.POST['cluster_tags'].replace('"', '').replace('[', '').replace(']', '').split(',')
         request.POST['cluster_tags'] = []
         formset = EventFormSet(request.POST, request.FILES)
         clusterForm = EventClusterForm(request.POST, request.FILES)
@@ -468,7 +468,7 @@ def events_add(request):
             new_cluster.cluster_user_created = user
             new_cluster.save()
             clusterForm.save_m2m()
-            for tag_name in tag_names:
+            for tag_name in tags_in:
                 tag_name = re.sub("^\W", "", tag_name)
                 try:
                     tag = EventCategory.objects.get(category_name__iexact=tag_name)
