@@ -16,9 +16,10 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('cal_eventcluster_cluster_categories', ['eventcluster_id', 'eventcategory_id'])
 
-        for obj in orm.EventCluster.objects.all():
-            obj.cluster_categories.add(obj.cluster_category)
-            obj.save()
+        if not db.dry_run:
+            for obj in orm.EventCluster.objects.all():
+                obj.cluster_categories.add(obj.cluster_category)
+                obj.save()
 
     def backwards(self, orm):
         

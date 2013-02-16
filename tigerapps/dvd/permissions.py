@@ -10,6 +10,6 @@ def get_dvdadmin_group():
     return g
 
 def in_dvdadmin_group(u):
-    if u:
-        return u.is_superuser or (u.groups.filter(name='dvdadmin').count() == 1)
+    if u is not None:
+        return u.is_superuser or u.groups.filter(name='dvdadmin').exists()
     return False

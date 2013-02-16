@@ -2,7 +2,7 @@ GS = {};
 
 $.fn.graphsearch = function(opts) {
     GS.whole = this;
-    this.append('<form><div class="evfilter-gs"></div><input title=Feature coming soon..." class="evfilter-gs" type="text" disabled="disabled"></form>');
+    this.append('<form><div class="evfilter-gs"></div><input title="Feature coming soon..." class="evfilter-gs" type="text" disabled="disabled"></form>');
     GS.div = this.find('div');
     GS.gs = this.find('input');
     GS.div.button().removeClass('ui-corner-all').addClass('ui-corner-left');

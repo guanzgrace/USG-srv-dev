@@ -81,7 +81,7 @@ for myevents
 {% if my_invites %}{% for iv in my_invites %}<li><a href="/events/{{iv.rsvp_event.pk}}?showrsvp=true" class="parent"><span>From: {{iv.rsvp_referrer.full_name}}</span></a></li>{% endfor %}{% endif %}
 {% endcomment %}
 
-{% if evlist_filter_dict %}{% with D=evlist_filter_dict %}
+{% if tagsHtml %}
 <div id="rightcol">
   <div id="evfilter-rangepicker"></div> {% comment %}will always have evlist_time_dict when we have evlist_filter_dict{% endcomment %}
   <div class="sidebar">
@@ -92,10 +92,10 @@ for myevents
       <p class="sidebar-desc-mini">Narrow down the list of events displayed with these options</p>
       <hr/>
       <p class="sidebar-desc">Filter by tags:</p>
-      <div id="evfilter-tags">{{D.tagsHtml}}</div>
+      <div id="evfilter-tags">{{tagsHtml}}</div>
       <hr/>
       <p class="sidebar-desc">Filter by event features:</p>
-      <div id="evfilter-feats">{{D.featsHtml}}</div>
+      <div id="evfilter-feats">{{featsHtml}}</div>
       <hr/>
       <p class="sidebar-desc">Filter by search:</p>
       <form id="evfilter-query-form">
@@ -109,7 +109,7 @@ for myevents
     </div>
   </div>
 </div>
-{% endwith %}{% endif %}
+{% endif %}
 
 <div class="evlist">
 

@@ -42,8 +42,7 @@ from cal import cal_util
 
 
 def evlist_gen(request):
-    out_dict = evlist_gen_inner(request, True)
-    D = out_dict['evlist_filter_dict']
+    out_dict, D = evlist_gen_inner(request, True)
     if 'tag' in D:
         out_dict['gs_field'] = json.dumps((1, D['tag'].category_name))
         out_dict['gs_name'] = json.dumps(D['tag'].category_name)
@@ -59,7 +58,7 @@ def evlist_gen(request):
     return evlist_render_page(request, out_dict)
 
 def evlist_gen_ajax(request):
-    out_dict = evlist_gen_inner(request, 'changedDates' in request.GET)
+    out_dict, D = evlist_gen_inner(request, 'changedDates' in request.GET)
     out_json = json.dumps(out_dict)
     return HttpResponse(out_json, content_type="application/json")
 
@@ -74,23 +73,22 @@ def evlist_gen_inner(request, loadEvfilter):
     grouped_events = query.events_general(start_day, end_day, query_words, tags, feats, creator, user)
     inner_html = render_to_string("cal/evlist_inner.html", {'grouped_events': grouped_events})
 
-    if loadEvfilter:
-        filter_params['tagsHtml'] = render_to_string(
-            "cal/modules/evfilter_tags.html",
-            {'evfilter_tags': query.tags_general(start_day, end_day)})
-        filter_params['featsHtml'] = render_to_string(
-            "cal/modules/evfilter_feats.html",
-            {'evfilter_feats': query.feats_general(start_day, end_day)})
-
     out_dict = {
         'evlist_inner': inner_html,
         'evlist_title': title,
         'evlist_dates': dates,
         'evlist_time_dict': time_params,
-        'evlist_filter_dict': filter_params,
     }
 
-    return out_dict
+    if loadEvfilter:
+        out_dict['tagsHtml'] = render_to_string(
+            "cal/modules/evfilter_tags.html",
+            {'evfilter_tags': query.tags_general(start_day, end_day)})
+        out_dict['featsHtml'] = render_to_string(
+            "cal/modules/evfilter_feats.html",
+            {'evfilter_feats': query.feats_general(start_day, end_day)})
+
+    return out_dict, filter_params
 
 
 SPE_LIMIT = 10

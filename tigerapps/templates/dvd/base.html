@@ -1,5 +1,7 @@
 {% extends "tigerapps/base.html" %}
 
+{% load in_group %}
+
 {% block title %}USG DVD Service - {% block dvdtitle %}{% endblock %}{% endblock %}
 
 {% block headercss %}<link rel="stylesheet" type="text/css" href="/static/dvd/css/dvd.css" />{% endblock %}
@@ -16,9 +18,9 @@
     	<a href="/login/">Login</a>
    	{% else %}
     	Welcome, <b>{{user.username}}</b>!<br/>
-    	{% if user.is_staff %}
+    	{% if user.is_superuser or user|in_group:"dvdadmin" %}
     	<a href="/">DVD Home</a><br/>
-    	<a href="/dvdadmin/">DVD Admin</a><br/>
+    	<a href="/dvdadmin/"><strong>DVD Admin</strong></a><br/>
     	{% endif %}
     	<a href="/logout/">Logout</a>
     {% endif %}

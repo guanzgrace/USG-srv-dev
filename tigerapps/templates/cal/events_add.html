@@ -140,6 +140,8 @@ $(document).ready(function(){
 {% if event %}
 <h1 id="title">Add A Related Event</h1>
 <div id="event_top"><h1>{{ event.event_cluster.cluster_title }}</h1></div>
+{% else %}
+<h1 id="title">Add an Event</h1>
 {% endif %}
 
 <br />
