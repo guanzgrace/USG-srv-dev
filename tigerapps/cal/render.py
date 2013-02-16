@@ -8,6 +8,7 @@
 # Info :  'intercept' a call to render, and do some common things
 ################################################################
 
+from django.http import HttpResponseRedirect
 from django import shortcuts
 from datetime import datetime
 from models import *

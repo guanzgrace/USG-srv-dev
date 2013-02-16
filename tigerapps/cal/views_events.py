@@ -30,7 +30,7 @@ from cal.globalsettings import our_site, our_email
 
 from utils.dsml import *
 from cal.decorators import login_required
-from cal.render import render_to_response
+from cal.render import render_to_response, go_back
 from cal.models import *
 from cal.cauth import *
 from cal.rsvp import *
@@ -459,7 +459,7 @@ def events_add(request):
     EventFormSet = formset_factory(EventForm, formset=RequiredFormSet)
 
     if request.method == 'POST':
-        tags_in = request.POST['cluster_tags']
+        tags_in = request.POST['cluster_tags'].replace('"', '').replace('[', '').replace(']', '').split(',')
         request.POST['cluster_tags'] = []
         formset = EventFormSet(request.POST, request.FILES)
         clusterForm = EventClusterForm(request.POST, request.FILES)
@@ -468,7 +468,7 @@ def events_add(request):
             new_cluster.cluster_user_created = user
             new_cluster.save()
             clusterForm.save_m2m()
-            for tag_name in tag_names:
+            for tag_name in tags_in:
                 tag_name = re.sub("^\W", "", tag_name)
                 try:
                     tag = EventCategory.objects.get(category_name__iexact=tag_name)
