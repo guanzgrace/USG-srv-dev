@@ -50,7 +50,8 @@ def tags_general(start_day, end_day):
     tags = Event.objects.filter(event_date_time_start__gte=start_day, event_date_time_start__lt=end_day).values_list('event_cluster__cluster_tags__category_name',flat=True)
     tag_counter = defaultdict(int)
     for tag in tags:
-        tag_counter[tag] += 1
+        if tag:
+            tag_counter[tag] += 1
     tag_counts = sorted(tuple((tag,count) for tag,count in tag_counter.iteritems()), key=itemgetter(1), reverse=True)
     return tag_counts
 

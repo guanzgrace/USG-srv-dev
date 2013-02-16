@@ -105,15 +105,16 @@ $(document).ready(function(){
    $("input[name*='cluster_board_enabled']").attr('checked', 'checked');
    $("input[name*='cluster_notify_boardpost']").attr('checked', 'checked');
    
+   $('#id_cluster_tags_ui').css('width', '240px');
    $('#id_cluster_tags_ui').textext({
         plugins : 'tags prompt focus autocomplete ajax arrow',
-        prompt : 'Add one...',
+        prompt : 'Choose or add your own...',
         ajax : {
           url : '/ajax/alltags/',
           dataType : 'json',
           cacheResults : true
         }
-    });  
+    });
 
    
     $("#id_cluster_tags_ui").keyup(function () {

@@ -7,7 +7,7 @@ import urllib2
 import traceback
 
 def index(request):
- 	return render(request, 'index.html')
+ 	return render(request, 'pounce/index.html')
 	
 def courses(request):
 	coursesJson = CoursesList.objects.all()[0].json
