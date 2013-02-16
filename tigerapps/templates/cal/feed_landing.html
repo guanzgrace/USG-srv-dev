@@ -16,7 +16,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-<h1 id="title">Live Feed Subscription</h1>
+<h1 id="title">Sync via a Live Feed</h1>
 <div style="margin: 6px; padding: 6px; width: 540px; background-color: #DDDDF0; border:1px Solid #00009F;border-width:1px 2px 2px 1px;" >
 <h2 style="font-size: 18px; font-weight: bold; color: #444;">{{ feed_name }}<a href="{{webcal_feed_continue}}"><img src="/static/cal/img/sync-rss.png" style="float: right;"/></a></h2>
 <p style="padding-left: 6px; background-color: #DFDFF0; border:1px Solid #D0D0FF;">{{ feed_desc }}</p>
@@ -32,37 +32,40 @@ $(document).ready(function() {
   <div class="set accordion-set">
     <div class="title accordion-title">Google Calendar</div>
     <div class="content accordion-content">
-    	<ol style="padding-left:8px;  list-style-type: decimal; list-style-position: outside;">
+    	<ol style="padding-left:8px; list-style-type: decimal; list-style-position: outside;">
 		<li>Copy the full <span style="font-family: Courier;">webcal://</span> address from the blue box above</li>
 		<li>Open your Google Calendar</li>
-		<li>Under 'Other calendars' click 'Add' and then 'Add by URL'</li>
+		<li>Under 'Other calendars' in the left panel, click 'Add' and then 'Add by URL'</li>
 		<li>Paste the address from above and click 'Add calendar'</li>
 		</ol>
+    	<ul style="padding-left:8px; list-style-type: circle; list-style-position: outside; font-style: italic;">
+        <li>Note: Google Calendar only syncs once every 24 hours. Events you add on the Student Events Calendar may experience up to a 24 hour delay. To avoid this delay, use the "Add to Google Calendar" button next to each event instead.</li>
+        </ul>
     </div>
   </div>
   <div class="set accordion-set">
     <div class="title accordion-title">Apple iCal</div>
     <div class="content accordion-content">
-    	<ol style="padding-left:8px;">
+    	<ol style="padding-left:8px; list-style-type: decimal; list-style-position: outside;">
 		<li>Copy the full <span style="font-family: Courier;">webcal://</span> address from the blue box above</li>
 		<li>Open iCal on your computer</li>
 		<li>From the 'Calendar' menu, click 'Subscribe...'</li>
 		<li>Paste the address from above and click 'Subscribe'</li>
 		<li>Set the 'Auto-refresh' option to 'Every hour' for best results</li>
 		<li>Click "OK"</li>
-		</ul>
+		</ol>
     </div>
   </div>
   <div class="set accordion-set">
     <div class="title accordion-title">Microsoft Outlook</div>
     <div class="content accordion-content">
-    	<ul style="padding-left:8px;">
+    	<ol style="padding-left:8px; list-style-type: decimal; list-style-position: outside;">
 		<li>Copy the full <span style="font-family: Courier;">webcal://</span> address from the blue box above</li>
 		<li>Open your 'Account Settings' window in Microsoft Outlook</li>
 		<li>Select the 'Internet Calendars' tab</li>
 		<li>Click 'New...' and the paste the address into the window</li>
 		<li>Click 'Add'</li>
-		</ul>
+		</ol>
     </div>
   </div>  
 </div>
