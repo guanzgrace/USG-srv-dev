@@ -86,14 +86,12 @@ function evlistResp(data, textStatus, jqXHR) {
     $('#evlist-inner').html(data.evlist_inner);
     evlistInit();
 
-    var fd = data.evlist_filter_dict;
-    console.log(fd);
-    if (fd.tagsHtml) {
-        $('#evfilter-tags').html(fd.tagsHtml);
+    if (data.tagsHtml) {
+        $('#evfilter-tags').html(data.tagsHtml);
         $('.evfilter-tag').click(evfilterTagOnClick);
     }
-    if (fd.featsHtml) {
-        $('#evfilter-feats').html(fd.featsHtml);
+    if (data.featsHtml) {
+        $('#evfilter-feats').html(data.featsHtml);
         $('.evfilter-feat').click(evfilterFeatOnClick);
     }
 }
