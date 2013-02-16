@@ -26,18 +26,6 @@ OLD_FEEDS = {
     'latest': rssfeed.LatestEvents,
 }
 
-"""
-feeds/
-    feeds_index
-    - make feeds/tag, feeds/user in feeds/ ***
-feeds/all.ics, feeds/tag/{{}}.ics, feeds/user/{{}}.ics
-    events_feed
-eventsby/{{user}}.ics -> feeds/user/{{user}.ics
-    feedByUser -> events_feed
-
-eventsby/{{user}} -> cal/spec/user/{{}}/
-    filterByUser
-"""
 
 urlpatterns = patterns('',
     # General listing of events
@@ -93,21 +81,12 @@ urlpatterns = patterns('',
     (r'^events/delete/(?P<event_ID>\d+)/?$', events_delete),
     (r'^events/delete_confirm/(?P<event_ID>\d+)/?$', events_delete_confirm),
 
-    # Search Results
-    #(r'^search/?$',events_search),
 
     # Manage Profile
     (r'^user/?$',user_profile),
 
     # My Events
-    (r'^user/events/?$', user_upcoming_events),
-    #<span id="no_upcoming">You have no upcoming events</span>
-
-    # My Past Events
-    (r'^user/oldevents/?$', user_past_events),
-
-    # My Managed Events
-    (r'^user/eventadmin/?$', user_admin_events),
+    (r'^user/events/?$', user_events),
 
     # Invitations
     (r'^user/invitations/?$',user_invitations),
@@ -115,9 +94,8 @@ urlpatterns = patterns('',
     (r'^bulkinvite/(?P<event_id>\d+)-(?P<sender_id>\d+)-(?P<response>a|d|p)/?$',bulk_invite_response),
 
     # Set Personal Alerts
-    (r'^user/alerts/?$',user_alerts),
     (r'^user/messages/?$',user_messages),
-    (r'^user/messages/hover.html$',user_messages_hover),
+
 
     # iCal   
     (r'^ical/(?P<event_id>\d+)/?$', ical),

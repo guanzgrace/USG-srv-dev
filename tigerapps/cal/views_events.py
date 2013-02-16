@@ -91,7 +91,7 @@ def evlist_gen_inner(request, loadEvfilter):
     return out_dict, filter_params
 
 
-SPE_LIMIT = 10
+SPE_LIMIT = 20 
 def evlist_spe_hot(request):
     user = current_user(request)
     grouped_events = query.events_hot(SPE_LIMIT, rsvp_user=user)

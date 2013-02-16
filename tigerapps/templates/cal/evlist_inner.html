@@ -1,4 +1,5 @@
 {% load app_extras %}
+{% if evinner_title %}<h1 class="title" style="margin:0;">{{evinner_title}}</h1>{% endif %}
 <ul class="events">
 {% if grouped_events %}{% for group, events in grouped_events %}
   <li class="evlist-date{% if not events %} evlist-none{% endif %}">{{group}}</li>

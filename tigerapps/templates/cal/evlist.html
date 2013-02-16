@@ -120,12 +120,12 @@ for myevents
       <p class="dates" id="evlist-title">{{evlist_title}}</p>
     </div>
     <h1 class="title"><span id="evfilter-main"></span></h1>
-  {% else %}
+  {% else %}{% if not evlist_title_skip %}
     <h1 class="title" id="evlist-title">{{evlist_title}}</h1>
-  {% endif %}
+  {% endif %}{% endif %}
 </div>
 
-<div id="evlist-inner">{{evlist_inner}}</div>
+<div id="evlist-inner">{% autoescape off %}{{evlist_inner}}{% endautoescape %}</div>
 
 <div style="height: 24px; clear: both;"></div>
 

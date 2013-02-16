@@ -161,7 +161,7 @@ def events_general(start_day, end_day, query=None, tags=None, feats=None, creato
 #####
 
 def events_hot(limit=0, group=True, rsvp_user=0):
-    events = Event.objects.filter(event_date_time_end__gte=datetime.now(), event_attendee_count__gte=1).exclude(event_date_time_start=dtdeleteflag).order_by('-event_attendee_count')
+    events = Event.objects.filter(event_date_time_end__gte=datetime.now(), event_attendee_count__gte=1).exclude(event_date_time_start=dtdeleteflag).order_by('-event_attendee_count', 'event_date_time_start')
     if limit:
         events = events[0:limit]
     if group:
