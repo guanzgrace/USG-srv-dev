@@ -98,6 +98,12 @@ body {
     display: block;
 }
 
+#desc-inside div div p, #desc-inside div p {
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 12px 0 16px;
+    color: black;
+}
 
 /*************/
 /* Tile Boxes */

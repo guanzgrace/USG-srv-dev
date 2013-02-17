@@ -22,7 +22,7 @@ class App(Sortable):
     
     name = models.CharField(max_length=100)
     abbr_name = models.CharField(max_length=16, blank=True, null=True)
-    url = models.CharField(max_length=1000)
+    url = models.CharField(max_length=1000, blank=True, null=True)
     icon = models.ImageField(upload_to='www/icons')
     category = SortableForeignKey(Category)
 

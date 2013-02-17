@@ -94,9 +94,10 @@
                 {% endautoescape %}
             </div>
             {% endif %}
+            {% if app.url %}
             <p><a href="{{app.url}}">Link to {{app.name}} {% if app.abbr_name %}({{app.abbr_name}}){% endif %}</a></p>
-
-    </div>
+            {% endif %}
+        </div>
         {% endfor %}{% endfor %}
     </div></div>
 </div>
