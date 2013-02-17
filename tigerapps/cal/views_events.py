@@ -30,7 +30,7 @@ from cal.globalsettings import our_site, our_email
 
 from utils.dsml import *
 from cal.decorators import login_required
-from cal.render import render_to_response
+from cal.render import render_to_response, go_back
 from cal.models import *
 from cal.cauth import *
 from cal.rsvp import *
