@@ -10,8 +10,11 @@ admin.autodiscover()
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^suggestions/login/?', 'django_cas.views.login'),
+    url(r'^suggestions/logout/?', 'django_cas.views.logout'),
+    url(r'^suggestions/?$', 'suggestions.views.main_page'),
+
     url(r'^/?', 'www.views.index'),
-    url(r'^suggestions/?', direct_to_template, {'template': 'www/suggestions.html'}),
 
     # Admin
     url(r'^admin/?$', 'django_cas.views.login', kwargs={'next_page': '/djadmin/'}),
