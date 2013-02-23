@@ -13,11 +13,16 @@ class Voter(models.Model):
     user_last_login = models.DateTimeField(default=datetime.now())
 
     def __unicode__(self):
-        return self.user_netid
+        return self.user_netid + " "  + str(self.available_votes)
 
     def logged_in(self):
         self.user_last_login = datetime.now()
         self.save()
+
+    def cast_vote(self):
+        if (self.available_votes > 0):
+            self.available_votes = self.available_votes - 1
+            self.save()
 
 # A suggestion to be voted on.
 class Suggestion(models.Model):
@@ -31,9 +36,9 @@ class Suggestion(models.Model):
     tags         = models.ManyToManyField(Tag)
 
     def __unicode__(self):
-        return self.title
+        return self.title + " " + str(self.vote_count)
 
-    def increment(self):
+    def receive_vote(self):
         self.vote_count += 1
         self.save()
 
