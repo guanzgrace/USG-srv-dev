@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'rooms',
     'pom',
     'storage',
+    'suggestions',
 # These apps were never launched and there are no plans to launch them
 # This means that they ARE NOT sync'd with South
 #    'facebook',

@@ -1,0 +1,76 @@
+{% extends "tigerapps/suggestion_base.html" %}
+
+{% block init_js %}
+<script>
+
+  $(document).ready(function () {
+      sug.sugInit();
+  });
+
+</script>
+{% endblock init_js %}
+
+
+{% block body %}
+Suggestions
+<br>
+<br>
+{{ user_data }}
+<br>
+{{ suggestion_tags }}
+<br>
+
+<input type="button" id="new_suggestion_button" value="add event+" onclick="sug.showAddEvent()"/>
+
+<div id="suggestion_form_container" style="display:none">
+  <form id="new_suggestion_form" action="/suggestions/new" method="post">
+    Title<input type="text" name="suggestion_title">
+    Description<input type="text" name="suggestion_description">
+    Tags<input type="text" name="suggestion_tags">
+    <input type="submit" value="submit">
+    <input type="button" value="hide_menu" onclick="sug.hideAddEvent()">
+  </form>
+</div>
+
+<br>
+
+<div id="cast_vote_container">
+  <div>
+  {% for suggestion in suggestion_list %}
+    <div id="vote_form_{{suggestion.pk}}_container">
+      <form id="vote_form_{{suggestion.pk}}" class="vote_form" action="/suggestions/cast_vote" method="post">
+        <div>
+          <div>
+            <div class="suggestion_title">Title: {{ suggestion.title }}</div>
+          </div>
+          <div>
+            <div class="suggestion_vote_count">Vote Count: {{ suggestion.vote_count }}</div>
+          </div>
+          <div>
+            <div class="suggestion_description">Suggestion: {{ suggestion.description }}</div>
+          </div>
+          <div>
+            <div class="suggestion_creator">Creator: {{ suggestion.creator.user_netid }}</div>
+          </div>
+          <div>
+            <div class="suggestion_date_created">Date Created: {{ suggestion.date_created }}</div>
+          </div>
+          <div>
+            <div class="suggestion_tags">
+              {% for tag in suggestion.tag_list %}
+                <div class="suggestion_tag">#{{tag}}</div>
+              {% endfor %}
+            </div>
+          </div>
+          <div>
+            <input type="hidden" name="vote_id" value="{{ suggestion.pk}}" />
+            <input type="submit" value="{{ suggestion.pk }}"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+
+{% endblock body %}
