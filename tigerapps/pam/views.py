@@ -11,7 +11,7 @@ def check_undergraduate(username):
     # Check if user can be here
     try:
         user = SocUser.objects.get(netid=username)
-    except:
+    except SocUser.DoesNotExist:
         info = gdi(username)
         user = SocUser(netid=username, firstname=info.get('givenName'), lastname=info.get('sn'), pustatus=info.get('pustatus'))
         if info.get('puclassyear'):
@@ -201,45 +201,3 @@ def event_delete(request, event_id):
 def about(request):
     return render_to_response('pam/about.html')
 
-'''
-# See description and picture and picture
-# If officer, see edit description and add event
-@login_required  
-def club(request, club):
-    # Check if user can be here
-    if not check_undergraduate(request.user.username):
-        return HttpResponseForbidden()
-    
-    club = Club.objects.get(slug=club)
-    return HttpResponse(club.name + "<br/>" + club.about)
-    
-@login_required  
-def event(request, event_id):
-    # Check if user can be here
-    if not check_undergraduate(request.user.username):
-        return HttpResponseForbidden()
-        
-    days = []
-    target_day = datetime.now()
-    if target_day.weekday() != 6:
-        week_start = target_day - timedelta(days=target_day.weekday() + 1)
-    else:
-        week_start = target_day
-    for i in range(0,7):
-        if target_day.weekday() == i-1 or (target_day.weekday() == 6 and i == 0):
-            days.append((week_start + timedelta(days=i), True))
-        else:
-            days.append((week_start + timedelta(days=i), False))
-
-    next_week = target_day + timedelta(days=7)
-    prev_week = target_day - timedelta(days=7)
-    
-    return render_to_response('pam/event.html', {'next_week': next_week, 'prev_week': prev_week, 'days': days})
-        
-@login_required  
-def add_event(request, event_id):
-    # Check if user can be here
-    if not check_undergraduate(request.user.username):
-        return HttpResponseForbidden()
-    return HttpResponse()
-'''
