@@ -1109,7 +1109,7 @@ def xml_feed(request):
             mimetype="text/xml")
 
 
-def nocookie():
+def nocookie(request):
     dict = {}
     return render_to_response(request, 'cal/nocookie.html', dict)
 
