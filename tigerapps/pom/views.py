@@ -1,19 +1,18 @@
+import datetime, simplejson, cgi
+from collections import defaultdict
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404, HttpResponseServerError
 from django.template import RequestContext
+from django.core.cache import cache
+from django.core.mail import send_mail
+
 from pom import cal_event_query
 from pom.bldg_info import *
 from pom.campus_map_codes import campus_codes
 from pom.campus_map_bldgs_info import campus_info
-from pom.menus import scraper as menus
-from pom.printers import scraper as printers
-from pom.laundry import scraper as laundry
-import datetime, simplejson, cgi
-from collections import defaultdict
-from django.core.cache import cache
-from django.core.mail import send_mail
+from pom.scrape import menus, printers, laundry
 
 
 

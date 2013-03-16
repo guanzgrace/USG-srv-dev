@@ -1,6 +1,8 @@
+import requests
 from bs4 import BeautifulSoup
-from utils.scrape import *
 
+
+url = 'http://clusters-lamp.princeton.edu/cgi-bin/clusterinfo.pl'
 PRINTER_BLDGS = {
     '1901': '1901H',
     '1937': '1937H',
@@ -48,7 +50,6 @@ PRINTER_BLDGS = {
     'Wu': 'WILCH'
 }
 
-url = 'http://clusters-lamp.princeton.edu/cgi-bin/clusterinfo.pl'
 
 class Printer:
     def __init__(self, loc, color, status):
@@ -66,9 +67,9 @@ def scrape_single_printer(bldg_code):
 
 def scrape_all():
     '''returns dict of list of printers, bldg_code:[printers]'''
-    data = scrapePage(url)
+    resp = requests.get(url)
     log('1')
-    bs = BeautifulSoup(data)
+    bs = BeautifulSoup(resp.content)
     log('2')
     table = bs.find('table')
     log('3')
@@ -98,6 +99,5 @@ def scrape_all():
             clusters[code] = printers
 
     log('exiting from scrape printers')
-     
     return clusters
 
