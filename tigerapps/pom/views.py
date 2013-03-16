@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.core.cache import cache
 from django.core.mail import send_mail
 
+from utils.srvlog import log
 from pom import cal_event_query
 from pom.bldg_info import *
 from pom.campus_map_codes import campus_codes
@@ -118,7 +119,9 @@ def events_for_bldg(request, bldg_code):
             try:
                 menu_list = cache.get('menu_list')
                 if menu_list == None:
+                    log('a','0')
                     menu_list = menus.scrape_all()
+                    log('a','1')
                     menu_list = list(set([(hall, menu) for hall, menu in menu_list.items()]))
                     menu_list = sorted(menu_list, key = lambda x: x[0])
                     for tup in menu_list:
@@ -128,6 +131,7 @@ def events_for_bldg(request, bldg_code):
                         cache.set('menu_list', menu_list, 100000)
                     except Exception, e:
                         send_mail('EXCEPTION IN pom.views events_for_bldg menus', e, 'from@example.com', ['nbal@princeton.edu', 'mcspedon@princeton.edu', 'ldiao@princeton.edu'], fail_silently=False)
+                    log('a','2')
                 menu = dict(menu_list)[bldg_code]
                 html = render_to_string('pom/menu_info.html',
                                         {'bldg_name': BLDG_INFO[bldg_code][0],
