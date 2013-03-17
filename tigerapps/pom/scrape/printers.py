@@ -68,16 +68,11 @@ def scrape_single_printer(bldg_code):
 def scrape_all():
     '''returns dict of list of printers, bldg_code:[printers]'''
     resp = requests.get(url)
-    log('1')
     bs = BeautifulSoup(resp.content)
-    log('2')
     table = bs.find('table')
-    log('3')
     rows = table.find_all('tr')[1:]
-    log('4')
     clusters = {}
     for row in rows:
-        log('new row')
         ps = row.find_all('p')
         loc = ps[0].contents[0][:-1].rstrip('*')
         statusTag = ps[3]
@@ -98,6 +93,5 @@ def scrape_all():
         else:
             clusters[code] = printers
 
-    log('exiting from scrape printers')
     return clusters
 
