@@ -51,13 +51,13 @@ def scrape_single_menu(bldg_code):
     #menu.title = bs.title.contents[0]
     for meal_xml in bs.find_all('meal'):
         meal = Meal()
-        meal.name = str(meal_xml.attrs['name'])
+        meal.name = unicode(meal_xml.attrs['name'])
         for entree_xml in meal_xml.find_all('entree'):
             entree = Entree()
-            entree.attributes['name'] = str(entree_xml.next.contents[0])
+            entree.attributes['name'] = unicode(entree_xml.next.contents[0])
             for c in entree_xml.contents[1:]:
-                entree.attributes[c.name] = str(c.contents[0])
-                if str(c.contents[0]) == 'y':
+                entree.attributes[c.name] = unicode(c.contents[0])
+                if unicode(c.contents[0]) == 'y':
                     if (c.name == 'vegan'):
                         entree.color = '#0000FF' #blue
                     elif (c.name == 'vegetarian'):

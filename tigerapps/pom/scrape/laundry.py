@@ -77,6 +77,12 @@ class Room(object):
         return self._dryers
 
 
+def print_laundry_info(laundry_info):
+    '''print the results as an example'''
+    for name,info in laundry_info.iteritems():
+        print(name + ' \n\twashers: ' + str(info.washers()[0]) + ' free of ' + str(info.washers()[1]) + ' \n\tdryers: ' + str(info.dryers()[0]) + ' free of ' + str(info.dryers()[1]))
+
+
 def scrape_all():
     '''
     Cannot access this from dev server-- substituted with temporary
@@ -137,11 +143,4 @@ def scrape_all():
         rooms_list = tuple(rooms_list)
         dict[building] = rooms_list
     return dict
-
-
-def print_laundry_info(laundry_info):
-    '''print the results as an example'''
-    for name,info in laundry_info.iteritems():
-        print(name + ' \n\twashers: ' + str(info.washers()[0]) + ' free of ' + str(info.washers()[1]) + ' \n\tdryers: ' + str(info.dryers()[0]) + ' free of ' + str(info.dryers()[1]))
-
 

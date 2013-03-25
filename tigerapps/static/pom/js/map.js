@@ -60,8 +60,8 @@ function mapInit() {
 	
 	//links
 	jevent.urlBldgsForFilter = '/bldgs/filter/';
-	jevent.urlEventsForBldg = '/events/bldg/';
-	jevent.urlEventsForAll = '/events/all/';
+	jevent.urlEventsForBldg = '/data/bldg/';
+	jevent.urlEventsForAll = '/data/all/';
 	jevent.urlBldgNames = '/json/bldgs/names/';
 	
 	jevent.htmlLoading = '<table style="margin:auto;height:24px;"><tr>' +

@@ -92,6 +92,5 @@ def scrape_all():
             clusters[code] += printers
         else:
             clusters[code] = printers
-
     return clusters
 
