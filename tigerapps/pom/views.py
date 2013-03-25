@@ -130,7 +130,8 @@ def data_for_bldg(request, bldg_code):
                 menu = dict(menu_list)[bldg_code]
                 html = render_to_string('pom/menu_info.html',
                                         {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'menu': menu})
+                                         'menu': menu,
+                                         'timestamp': timestamp})
                 response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
     
         elif filter_type == '3': #laundry
@@ -143,7 +144,8 @@ def data_for_bldg(request, bldg_code):
                 machine_list_bldg = machine_mapping[bldg_code]
                 html = render_to_string('pom/laundry_info.html',
                                         {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'machine_list' : machine_list_bldg})
+                                         'machine_list' : machine_list_bldg,
+                                         'timestamp': timestamp})
                 response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
     
         elif filter_type == '4': #printers
@@ -158,7 +160,8 @@ def data_for_bldg(request, bldg_code):
     
                 html = render_to_string('pom/printer_info.html',
                                         {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'printers' : printer_list})
+                                         'printers' : printer_list,
+                                         'timestamp': timestamp})
                 response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
     
         elif filter_type == '5': #location
@@ -211,7 +214,8 @@ def data_for_all(request):
                 tup[1].meals = sorted(tup[1].meals, key = lambda x: menus_sorter(x[0]))
             html = render_to_string('pom/menu_info_all.html',
                                     {'menu_list': menu_list,
-                                     'bldg_info': BLDG_INFO})
+                                     'bldg_info': BLDG_INFO,
+                                     'timestamp': timestamp})
             response_json = json.dumps({'error': None,
                                               'html': html})
    
@@ -221,7 +225,8 @@ def data_for_all(request):
             machine_list = sorted(machine_list, key=lambda x: x[0])
             html = render_to_string('pom/laundry_info.html',
                                     {'bldg_name': 'All Laundry Machines',
-                                     'machine_list' : machine_list})
+                                     'machine_list' : machine_list,
+                                     'timestamp': timestamp})
             response_json = json.dumps({'error': None,
                                               'html': html})
 
@@ -231,7 +236,8 @@ def data_for_all(request):
             printer_list = sorted(printer_list, key=lambda printer: printer.loc)
             html = render_to_string('pom/printer_info.html',
                                     {'bldg_name': "All Printers",
-                                     'printers' : printer_list})
+                                     'printers' : printer_list,
+                                     'timestamp': timestamp})
             response_json = json.dumps({'error': None,
                                               'html': html})
         
