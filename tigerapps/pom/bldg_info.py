@@ -3,8 +3,8 @@
 - Functions that return a list of buildings with certain properties
 '''
 import operator
-from pom.menus.scraper import DINING_HALLS
-from pom.printers.scraper import PRINTER_BLDGS
+from pom.scrape.menus import DINING_HALLS
+from pom.scrape.printers import PRINTER_BLDGS
 
 BLDG_INFO = {
     'AL099': ('99 Alexander (Forbes College)',(),True),
