@@ -75,11 +75,12 @@ function mapInit() {
 	
 	setupFilterTabs();
 	setupActualFilters();
+    loadWindowSizeDependent();
 }
 
 function loadWindowSizeDependent() {
+	$('#info-bot').css('height', (jmap.info.offsetHeight-jmap.infoTop.offsetHeight-10)+'px');
 	loadTiles();
-	$('#info-bot').css('height', (jmap.info.offsetHeight-jmap.infoTop.offsetHeight-50)+'px');
 }
 
 /***************************************/
@@ -444,6 +445,7 @@ function setupFilterTabs() {
 			handleFilterTypeChange(ev.target.value);
 		else //clicked campus info
 			handleFilterTypeChange($('#campus-info-types input:checked').val());
+        loadWindowSizeDependent();
 	});
 	$("#campus-info-types input").click(function(ev) {
 		handleFilterTypeChange(ev.target.value);
