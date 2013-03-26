@@ -32,14 +32,20 @@
 
 
 <div id="jmap-topbar">
-        <div id="info-logo"><a href="/" style="color:black;font-size:30px;margin:4px -2px 0;font-weight:bold;font-family:Bentham;">Pursuit of Mappyness</a></div>
+        <div id="info-logo"><a id="info-logo-link" href="/" >Pursuit of Mappyness</a></div>
 
 		<div id="info-top-types">
+
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
-			<input type="radio"  id="filter-menus" name="campus-info" value="2" checked="checked"/><label class="jtl-labels" for="filter-menus">Menus</label>
-		    <input type="radio"  id="filter-laundry" name="campus-info" value="3"/><label class="jtl-labels" for="filter-lachundry">Laundry</label>
-		    <input type="radio"  id="filter-printers" name="campus-info" value="4"/><label class="jtl-labels" for="filter-printers">Printers</label>
-			<input type="radio" id="filter-locations" name="top-tab" value="5"/><label for="filter-locations">Locations</label></input>
+
+			<input type="radio"  id="filter-menus" name="top-tab" value="2" checked="checked"><label for="filter-menus">Menus</label></input>
+			<!-- uncomment when laundry backend is ready -->
+		    <!--input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input-->
+
+		    <input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
+
+			<input type="radio" id="filter-locations" name="top-tab" value="5"><label for="filter-locations">Locations</label></input>
+
 		</div>
 	
 </div>
@@ -107,18 +113,6 @@
 				dX: <input id="box7" type="text" style="width:40px;"/>
 				dY: <input id="box8" type="text" style="width:40px;"/><br/>
 				-->
-			</div>
-			
-			<div id="top-tab-a" class="top-tab">
-				<div class="isolated">
-					<div>We've aggregated campus information into a single page for you, as a one-stop shop for many of your most common tasks!</div><br/>
-					<span class="desc-help">View campus information:</span><br/>			
-					<div id="campus-info-types">
-						<input type="radio"  id="filter-menus" name="campus-info" value="2" checked="checked"/><label class="jtl-labels" for="filter-menus">Menus</label>
-						<input type="radio"  id="filter-laundry" name="campus-info" value="3"/><label class="jtl-labels" for="filter-lachundry">Laundry</label>
-						<input type="radio"  id="filter-printers" name="campus-info" value="4"/><label class="jtl-labels" for="filter-printers">Printers</label>
-					</div>
-				</div>
 			</div>
 			
 			<div id="top-tab-5" class="top-tab">

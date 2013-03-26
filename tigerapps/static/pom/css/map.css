@@ -100,7 +100,6 @@ a:hover{
 margin: 0px 5px !important;
 }
 #info-top {
-	height: 210px;
 	margin:0 18px 15px 18px;
 }
 #info-title {
@@ -110,7 +109,16 @@ margin: 0px 5px !important;
 	margin:7px 5px 8px 5px;
 }
 #info-logo {
+    margin:5px 10px 0px 10px;
     display:inline-block;
+}
+#info-logo-link {
+    color:black;
+    font-size:30px;
+    margin:4px -2px 0;
+    font-weight:bold;
+    font-family:Bentham;
+    text-decoration:none;
 }
 #info-top-types {
     display:inline-block;
@@ -196,10 +204,9 @@ div.isolated {
 	position:absolute;
 	height:16px;
 	width:16px;
-	top:40px;
+	top:50px;
     left:-30px;
 	padding: 7px;
-	
 	background-color:#FAFCF8;
     box-shadow:-5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
     border-top-left-radius: 2px;
