@@ -72,10 +72,15 @@ a:hover{
 /*************/
 /* Left panel */
 /*************/
+
+#jmap-topbar {
+  background-color:white;
+  height:40px;
+}
 #jmap-info {
 	position:absolute;
 	top: 28px;
-	left: 0px;
+	right: 0px;
 	bottom: 0px;
 	width:380px;
 	
@@ -84,6 +89,7 @@ a:hover{
     z-index:100;
 }
 #info-content {
+    float:right;
 	width: 370px;
     padding:5px;
 }
@@ -170,9 +176,9 @@ div.isolated {
 /* Timeline */
 /*************/
 #info-jtl {
+    left:0px;
 	position:absolute;
 	top: 0;
-	left: 380px;
 	width: 150px;
 	bottom: 0;
 	padding: 0 5px;
@@ -182,13 +188,13 @@ div.isolated {
 	height:16px;
 	width:16px;
 	top:0px;
-	right:-30px;
+    left:-30px;
 	padding: 7px;
 	
 	background-color:#FAFCF8;
-    box-shadow:5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
+    box-shadow:-5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 .jtl-params {
 	color:#f6931f;
@@ -211,8 +217,8 @@ div.isolated {
 #jmap-container {
 	position: absolute;
 	top: 28px;
-	left: 380px;
-	right: 0px;
+	left: 0px;
+	right: 380px;
 	bottom: 0px;
 	background-color:LightGray;
 	overflow: hidden;

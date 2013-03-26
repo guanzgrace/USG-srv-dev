@@ -109,9 +109,9 @@ function displayTimeline() {
 	$('#jtl-toggle').show();
 	if (jDisplay.timelineShown) {
         showTimeline();
-        $('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
-    } else
         $('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-e');
+    } else
+        $('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
 }
 function undisplayTimeline() {
 	var tmp = jDisplay.timelineShown;
@@ -124,7 +124,7 @@ function showTimeline() {
 	$(jmap.info).animate({
 		width:'540px'
 	}, 100);
-	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
+	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-e');
 	jDisplay.timelineShown = true;
 }
 function hideTimeline() {
@@ -132,7 +132,7 @@ function hideTimeline() {
 	$(jmap.info).animate({
 		width:'380px'
 	}, 100);
-	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-e');
+	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
 	jDisplay.timelineShown = false;
 }
 
