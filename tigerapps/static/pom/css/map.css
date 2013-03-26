@@ -152,7 +152,7 @@ a:hover{
 }
 .info-table th {
 	font-weight:bold;
-	text-align: right;
+	text-align: left;
 }
 .info-table td {
 	text-align: left;
