@@ -159,7 +159,7 @@ function eventEntryMouseout(eventId, fromBldg) {
 	var eventEntry = document.getElementById('event-entry-'+eventId);
 	var tlMark = document.getElementById('jtl-mark-'+eventId);
 	var bldgDict = jmap.loadedBldgs[bldgCodeToId(jevent.eventsData[eventId].bldgCode)];
-	eventEntry.style.background='white';
+	eventEntry.style.background='transparent';
 	tlMark.setAttribute('class', 'jtl-mark');
 	tlMark.style.left = parseInt(tlMark.style.left, 10) + 1;
 	//tlMark.style.background='orange';

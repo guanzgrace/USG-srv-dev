@@ -99,15 +99,7 @@ a:hover{
 .ui_button {
 margin: 0px 5px !important;
 }
-#info-top {
-	margin:0 18px 15px 18px;
-}
-#info-title {
-	height:35px;
-	width:325px;
-	float: left;
-	margin:7px 5px 8px 5px;
-}
+
 #info-logo {
     margin:5px 10px 0px 10px;
     display:inline-block;
@@ -120,24 +112,26 @@ margin: 0px 5px !important;
     font-family:Bentham;
     text-decoration:none;
 }
+
+#info-top {
+}
 #info-top-types {
     display:inline-block;
 	margin:10px 0;
 }
 .top-tab {
+	margin:4px 14px 14px 14px;
 	display: none;
-	margin:6px 0;
 }
-
 #info-divider {
 	height: 0px;
-	margin-left: 5px;
-	margin-right: 3px;
 	border-top: 1px solid #C0C0C0;
+	margin:8px -10px;
 }
+
 #info-bot {
 	overflow-y: auto;
-	margin:13px 0px 15px 11px;
+	margin:0;
 }
 
 .info-table {
@@ -177,7 +171,7 @@ div.isolated {
 }
 
 .info-event-entry {
-	padding:8px 12px 10px 0;
+	padding:8px 12px 10px 2px;
 	/*margin-right: 5px;*/
 }
 .info-event-subtitle {
