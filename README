@@ -25,6 +25,8 @@ Dependencies:
 - MySQLdb
 - Customized version of django_cas included
 - simplejson
+- requests, lxml
+- python-pylibmc (memcached)
 - django-stdimage
 - (others I forgot)
 - Cal: xlwt

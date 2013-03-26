@@ -96,7 +96,9 @@ a:hover{
 	width: 370px;
     padding:5px;
 }
-
+.ui_button {
+margin: 0px 5px !important;
+}
 #info-top {
 	height: 210px;
 	margin:0 18px 15px 18px;
@@ -107,7 +109,11 @@ a:hover{
 	float: left;
 	margin:7px 5px 8px 5px;
 }
+#info-logo {
+    display:inline-block;
+}
 #info-top-types {
+    display:inline-block;
 	margin:10px 0;
 }
 .top-tab {
