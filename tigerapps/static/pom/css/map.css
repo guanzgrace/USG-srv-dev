@@ -118,8 +118,8 @@ a:hover{
 #info-top-types {
     display:inline-block;
 	margin:10px 20px;
-    position:relative;
-    top:-3px;
+	position:relative;
+	top:-3px;
 }
 .top-tab {
 	margin:4px 14px 14px 14px;
@@ -134,6 +134,17 @@ a:hover{
 #info-bot {
 	overflow-y: auto;
 	margin:0;
+}
+.info-bot-loading {
+	font-size: 16px;
+	margin:20px 0;
+	text-align:center;
+}
+.info-bot-loading img {
+	height: 20px;
+	width: 20px;
+	padding: 0 6px;
+	vertical-align: middle;
 }
 
 .info-table {
@@ -164,6 +175,9 @@ div.isolated {
 /*************/
 /* For event data */
 /*************/
+.info-bot-head {
+	padding: 8px 6px 10px 6px;
+}
 #info-bldg-name {
 	margin-bottom:4px;
 }
@@ -173,8 +187,8 @@ div.isolated {
 }
 
 .info-event-entry {
-	padding:8px 12px 10px 2px;
-	/*margin-right: 5px;*/
+	padding:8px 6px 10px 6px;
+	margin-right: 5px;
 }
 .info-event-subtitle {
 	/*margin-left: 5px;*/

@@ -64,9 +64,8 @@ function mapInit() {
 	jevent.urlEventsForAll = '/data/all/';
 	jevent.urlBldgNames = '/json/bldgs/names/';
 	
-	jevent.htmlLoading = '<table style="margin:auto;height:24px;"><tr>' +
-		'<td style="font-size:16px;padding:1px 4px 0;">Loading...</td>' +
-		'<td style="vertical-align:top;"><img src="/static/pom/img/loading_spinner.gif" height="20" width="20"/></td></tr></table>';
+	jevent.htmlLoading = '<div class="info-bot-loading">Loading...' +
+        '<img src="/static/pom/img/loading_spinner.gif"></div>';
 
 	//cache display-related tabs
 	jevent.topTabActive = null;
