@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
 from django.conf import settings
+from utils import cronlog
 import os, sys
 
 class Command(BaseCommand):
@@ -12,4 +13,5 @@ class Command(BaseCommand):
         f = open(fname, 'w')
         f.write(render_to_string('main/jquery.html'))
         f.close()
+        self.stdout.write(cronlog.fmt("%s updated successfully" % fname))
 
