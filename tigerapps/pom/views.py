@@ -1,14 +1,12 @@
-import datetime, json, cgi
-from collections import defaultdict
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, Http404, HttpResponseServerError
 from django.template import RequestContext
 from django.core.cache import cache
-from django.core.mail import send_mail
+import datetime, json, cgi
+from collections import defaultdict
 
-from utils.srvlog import log
 from pom import cal_event_query
 from pom.bldg_info import *
 from pom.campus_map_codes import campus_codes
