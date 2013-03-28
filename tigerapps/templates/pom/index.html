@@ -13,11 +13,11 @@
 	<script type="text/javascript" src="/static/pom/js/jquery.tipsy.js"></script>
 
 	<script type="text/javascript" src="/static/pom/js/timeline.js"></script>
-	<script type="text/javascript" src="/static/pom/js/display.js"></script>
 	<script type="text/javascript" src="/static/pom/js/map.js"></script>
+	<script type="text/javascript" src="/static/pom/js/display.js"></script>
 	
 	<script type="text/javascript">
-		$(document).ready(function() { displayInit(); mapInit(); });
+		$(document).ready(function() { displayInit(); });
 	</script>
 	
 	<!--
@@ -32,9 +32,9 @@
 
 
 <div id="jmap-topbar">
-        <div id="info-logo"><a id="info-logo-link" href="/" >Pursuit of Mappyness</a></div>
+        <div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
 
-		<div id="info-top-types">
+		<div id="layer-tabs">
 
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
 
@@ -50,7 +50,7 @@
 	
 </div>
 <div id="jmap-info">
-<div id="info-content">
+<div id="info-content"> <!-- second div so scrollbar has margin from right -->
 	<div id="info-top">
 	        
 		<div id="info-top-filters">
@@ -131,10 +131,12 @@
 	</div>
 	
 	<div id="info-bot"></div>
-	
-	<div id="jtl-toggle"><span></span></div>
-	<div id="info-jtl"></div>
 </div>
+</div>
+
+<div id="jtl-toggle"><span></span></div>
+<div id="jmap-jtl">
+	<div id="jtl-content"></div>
 </div>
 
 

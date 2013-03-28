@@ -1,26 +1,70 @@
 /***************************************/
-/* jqueryui setup */
+/* General display setup */
 /***************************************/
 
+jdisp = {};
 function displayInit() {
-	jDisplay = {};
+	mapInit();
+	
+	jdisp.jtl = $("#jtl-content")
+	jdisp.jtlContainer = $("#jmap-jtl");
+	jdisp.jtlToggle = $("#jtl-toggle");
 	
 	$("input:submit").button();
 	$(":button").button();
-	$("#info-top-types").buttonset();
+	$("#layer-tabs").buttonset();
 	
-	//events inputs
+	//timeline display
 	$("#jtl-startDate").datepicker();
 	$("#jtl-startDate").datepicker('setDate', new Date());
 	setupJTLSlider();
-	
-	//timeline display/toggle
 	setupJTLDisplay();
+
+	window.onresize = loadWindowSizeDependent;
+	setupLayers();
+	setupLayerFilters();
+    loadWindowSizeDependent();
+}
+
+function loadWindowSizeDependent() {
+	var newHeight = jmap.info.offsetHeight-jmap.infoTop.offsetHeight-20;
+	$('#info-bot').css('height', newHeight+'px');
+	loadTiles();
+	if (jevent.activeLayer == 0) {
+		loadTimeline(jmap.markData);
+	}
+}
+
+/***************************************/
+/* Tabs display */ 
+/***************************************/
+
+/* These setup the filters so that AJAX calls are sent when the filters are changed */
+function setupLayers() {
+	$("#layer-tabs input").click(function(ev) {
+		displayLayer(ev.target.value);
+		handleFilterTypeChange(ev.target.value);
+		loadWindowSizeDependent();
+	});
+	displayLayer(0);
+    jdisp.jtlShown = true;
+	handleFilterTypeChange(0);
+}
+function displayLayer(layer) {
+	$(".top-tab").css('display', 'none');
+	$("#top-tab-"+layer).css('display', 'block');
+    if (layer == 0) showTimelineToggle();
+    else            hideTimelineToggle();
+}
+
+function setupLayerFilters() {
+	setupEventFilters();
+	setupLocationSearch();
 }
 
 
 /***************************************/
-/* Inputs display */ 
+/* Tab-specific filters display */ 
 /***************************************/
 
 function setupJTLSlider() {
@@ -96,50 +140,64 @@ function printTime(timeArr) {
 /***************************************/
 
 function setupJTLDisplay() {
-	jDisplay.timelineShown = false;
-	$('#jtl-toggle').click(function() {
-		if (jDisplay.timelineShown)
+	jdisp.jtlShown = false;
+	jdisp.jtlToggle.click(function() {
+		if (jdisp.jtlShown)
 			hideTimeline();
 		else
 			showTimeline();
-	})
-    displayTimeline();
+	});
 }
-function displayTimeline() {
-	$('#jtl-toggle').show();
-	if (jDisplay.timelineShown) {
+function showTimelineToggle() {
+	jdisp.jtlToggle.show();
+	if (jdisp.jtlShown) {
         showTimeline();
-        $('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-e');
+        jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-e');
     } else
-        $('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
+    	jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-w');
 }
-function undisplayTimeline() {
-	var tmp = jDisplay.timelineShown;
-	$('#jtl-toggle').hide();
+function hideTimelineToggle() {
+	var tmp = jdisp.jtlShown;
+	jdisp.jtlToggle.hide();
 	hideTimeline();
-	jDisplay.timelineShown = tmp;
+	jdisp.jtlShown = tmp;
 }
 function showTimeline() {
-	$(jmap.jtl).css('visibility', '');
-	$(jmap.info).animate({
-		width:'540px'
+	jdisp.jtlContainer.animate({
+		right:'380px'
 	}, 100);
-	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-e');
-	jDisplay.timelineShown = true;
+	jdisp.jtlToggle.animate({
+		right:'542px'
+	}, 100);
+	jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-e');
+	$('#jmap-info').addClass('jmap-info-expanded');
+	jdisp.jtlShown = true;
 }
 function hideTimeline() {
-	$(jmap.jtl).css('visibility', 'hidden');
-	$(jmap.info).animate({
-		width:'380px'
+	jdisp.jtlContainer.animate({
+		right:'218px'
 	}, 100);
-	$('#jtl-toggle span').attr('class', 'ui-icon ui-icon-carat-1-w');
-	jDisplay.timelineShown = false;
+	jdisp.jtlToggle.animate({
+		right:'380px'
+	}, 100);
+	jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-w');
+	$('#jmap-info').removeClass('jmap-info-expanded');
+	jdisp.jtlShown = false;
 }
 
+
+function loadTimeline(markData) {
+	$(jdisp.jtl).timeline(getJTLParams(), markData, eventEntryMouseover, eventEntryMouseout, eventEntryClick);
+	for (var eventid in jevent.eventsData) {
+		var $domEle = $('#jtl-mark-'+eventid);
+		$domEle.attr('title',jevent.eventsData[eventid].tooltip);
+		$domEle.tipsy({gravity:'w',html:true,manual:true});
+	}
+}
 
 
 /***************************************/
-/* Mouseover/out functions */
+/* Mouseover/out functions for events */
 /***************************************/
 
 function eventEntryMouseover(eventId, fromBldg) {
@@ -149,9 +207,9 @@ function eventEntryMouseover(eventId, fromBldg) {
 	eventEntry.style.background='#ECECEC';
 	tlMark.setAttribute('class', 'jtl-mark-hover'); 
 	tlMark.style.left = parseInt(tlMark.style.left, 10) - 1;
-	//tlMark.style.background='#E56717';
+	tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) + 1;
 	if (fromBldg != true) {
-		$(tlMark).tipsy('show');
+		if (jdisp.jtlShown) $(tlMark).tipsy('show');
 		if (bldgDict != undefined) eventBldgMouseoverColor(bldgDict.domEle);
 	}
 }
@@ -162,9 +220,9 @@ function eventEntryMouseout(eventId, fromBldg) {
 	eventEntry.style.background='transparent';
 	tlMark.setAttribute('class', 'jtl-mark');
 	tlMark.style.left = parseInt(tlMark.style.left, 10) + 1;
-	//tlMark.style.background='orange';
+	tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) - 1;
 	if (fromBldg != true) {
-		$(tlMark).tipsy('hide');
+		if (jdisp.jtlShown) $(tlMark).tipsy('hide');
 		if (bldgDict != undefined) eventBldgMouseoutColor(bldgDict.domEle);
 	}
 }
@@ -180,7 +238,7 @@ function eventEntryClick(eventId, dontScroll) { //only for the timeline
 	$(eventEntry).find('.info-event-long').toggle(300);
 }
 function eventBldgMouseover(domEle) {
-	if (jevent.filterType == 0) {
+	if (jevent.layerType == 0) {
 		var bldgCode = bldgIdToCode(domEle.id);
 		for (var eventid in jevent.eventsData) {
 			if (jevent.eventsData[eventid].bldgCode == bldgCode)
@@ -189,7 +247,7 @@ function eventBldgMouseover(domEle) {
 	}
 }
 function eventBldgMouseout(domEle) {
-	if (jevent.filterType == 0) {
+	if (jevent.layerType == 0) {
 		var bldgCode = bldgIdToCode(domEle.id);
 		for (var eventid in jevent.eventsData) {
 			if (jevent.eventsData[eventid].bldgCode == bldgCode)
