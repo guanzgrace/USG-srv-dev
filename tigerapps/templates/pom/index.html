@@ -1,3 +1,4 @@
+{% load value_from_settings %}
 <html>
 <head>
     <title>Pursuit of Mappyness</title>
@@ -55,6 +56,11 @@
 	        
 		<div id="info-top-filters">
 			<div id="top-tab-0" class="top-tab">
+				<div style="float:right;">
+					<a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/events/add" target="_blank">Add event</a>
+				</div>
+				<h2 class="info-title">Campus Events</h2>
+			
 				<div class="isolated">
 					<form id="events-search-form">
 						<span class="desc-help">Filter by query:</span><br/>
@@ -112,6 +118,25 @@
 				dX: <input id="box7" type="text" style="width:40px;"/>
 				dY: <input id="box8" type="text" style="width:40px;"/><br/>
 				-->
+				<div id="info-divider"></div>
+			</div>
+			
+			<div id="top-tab-2" class="top-tab">
+				<div style="float:right;text-align:right;">
+					<span style="font-weight:bold"> Legend </span><br/>
+					<span style="color:#0000FF;"> Vegan - no animal derivatives </span> <br>
+					<span style="color:#00AA00;"> Vegetarian - no meat products </span> <br>
+					<span style="color:#8000FF;"> Contains Pork </span> <br>
+					<span style="color:#990000;"> Contains Nuts </span> <br>
+				</div>
+				<h2 class="info-title">Dining Hall Menus</h2>
+				<h5>Last updated {{timestamp}}</h5>
+				<div id="info-divider"></div>
+			</div>
+			
+			<div id="top-tab-4" class="top-tab">
+				<h2 class="info-title">OIT "All Clusters" Printers</h2>
+				<h5>Last updated {{timestamp}}</h5>
 				<div id="info-divider"></div>
 			</div>
 			

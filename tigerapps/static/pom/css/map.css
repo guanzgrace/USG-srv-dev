@@ -55,8 +55,7 @@ ul {
 	margin: 0;
 	padding: 0;
 }
-table {
-	
+table {	
 }
 
 a:link, a:visited{
@@ -82,6 +81,13 @@ a:hover{
 	/*box-shadow:0px 0px 4px #333;*/
 	border-bottom:1px solid #bbb;
 	z-index:99;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #logo {
@@ -132,17 +138,20 @@ a:hover{
 
 
 #info-top > div > div, #info-bot > div {
-	padding: 8px 6px 10px 12px;
+	padding: 0 6px 0 12px;
 	margin-right: 5px;
+}
+#info-top > div {
+	padding: 4px 0 12px;
+}
+#info-divider {
+	margin:12px -10px 0;
+	height: 0px;
+	border-top: 1px solid #C0C0C0;
 }
 
 .top-tab {
 	display: none;
-}
-#info-divider {
-	height: 0px;
-	border-top: 1px solid #C0C0C0;
-	margin:8px -10px 0;
 }
 #info-bot {
 	overflow-y: auto;
@@ -167,20 +176,26 @@ a:hover{
 }
 
 
-#info-title {
+#jmap-info h2 {
+	padding-bottom:4px;
 	font-size:18px;
 }
-#info-subtitle {
-	
+#jmap-info h3 {
+	padding-bottom:2px;
+	font-size:15px;
+}
+.info-title {
+}
+.info-subtitle {	
 }
 .info-event-entry {
+	padding-top: 6px !important;
+	padding-bottom: 8px !important;
 }
 .info-event-subtitle {
-	/*margin-left: 5px;*/
 }
 .info-event-description {
-	/*margin-left: 5px;*/
-	color:#464646; /*gray*/
+	color:#464646;
 }
 
 
@@ -238,6 +253,7 @@ div.isolated {
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     z-index:102;
+    cursor:pointer;
 }
 #jtl-content {
 	height:100%;
@@ -271,6 +287,7 @@ div.isolated {
 	bottom: 0px;
 	background-color:LightGray;
 	overflow: hidden;
+	
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -294,6 +311,9 @@ div.isolated {
 }
 .jmap-bldg {
 	position:absolute;
+}
+.jmap-bldg-active {
+	cursor:pointer;
 }
 
 .map-box {

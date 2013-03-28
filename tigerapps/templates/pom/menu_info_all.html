@@ -1,20 +1,5 @@
 {% load hashing_filter %}
 
-<div>
-	<div style="float:right;text-align:right;">
-		<span style="font-weight:bold"> Legend </span><br/>
-		<span style="color:#0000FF;"> Vegan - no animal derivatives </span> <br>
-		<span style="color:#00AA00;"> Vegetarian - no meat products </span> <br>
-		<span style="color:#8000FF;"> Contains Pork </span> <br>
-		<span style="color:#990000;"> Contains Nuts </span> <br>
-	</div>
-	<h2 id="info-title">All Menus</h2>
-</div>
-
-<div>
-	<h5>Last updated {{timestamp}}</h5>
-</div>
-
 <div style="text-align:center;">
 {% for tup in menu_list %}
 	<div class="info-event-entry">
@@ -32,7 +17,7 @@
 			{% endfor%}
 		</div>
 	{%endfor%}
-	<br/><br/>
+	<br/>
 	</div>
 {% endfor %}
 </div>

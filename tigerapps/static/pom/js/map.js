@@ -38,7 +38,7 @@ function mapInit() {
 
 	//variables for loading tiles and buildings
 	jmap.zoom = 4; 			//0=out,4=in
-	var start = mapCenterToDisp(1300,560);
+	var start = mapCenterToDisp(1380,620);
 	jmap.dispX = start.x;	//displacement from the top-left
 	jmap.dispY = start.y;
 	jmap.map.style.left = -jmap.dispX;
@@ -305,8 +305,14 @@ function setupPlainBldg(domEle) {
 	domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc);
 	domEle.onmouseover = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsHoverSrc;};
 	domEle.onmouseout  = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc;};
-	if (jevent.activeLayer == 5)	domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
-	else		 				domEle.onclick = function(ev){};
+	if (jevent.activeLayer == 5) {
+		domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
+		$(domEle).addClass('jmap-bldg-active');
+	}
+	else {
+		domEle.onclick = function(ev){};
+		$(domEle).removeClass('jmap-bldg-active');
+	}
 	jmap.loadedBldgs[domEle.id].event = false;
 }
 function setupEventBldg(domEle) {
@@ -314,6 +320,7 @@ function setupEventBldg(domEle) {
 	domEle.onmouseover = function(ev){eventBldgMouseoverColor(domEle);eventBldgMouseover(domEle)};
 	domEle.onmouseout  = function(ev){eventBldgMouseoutColor(domEle);eventBldgMouseout(domEle)};
 	domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
+	$(domEle).addClass('jmap-bldg-active');
 	jmap.loadedBldgs[domEle.id].event = true;
 }
 function eventBldgMouseoverColor(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventHoverSrc;}
