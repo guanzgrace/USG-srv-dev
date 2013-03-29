@@ -14,10 +14,11 @@ if socket.gethostname() == 'USGDev':
     import monitor
     monitor.start(interval=1.0)
 
-# Start the long-polling gevent server
-PORT = '8031'
-os.environ['REAL_TIME_PORT'] = PORT
-subprocess.Popen([os.path.join(path, 'manage_gevent.py'), PORT])
+# Start the long-polling gevent server, if this is the tigerapps app
+if 'tigerapps' in path:
+    PORT = '8031'
+    os.environ['REAL_TIME_PORT'] = PORT
+    subprocess.Popen([os.path.join(path, 'manage_gevent.py'), PORT])
 
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
