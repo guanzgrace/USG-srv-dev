@@ -55,8 +55,7 @@ ul {
 	margin: 0;
 	padding: 0;
 }
-table {
-	
+table {	
 }
 
 a:link, a:visited{
@@ -69,53 +68,96 @@ a:hover{
 }
 
 
+
 /*************/
-/* Left panel */
+/* Top panel */
+/*************/
+#jmap-topbar {
+	background-color:#eee;
+	height:60px;
+	left:0px;
+	right:380px;
+	position:absolute;
+	/*box-shadow:0px 0px 4px #333;*/
+	border-bottom:1px solid #bbb;
+	z-index:99;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#logo {
+    margin:5px 10px 0px 10px;
+    display:inline-block;
+}
+#logo-link {
+    color:black;
+    font-size:30px;
+    margin:4px -2px 0;
+    font-weight:bold;
+    font-family:Bentham;
+    text-decoration:none;
+}
+
+#layer-tabs {
+    display:inline-block;
+	margin:10px 20px;
+	position:relative;
+	top:-3px;
+}
+
+
+/*************/
+/* Right panel */
 /*************/
 #jmap-info {
 	position:absolute;
 	top: 28px;
-	left: 0px;
+	right: 0px;
 	bottom: 0px;
 	width:380px;
 	
 	background-color:#FAFCF8;
-    box-shadow:5px 0px 0.8em -5px hsla(0, 0%, 0%, 1.0);/*3px -2px 1.5em hsla(0, 0%, 0%, 1.0);*/
+    box-shadow:0px 0px 6px #333;
+    border:none;
     z-index:100;
 }
+.jmap-info-expanded {
+	box-shadow:none !important;
+	border-left:1px solid #ddd !important;
+}
 #info-content {
+    float:right;
 	width: 370px;
-    padding:5px;
+    padding:10px 5px;
 }
 
-#info-top {
-	height: 210px;
-	margin:0 18px 15px 18px;
+
+#info-top > div > div, #info-bot > div {
+	padding: 0 6px 0 12px;
+	margin-right: 5px;
 }
-#info-title {
-	height:35px;
-	width:325px;
-	float: left;
-	margin:-4px 0 12px -14px;
+#info-top > div {
+	padding: 4px 0 12px;
 }
-#info-top-types {
-	margin:10px 0;
+#info-divider {
+	margin:12px -10px 0;
+	height: 0px;
+	border-top: 1px solid #C0C0C0;
 }
+
 .top-tab {
 	display: none;
-	margin:6px 0;
-}
-
-#info-divider {
-	height: 0px;
-	margin-left: 5px;
-	margin-right: 3px;
-	border-top: 1px solid #C0C0C0;
 }
 #info-bot {
 	overflow-y: auto;
-	margin:13px 0px 15px 11px;
+	margin:0;
 }
+
 
 .info-table {
 	text-align:center;
@@ -127,10 +169,33 @@ a:hover{
 }
 .info-table th {
 	font-weight:bold;
-	text-align: right;
+	text-align: left;
 }
 .info-table td {
 	text-align: left;
+}
+
+
+#jmap-info h2 {
+	padding-bottom:4px;
+	font-size:18px;
+}
+#jmap-info h3 {
+	padding-bottom:2px;
+	font-size:15px;
+}
+.info-title {
+}
+.info-subtitle {	
+}
+.info-event-entry {
+	padding-top: 6px !important;
+	padding-bottom: 8px !important;
+}
+.info-event-subtitle {
+}
+.info-event-description {
+	color:#464646;
 }
 
 
@@ -142,54 +207,60 @@ div.isolated {
 	margin: 4px 0 6px;
 }
 
-/*************/
-/* For event data */
-/*************/
-#info-bldg-name {
-	margin-bottom:4px;
-}
-#info-bot-link {
-	float:right;
-	padding-right:10px;
+
+.ui-button-text {
+    font-size:13px;
 }
 
-.info-event-entry {
-	padding:8px 12px 10px 0;
-	/*margin-right: 5px;*/
+.info-bot-loading {
+	font-size: 16px;
+	margin:20px 0;
+	text-align:center;
 }
-.info-event-subtitle {
-	/*margin-left: 5px;*/
-}
-.info-event-description {
-	/*margin-left: 5px;*/
-	color:#464646; /*gray*/
+.info-bot-loading img {
+	height: 20px;
+	width: 20px;
+	padding: 0 6px;
+	vertical-align: middle;
 }
 
 
 /*************/
 /* Timeline */
 /*************/
-#info-jtl {
+#jmap-jtl {
 	position:absolute;
-	top: 0;
-	left: 380px;
-	width: 150px;
-	bottom: 0;
-	padding: 0 5px;
+	top: 28px;
+	right: 208px;
+	bottom: 0px;
+	width:162px;
+	
+	background-color:#FAFCF8;
+    box-shadow:0px 0px 6px #333;
+    z-index:99;
 }
 #jtl-toggle {
 	position:absolute;
+	top: 28px;
+	right: 370px;
+	
 	height:16px;
 	width:16px;
-	top:0px;
-	right:-30px;
+	margin-top:2px;
 	padding: 7px;
-	
 	background-color:#FAFCF8;
-    box-shadow:5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
+    box-shadow:-5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    z-index:102;
+    cursor:pointer;
 }
+#jtl-content {
+	height:100%;
+	width:150px;
+	padding:0 5px 0 7px;
+}
+
 .jtl-params {
 	color:#f6931f;
 	font-weight:bold;
@@ -210,12 +281,13 @@ div.isolated {
 /*************/
 #jmap-container {
 	position: absolute;
-	top: 28px;
-	left: 380px;
-	right: 0px;
+	top: 88px;
+	left: 0px;
+	right: 380px;
 	bottom: 0px;
 	background-color:LightGray;
 	overflow: hidden;
+	
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -239,6 +311,9 @@ div.isolated {
 }
 .jmap-bldg {
 	position:absolute;
+}
+.jmap-bldg-active {
+	cursor:pointer;
 }
 
 .map-box {

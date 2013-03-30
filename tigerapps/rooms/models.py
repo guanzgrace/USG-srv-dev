@@ -58,6 +58,10 @@ class Room(models.Model):
     # connecting single
     con = models.BooleanField();
     bathroom = models.CharField(max_length=2, choices=BATHROOM_CHOICES)
+    # When this entry was updated
+    updated = models.DateField()
+    # Whether this is currently an undergrad room.
+    active = models.BooleanField(default=True)
     
     def __unicode__(self):
         return "%s %s" % (self.building.name, self.number)

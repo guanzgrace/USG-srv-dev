@@ -1,45 +1,43 @@
 {% load value_from_settings %}
 <div>
-	<div id="info-bot-link"><a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/events/add" target="_blank">Add event</a></div>
-	<h3 id="info-bldg-name">{% if all_events %}All Events{%else%}{{bldg_name}}{% endif %}</h3>
+	<h3 class="info-title">Events {% if all_events %}across campus{%else%}at {{bldg_name}}{% endif %}</h3>
 </div>
 
 {% for event in events %}
-	<div class="info-event-entry jexpand-main" id="event-entry-{{event.event_id}}">
-		<div style="font-weight:bold;">
-			<div style="float:right;margin-top:1px;">
-				<a href="http://www.google.com/calendar/event?action=TEMPLATE&text={{event|urlencode:""}}&dates={{event.getGCalSDate1}}{{event.getGCalSDate2}}{{event.getGCalSDate3}}/{{event.getGCalEDate1}}{{event.getGCalEDate2}}{{event.getGCalEDate3}}&location={{event.getGCalLocation|urlencode:""}}&details={{event.event_cluster.cluster_description|truncatewords:175|urlencode:""}}&sprop=name:pcal" target="_blank">
-					<img src="/static/pom/img/gcal_button_2.png" alt="Add to Google Calendar">
-					<!--  use old image
-					<img src="http://www.google.com/calendar/images/ext/gc_button1.gif" alt="Add to Google Calendar">
-					-->
-				</a>
-			</div>
-			
-			<a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/events/{{event.event_id}}" target="_blank">
-				{{event}}
+<div class="info-event-entry jexpand-main" id="event-entry-{{event.event_id}}">
+	<div style="font-weight:bold;">
+		<div style="float:right;margin-top:1px;">
+			<a href="http://www.google.com/calendar/event?action=TEMPLATE&text={{event|urlencode:""}}&dates={{event.getGCalSDate1}}{{event.getGCalSDate2}}{{event.getGCalSDate3}}/{{event.getGCalEDate1}}{{event.getGCalEDate2}}{{event.getGCalEDate3}}&location={{event.getGCalLocation|urlencode:""}}&details={{event.event_cluster.cluster_description|truncatewords:175|urlencode:""}}&sprop=name:pcal" target="_blank">
+				<img src="/static/pom/img/gcal_button_2.png" alt="Add to Google Calendar">
+				<!--  use old image
+				<img src="http://www.google.com/calendar/images/ext/gc_button1.gif" alt="Add to Google Calendar">
+				-->
+				<!-- APPLE SUCKS.  We do not provide support for iCal
+				<a href="/ical/{{event.event_id}}"><img src="/static/cal/css/img/ical.png" alt="Add to iCal" /></a>
+				-->
 			</a>
-			<div class="info-event-subtitle">
-				{{event.event_date_time_start|date:"M d, Y"}}, {{event.time_start_str}} - {{event.time_end_str}}<br/>
-				{% if all_events and event.event_location_name %}{{event.event_location_name}}<br/>{% endif %}
-				{% if event.event_location_details %}{{event.event_location_details}} | {% endif %}{{event.getAttendeeCount}} attendee{{event.getAttendeeCount|pluralize}}<br/>
-			</div>
 		</div>
-
-		{%if events|length > 3%}
-			<div class="info-event-description">
-				{{event.short_desc}}{%if event.long_desc%}<span class="info-event-dots">...</span><span class="info-event-long" style="display:inline;">{{event.long_desc}}</span>{%endif%}
-			</div>
-		{%else%}
-			<div class="info-event-description">
-				{{event.short_desc}}{{event.long_desc}}
-			</div>
-		{%endif%}
-			
-		<!-- APPLE SUCKS.  We do not provide support for iCal
-		<a href="/ical/{{event.event_id}}"><img src="/static/cal/css/img/ical.png" alt="Add to iCal" /></a>
-		-->
+		
+		<a href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/events/{{event.event_id}}" target="_blank">
+			{{event}}
+		</a>
+		<div class="info-event-subtitle">
+			{{event.event_date_time_start|date:"M d, Y"}}, {{event.time_start_str}} - {{event.time_end_str}}<br/>
+			{% if event.event_location_name %}{{event.event_location_name}}{% if event.event_location_details %} | {% else %}<br/>{% endif %}{% endif %}
+			{% if event.event_location_details %}{{event.event_location_details}}<br/>{% endif %}
+		</div>
 	</div>
+
+	{%if events|length > 3%}
+		<div class="info-event-description">
+			{{event.short_desc}}{%if event.long_desc%}<span class="info-event-dots">...</span><span class="info-event-long" style="display:inline;">{{event.long_desc}}</span>{%endif%}
+		</div>
+	{%else%}
+		<div class="info-event-description">
+			{{event.short_desc}}{{event.long_desc}}
+		</div>
+	{%endif%}
+</div>
 {% endfor %}
 <br/>
 

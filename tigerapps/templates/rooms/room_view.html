@@ -13,17 +13,9 @@
     <div id="room_view_unavail">Room Taken</div>
     {% endif %}
 {% endcomment %}
-    <h1 id="room_view_head">{{ room.building }}, Room {{room.number}}: {{ room.numrooms}}-room {{ occlong }}</h1>
-    
-    
+    <h1 id="room_view_head">{{ room.building }}, Room {{room.number}}: {{ room.numrooms}}-room {{ occlong }}</h1>    
     </div>
-    <!--ul>
-    	<li>{{ floorword }} Floor</li>
-        <li>{{ room.sqft }} square feet</li>
-      	<li>{{ room.get_bathroom_display }} Bathroom</li>
-        <li>{{ room.get_gender_display }} Gender</li>
-    </ul-->
-    
+
     <table id="room_view_table">
       <tbody>
         <tr id="room_view_tablehead">
@@ -42,42 +34,10 @@
           <td>{{ room.get_gender_display }} Gender</td>
            <td>{% if room.con %}{% else %}No{% endif %} Connected Room</td>
         </tr>
-        <tr>
-            <td></td><td></td>
-        </tr>
-        <!--
-        <tr>
-          <td></td>
-          <td style="text-align: right"><a style="font-size: 16px; margin-right: -37px" id="review_link" href="../review/{{ room.id }}">Edit / View Reviews</a></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td style="text-align: right">Queue:
-                <div class="addRoom" id="addremove" onclick="$.publish('queue/add',{id:{{ room.id }}, 
-                    building:'{{ room.building }}', number:'{{ room.number }}' });"></div>
-                <div class="removeRoom" id="addremove" onclick="$.publish('queue/remove', {{ room.id }})"></div>
-          </td>
-        </tr>
-        tr id="room_view_tablebody">
-          <td>{{ room.floor }}</td>
-          <td>{{ room.sqft }}</td>
-          <td>{{ room.get_bathroom_display }}</td> 
-          <td>{{ room.get_gender_display }}</td>
-        </tr-->
-        <!--tr id="room_view_tablehead">
-          
-          <td>ADA Compliant?</td>
-          <td>Bi-level?</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td> 
-         
-        </tr-->
       </tbody>
     </table>
+
+    <p><div align=center>Data from: {{ room.updated }}</div></p>
     
     <form action = "" method="POST">
     <input id="review_button" name = "review" type="submit" value="Review This Room">
