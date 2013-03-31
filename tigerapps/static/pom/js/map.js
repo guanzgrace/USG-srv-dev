@@ -10,7 +10,6 @@ jmap = {};
 jevent = {};
 function mapInit() {
 	//links
-	jmap.cursorGrabbing = 'url(/static/pom/img/closedhand.cur)';
 	jmap.tilesDir = '/static/pom/img/tiles/';
 	jmap.bldgsDir = '/static/pom/img/bldgs/';
 	jmap.bldgsFile = '/static/pom/js/bldgs.json';
@@ -31,7 +30,6 @@ function mapInit() {
 	jmap.mapBounds = {x1:77,y1:55,x2:2715,y2:2046};
 	
 	//for dragging
-	jmap.isDragging = false;
 	jmap.mouseStart = null;
 	jmap.mapStart   = null;
 	jmap.objId		= null;
@@ -56,12 +54,12 @@ function mapInit() {
 	/***/
 	
 	//links
-	jevent.urlBldgsForFilter = '/bldgs/filter/';
-	jevent.urlEventsForBldg = '/data/bldg/';
-	jevent.urlEventsForAll = '/data/all/';
-	jevent.urlBldgNames = '/json/bldgs/names/';
+	jevent.urlFilteredBldgs = '/filtered/bldgs/';
+	jevent.urlFilteredDataBldg = '/filtered/data/bldg/';
+	jevent.urlFilteredDataAll = '/filtered/data/all/';
+	jevent.urlLocationsSetup = '/widget/locations/setup/';
 	
-	jevent.htmlLoading = '<div class="info-bot-loading">Loading...' +
+	jevent.htmlLoading = '<div class="info-bot-loading">&nbsp;Loading...' +
         '<img src="/static/pom/img/loading_spinner.gif"></div>';
 
 	//cache display-related tabs
@@ -128,7 +126,6 @@ function bldgCodeToId(bldgCode) {
 // bind mouseover->drag to mousemove anywhere, if drag-setup
 // bind drag-unsetup to mouseup anywhere
 function setupGlobalDrag() {
-	document.onmousemove = mouseMove;
 	document.onmouseup = recordMouseUp
 	
 	/* For getting building coordinates using mouse on map
@@ -157,8 +154,8 @@ function setupTileDrag(domEle) {
 
 // records where the mouse click-down happened
 function recordMouseDown(ev, domEle) {
-	document.body.style.cursor = jmap.cursorGrabbing;
-	jmap.isDragging = true;
+	document.onmousemove = mouseMove;
+	document.body.className = 'jmap-grabbing';
 	jmap.mouseStart = mouseCoords(ev);
 	var mapOffset = $(domEle).offset();
 	var mapContainerOffset = $('#jmap-container').offset();
@@ -166,30 +163,29 @@ function recordMouseDown(ev, domEle) {
 }
 // erases that junk
 function recordMouseUp() {
-	document.body.style.cursor = 'default';
-	jmap.isDragging = false;
+	document.onmousemove = null;
+	document.body.className = '';
 	jmap.mouseStart = null;
 	jmap.mapStart   = null;
 	loadTiles();
 }
 // Moves the map if mouse is clicked down on the map
 function mouseMove(ev){
-	if (jmap.isDragging) {
-		// find the mouse position
-		ev           = ev || window.event;
-		var mousePos = mouseCoords(ev);
-		
-		// move the map to the correct position
-		var diffX = mousePos.x - jmap.mouseStart.x;
-		var diffY = mousePos.y - jmap.mouseStart.y;
-		jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
-		jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
-		jmap.map.style.left = -jmap.dispX;
-		jmap.map.style.top  = -jmap.dispY;
+    // find the mouse position
+    ev           = ev || window.event;
+    var mousePos = mouseCoords(ev);
+    
+    // move the map to the correct position
+    var diffX = mousePos.x - jmap.mouseStart.x;
+    var diffY = mousePos.y - jmap.mouseStart.y;
+    jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
+    jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
+    jmap.map.style.left = -jmap.dispX;
+    jmap.map.style.top  = -jmap.dispY;
 
-		//it's actually noticeably slower if we load for every drag
-		//loadTiles();
-	}
+    //it's actually noticeably slower if we load for every drag
+    //loadTiles();
+
 	/* For getting building coordinates using mouse on map
 	var c = mouseCoords(ev);
 	var mapContainerOffset = $('#jmap-container').offset();
@@ -331,14 +327,13 @@ function handleBldgClick(ev,domEle) {
 	if (jevent.activeBldg == bldgCode) {
 		/* hide the building info if building clicked is the one that's shown */
 		if (jevent.activeLayer != 5)
-			AJAXeventsForAllBldgs();
+			AJAXdataForAllBldgs();
 		else
 			hideInfoEvent();
 	} else
 		/* otherwise, load the clicked building */
-		AJAXeventsForBldg(bldgCode);
+		AJAXdataForBldg(bldgCode);
 }
-
 
 
 /***************************************/
@@ -347,7 +342,7 @@ function handleBldgClick(ev,domEle) {
 
 function AJAXbldgsForFilter() {
 	showMapLoading();
-	$.ajax(jevent.urlBldgsForFilter, {
+	$.ajax(jevent.urlFilteredBldgs, {
 		data: getFilterParams(),
 		dataType: 'json',
 		success: displayFilteredBldgs,
@@ -433,18 +428,18 @@ function hideMapLoading() {
 
 /* Called when the events/hours/menus/etc tabs are clicked. Changes the filters
  * displayed + loads bldgs for filter + reloads events for filter */
-function handleFilterTypeChange(newFilterType) {
-	if (jevent.activeLayer != newFilterType) {
+function handleLayerChange(newLayer) {
+	if (jevent.activeLayer != newLayer) {
 		hideInfoEvent();
-		var oldFilterType = jevent.activeLayer;
-		jevent.activeLayer = newFilterType;
+		var oldLayer = jevent.activeLayer;
+		jevent.activeLayer = newLayer;
 		
-		if (oldFilterType == 5 || newFilterType == 5) { //changing to/from 5 is special
+		if (oldLayer == 5 || newLayer == 5) { //changing to/from 5 is special
 			setupBldgsToFromLocation();
 		}
-		if (newFilterType != 5) {
+		if (newLayer != 5) {
 			AJAXbldgsForFilter();
-			AJAXeventsForAllBldgs();
+			AJAXdataForAllBldgs();
 		}
 	}
 }
@@ -453,9 +448,9 @@ function handleFilterTypeChange(newFilterType) {
 function handleFilterChange() {
 	AJAXbldgsForFilter();
 	if (jevent.activeBldg != null)
-		AJAXeventsForBldg(jevent.activeBldg);
+		AJAXdataForBldg(jevent.activeBldg);
 	else
-        AJAXeventsForAllBldgs();
+        AJAXdataForAllBldgs();
 }
 
 /* These return the GET params that should be sent in every AJAX call */
@@ -474,9 +469,9 @@ function getFilterParams() {
 /* For rendering event/etc data in the info box */ 
 /***************************************/
 
-function AJAXeventsForAllBldgs() {
+function AJAXdataForAllBldgs() {
 	showInfoLoading();
-	$.ajax(jevent.urlEventsForAll, {
+	$.ajax(jevent.urlFilteredDataAll, {
 		data: getFilterParams(),
 		dataType: 'json',
 		success: handleEventsAJAX,
@@ -487,9 +482,9 @@ function AJAXeventsForAllBldgs() {
 	});
 }
 
-function AJAXeventsForBldg(bldgCode) {
+function AJAXdataForBldg(bldgCode) {
 	showInfoLoading();
-	$.ajax(jevent.urlEventsForBldg+bldgCode, {
+	$.ajax(jevent.urlFilteredDataBldg+bldgCode, {
 		data: getFilterParams(),
 		dataType: 'json',
 		success: handleEventsAJAX,
@@ -591,7 +586,7 @@ function getEventsParamsAJAX() {
 //load the bldgs.json file that holds all HTML-element data for the buildings
 function setupLocationSearch() {
 	/* setup location search autocomplete */
-	$.ajax(jevent.urlBldgNames, {		
+	$.ajax(jevent.urlLocationsSetup, {		
 		dataType: 'json',
 		success: function(data) {
 			jevent.bldgNames = data;
@@ -617,7 +612,7 @@ function setupLocationSearch() {
 		if (bldgCode != undefined) {
 			displayLocationBldgs(bldgCode);
 			centerOnBldg(bldgCode);
-			AJAXeventsForBldg(bldgCode);
+			AJAXdataForBldg(bldgCode);
 		} else {
 			$('#location-search-submit').effect('shake',{times:5,distance:3},30);
 			$('#location-search').val('');

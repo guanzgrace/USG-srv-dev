@@ -1,0 +1,19 @@
+<div style="text-align:center;">
+{% for tup in menus %}
+	<div class="info-event-entry">
+		<h3 id="info-bldg-name" style="font-size:16px;">{{ tup.0 }}</h3>
+		<hr style="width:70%">
+        {% for meal in tup.1.meals %}
+		<div class="info-event-entry">
+			<h4 style="margin:8px 0 2px;">{{meal.0}}</h4>
+			{% for entree in meal.1.entrees%}
+            <div class="info-event-subtext" style='color:{{entree.color}};'>
+                {{entree.attributes.name}}
+            </div>
+			{% endfor %}
+		</div>
+        {% endfor %}
+        <br/>
+	</div>
+{% endfor %}
+</div>

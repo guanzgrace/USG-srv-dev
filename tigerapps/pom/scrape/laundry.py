@@ -3,7 +3,9 @@ Created on Apr 26, 2012
 
 @author: Nader
 '''
+from django.template.loader import render_to_string
 import requests
+import datetime
 from time import strftime
 
 
@@ -83,38 +85,50 @@ def print_laundry_info(laundry_info):
         print(name + ' \n\twashers: ' + str(info.washers()[0]) + ' free of ' + str(info.washers()[1]) + ' \n\tdryers: ' + str(info.dryers()[0]) + ' free of ' + str(info.dryers()[1]))
 
 
-def scrape_all():
+####
+# The following functions are common to all modules in pom.scrape
+# We may want to put them in a class for OO-programming purposes
+####
+
+def get_bldgs():
+    return tuple(bldg_id_to_laundry_info.keys())
+
+def scrape():
     '''
     Cannot access this from dev server-- substituted with temporary
     values for demo. You can literally just uncomment the code below
     on a server with access to the laundry website and everything will work.
     '''
 
-    laundry_info = {'BLOOM' : (('Bloomberg 269', 2, 2, 3, 4), ('Bloomberg 332', 2, 2, 2, 4), ('Bloomberg 460', 0, 2, 1, 2), ('Bloomberg 41', 0, 2, 4, 4)), 
-                    'HARGH' : (('Whitman FB11', 5, 5, 9, 10), ('Whitman S201', 2, 2, 3, 4), ('Whitman C205', 2, 2, 4, 4), ('Whitman A119', 2, 2, 4, 4), ('Whitman C305', 2, 2, 4, 4), ('Whitman S301', 0, 2, 1, 4), ('Whitman C407', 1, 1, 1, 2), ('Whitman S401', 1, 1, 1, 2), ('Whitman F403', 1, 1, 2, 2), ('Whitman F312', 2, 2, 4, 4)), 
-                    'SCULL' : (('Scully South Wing - Fourth Floor', 3, 3, 4, 4), ('Scully South Wing - First Floor', 3, 3, 5, 6), ('Scully North Wing - Second Floor', 0, 4, 6, 6)), 
-                    'PATTN' : (('Patton Hall Basement Level', 5, 5, 3, 7), ('Patton Hall Fourth Floor', 1, 1, 0, 1)), 
-                    'PYNEH' : (('Pyne', 1, 5, 5, 8),), 
-                    'HAMIL' : (('Hamilton', 2, 2, 2, 4),), 
-                    'JOLIN' : (('Joline', 2, 3, 2, 4),), 
-                    'LOCKH' : (('Lockhart', 2, 3, 4, 6),), 
-                    'LITTL' : (('Little Hall B6', 3, 4, 7, 8), ('Little Hall A49', 3, 3, 4, 4), ('Little Hall Basement Level A5', 2, 4, 6, 8)), 
-                    'EDWAR' : (('Edwards', 2, 4, 2, 4),), 
-                    'FEINB' : (('Feinburg', 3, 4, 6, 6),), 
-                    'BLAIR' : (('Blair', 5, 6, 9, 10), ('Buyers', 4, 4, 8, 8)), 
-                    'CLAPP' : (('Clapp - 1927', 4, 4, 2, 3),), 
-                    'DODHA' : (('Dod', 4, 5, 3, 5),), 
-                    'BROWN' : (('Brown', 4, 6, 6, 6),), 
-                    'WITHR' : (('Witherspoon', 4, 6, 6, 6),), 
-                    'LAUGH' : (('Laughlin Hall', 5, 5, 6, 6),), 
-                    'C1915' : (('1915', 5, 5, 2, 5),), 
-                    'HENHO' : (('Henry', 6, 6, 4, 8),), 
-                    'FORBC' : (('Forbes Annex', 6, 6, 6, 7), ('Forbes Main', 6, 6, 6, 8)), 
-                    'SPELM' : (('Spelman', 6, 8, 7, 8),), 
-                    'HOLDE' : (('Holder', 8, 8, 5, 8),), 
-                    '1903H' : (('1903', 8, 8, 8, 8),), 
-                    '1976H' : (('1976', 9, 9, 9, 10),), 
-                    'YOSEL' : (('Yoseloff', 9, 9, 7, 10),)}
+    timestamp = datetime.datetime.now()
+    
+    laundry_info = {
+        'BLOOM' : (('Bloomberg 269', 2, 2, 3, 4), ('Bloomberg 332', 2, 2, 2, 4), ('Bloomberg 460', 0, 2, 1, 2), ('Bloomberg 41', 0, 2, 4, 4)), 
+        'HARGH' : (('Whitman FB11', 5, 5, 9, 10), ('Whitman S201', 2, 2, 3, 4), ('Whitman C205', 2, 2, 4, 4), ('Whitman A119', 2, 2, 4, 4), ('Whitman C305', 2, 2, 4, 4), ('Whitman S301', 0, 2, 1, 4), ('Whitman C407', 1, 1, 1, 2), ('Whitman S401', 1, 1, 1, 2), ('Whitman F403', 1, 1, 2, 2), ('Whitman F312', 2, 2, 4, 4)), 
+        'SCULL' : (('Scully South Wing - Fourth Floor', 3, 3, 4, 4), ('Scully South Wing - First Floor', 3, 3, 5, 6), ('Scully North Wing - Second Floor', 0, 4, 6, 6)), 
+        'PATTN' : (('Patton Hall Basement Level', 5, 5, 3, 7), ('Patton Hall Fourth Floor', 1, 1, 0, 1)), 
+        'PYNEH' : (('Pyne', 1, 5, 5, 8),), 
+        'HAMIL' : (('Hamilton', 2, 2, 2, 4),), 
+        'JOLIN' : (('Joline', 2, 3, 2, 4),), 
+        'LOCKH' : (('Lockhart', 2, 3, 4, 6),), 
+        'LITTL' : (('Little Hall B6', 3, 4, 7, 8), ('Little Hall A49', 3, 3, 4, 4), ('Little Hall Basement Level A5', 2, 4, 6, 8)), 
+        'EDWAR' : (('Edwards', 2, 4, 2, 4),), 
+        'FEINB' : (('Feinburg', 3, 4, 6, 6),), 
+        'BLAIR' : (('Blair', 5, 6, 9, 10), ('Buyers', 4, 4, 8, 8)), 
+        'CLAPP' : (('Clapp - 1927', 4, 4, 2, 3),), 
+        'DODHA' : (('Dod', 4, 5, 3, 5),), 
+        'BROWN' : (('Brown', 4, 6, 6, 6),), 
+        'WITHR' : (('Witherspoon', 4, 6, 6, 6),), 
+        'LAUGH' : (('Laughlin Hall', 5, 5, 6, 6),), 
+        'C1915' : (('1915', 5, 5, 2, 5),), 
+        'HENHO' : (('Henry', 6, 6, 4, 8),), 
+        'FORBC' : (('Forbes Annex', 6, 6, 6, 7), ('Forbes Main', 6, 6, 6, 8)), 
+        'SPELM' : (('Spelman', 6, 8, 7, 8),), 
+        'HOLDE' : (('Holder', 8, 8, 5, 8),), 
+        '1903H' : (('1903', 8, 8, 8, 8),), 
+        '1976H' : (('1976', 9, 9, 9, 10),), 
+        'YOSEL' : (('Yoseloff', 9, 9, 7, 10),)
+    }
     
     '''
     laundry_info = {}
@@ -126,7 +140,7 @@ def scrape_all():
         laundry_info[id] = tuple(laundry)
     '''
     
-    dict = {}
+    mapping = {}
     for building,rooms in laundry_info.items():
         rooms_list = list(rooms)
         for i in  range(0, len(rooms)):
@@ -141,6 +155,18 @@ def scrape_all():
                 room.append('#00AA00') #green
             rooms_list[i] = tuple(room)
         rooms_list = tuple(rooms_list)
-        dict[building] = rooms_list
-    return dict
+        mapping[building] = rooms_list
+    return (timestamp, mapping)
 
+def render(scraped=None):
+    if not scraped:
+        scraped = scrape()
+    timestamp, machine_mapping = scraped
+    machine_list = [x for k,v in machine_mapping.iteritems() for x in v]
+    machine_list = sorted(machine_list, key=lambda x: x[0])
+    html = render_to_string('pom/data_laundry.html',
+                            {'machine_list' : machine_list})
+    return {'timestamp': timestamp.strftime("%c"),
+            'html': html}
+
+    

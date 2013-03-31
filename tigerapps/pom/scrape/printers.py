@@ -1,4 +1,6 @@
+from django.template.loader import render_to_string
 import requests
+import datetime
 from bs4 import BeautifulSoup
 
 
@@ -11,9 +13,9 @@ PRINTER_BLDGS = {
     'Bloomberg_315': 'BLOOM',
     'Brown': 'BROWN',
     'Brush_Gallery': 'JADWH',
-    # Building D
+    'Butler_D033': '1976H',
     # Butler Apts
-    # Campus Club
+    'Campus_Club': 'CCAMP',
     'CJL': 'CENJL',
     'Dod': 'DODHA',
     'Edwards': 'EDWAR',
@@ -52,21 +54,29 @@ PRINTER_BLDGS = {
 
 
 class Printer:
-    def __init__(self, loc, color, status):
-        self.loc = loc
-        self.color = color
+    def __init__(self, bldg, room, loc, color, status):
+        self.bldg = str(bldg)
+        self.room = str(room)
+        self.loc = str(loc)
+        self.color = str(color)
         self.status = str(status)
     def __str__(self):
-        return self.status
+        return "%s: %s" % (self.loc, self.status)
     __repr__ = __str__
 
 
-def scrape_single_printer(bldg_code):
-    '''returns list of printers in building'''
-    return scrape_all()[bldg_code]
+####
+# The following functions are common to all modules in pom.scrape
+# We may want to put them in a class for OO-programming purposes
+####
 
-def scrape_all():
+def get_bldgs():
+    return tuple(PRINTER_BLDGS.values())
+
+def scrape():
     '''returns dict of list of printers, bldg_code:[printers]'''
+    timestamp = datetime.datetime.now()
+    
     resp = requests.get(url)
     bs = BeautifulSoup(resp.content)
     table = bs.find('table')
@@ -75,22 +85,38 @@ def scrape_all():
     for row in rows:
         ps = row.find_all('p')
         loc = ps[0].contents[0][:-1].rstrip('*')
+        bldg = ps[1]
+        room = ps[2]
         statusTag = ps[3]
+        
         printers = []
         for font_tag in statusTag.find_all('font'):
             try:
                 status = font_tag.contents[0]
+                color = font_tag.attrs['color']
             except:
                 continue
-            color = font_tag.attrs['color']
-            printers.append(Printer(loc.replace('_',' '), color, status))
+            p = Printer(bldg, room, loc, color, status)
+            printers.append(p)
         if loc in PRINTER_BLDGS:
             code = PRINTER_BLDGS[loc]
-        else: continue
-
+        else:
+            continue
         if code in clusters:
             clusters[code] += printers
         else:
             clusters[code] = printers
-    return clusters
+
+    return (timestamp, clusters)
+
+def render(scraped=None):
+    if not scraped:
+        scraped = scrape()
+    timestamp, printer_mapping = scraped
+    printer_list = [printer for bldg_code,printers_bldg in printer_mapping.items() for printer in printers_bldg]
+    printer_list = sorted(printer_list, key=lambda printer: printer.loc)
+    html = render_to_string('pom/data_printers.html',
+                            {'printers' : printer_list})
+    return {'timestamp': timestamp.strftime("%c"),
+            'html': html}
 

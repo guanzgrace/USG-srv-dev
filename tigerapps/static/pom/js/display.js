@@ -43,12 +43,12 @@ function loadWindowSizeDependent() {
 function setupLayers() {
 	$("#layer-tabs input").click(function(ev) {
 		displayLayer(ev.target.value);
-		handleFilterTypeChange(ev.target.value);
+		handleLayerChange(ev.target.value);
 		loadWindowSizeDependent();
 	});
 	displayLayer(0);
     jdisp.jtlShown = true;
-	handleFilterTypeChange(0);
+	handleLayerChange(0);
 }
 function displayLayer(layer) {
 	$(".top-tab").css('display', 'none');
