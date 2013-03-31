@@ -144,10 +144,17 @@ a:hover{
 #info-top > div {
 	padding: 4px 0 12px;
 }
-#info-divider {
-	margin:12px -10px 0;
+.info-legend {
+    float:right;
+    text-align:right;
+    padding-bottom:12px;
+}
+.info-divider {
+    padding: 0 !important;
+	margin:12px -10px 0 !important;
 	height: 0px;
 	border-top: 1px solid #C0C0C0;
+    clear:both;
 }
 
 .top-tab {

@@ -474,7 +474,7 @@ function AJAXdataForAllBldgs() {
 	$.ajax(jevent.urlFilteredDataAll, {
 		data: getFilterParams(),
 		dataType: 'json',
-		success: handleEventsAJAX,
+		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
 			hideInfoEvent();
 			handleAjaxError(jqXHR, textStatus, errorThrown);
@@ -487,7 +487,7 @@ function AJAXdataForBldg(bldgCode) {
 	$.ajax(jevent.urlFilteredDataBldg+bldgCode, {
 		data: getFilterParams(),
 		dataType: 'json',
-		success: handleEventsAJAX,
+		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
 			hideInfoEvent();
 			handleAjaxError(jqXHR, textStatus, errorThrown);
@@ -495,13 +495,15 @@ function AJAXdataForBldg(bldgCode) {
 	});
 }
 
-/* Success callback for AJAXeventsFor__Bldg */
-function handleEventsAJAX(data) {
+/* Success callback for AJAXdataFor__Bldg */
+function handleDataAJAX(data) {
 	if (data.error != null) {
 		hideInfoEvent();
 		alert(data.error);
 	} else {
 		$('#info-bot').html(data.html);
+        if (data.timestamp)
+            $('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
 		jevent.activeBldg = data.bldgCode;
 		if (jevent.activeLayer == 0) {
 			for (var eventid in jevent.eventsData)
@@ -516,6 +518,7 @@ function handleEventsAJAX(data) {
 
 function showInfoLoading() {
 	$('#info-bot').html(jevent.htmlLoading);
+    $('#info-timestamp-'+jevent.activeLayer).html('');
 }
 
 function hideInfoEvent() {

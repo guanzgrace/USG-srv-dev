@@ -88,6 +88,10 @@ def scrape():
         bldg = ps[1]
         room = ps[2]
         statusTag = ps[3]
+        if loc in PRINTER_BLDGS:
+            code = PRINTER_BLDGS[loc]
+        else:
+            continue
         
         printers = []
         for font_tag in statusTag.find_all('font'):
@@ -98,10 +102,6 @@ def scrape():
                 continue
             p = Printer(bldg, room, loc, color, status)
             printers.append(p)
-        if loc in PRINTER_BLDGS:
-            code = PRINTER_BLDGS[loc]
-        else:
-            continue
         if code in clusters:
             clusters[code] += printers
         else:
@@ -117,6 +117,6 @@ def render(scraped=None):
     printer_list = sorted(printer_list, key=lambda printer: printer.loc)
     html = render_to_string('pom/data_printers.html',
                             {'printers' : printer_list})
-    return {'timestamp': timestamp.strftime("%c"),
+    return {'timestamp': timestamp.strftime("%b %e, %l:%M %p"),
             'html': html}
 
