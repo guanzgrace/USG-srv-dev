@@ -96,7 +96,7 @@ a:hover{
 }
 #logo-link {
     color:black;
-    font-size:30px;
+    font-size:36px;
     margin:4px -2px 0;
     font-weight:bold;
     font-family:Bentham;
@@ -109,6 +109,23 @@ a:hover{
 	position:relative;
 	top:-3px;
 }
+#layer-tabs .ui-button-text {
+    font-size:15px;
+}
+.ui-state-active {
+  border: 1px solid rgb(168, 147, 96);
+  background: rgb(228, 162, 91) url(images/ui-bg_highlight-hard_75_f5f5b5_1x100.png) 50% top repeat-x;
+  color: rgba(43, 18, 6, 0.9);
+  -moz-box-shadow: 0 0 2px #888;
+  -webkit-box-shadow: 0 0 2px #888;
+  box-shadow: 0 0 2px #888;
+}
+.ui-state-active:hover, .ui-state-active:active {
+  -moz-box-shadow: 0 0 2px #000;
+  -webkit-box-shadow: 0 0 2px #000;
+  box-shadow: 0 0 2px #000;
+}
+
 
 
 /*************/
@@ -234,10 +251,6 @@ div.isolated {
 	margin: 4px 0 6px;
 }
 
-
-.ui-button-text {
-    font-size:13px;
-}
 
 .info-bot-loading {
 	font-size: 16px;

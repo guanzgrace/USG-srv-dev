@@ -49,7 +49,7 @@ function setupLayers() {
 		loadWindowSizeDependent();
 	});
 	displayLayer(0);
-	jdisp.jtlShown = true;
+	jdisp.jtlShown = false;
 	handleLayerChange(0);
 }
 function displayLayer(layer) {
