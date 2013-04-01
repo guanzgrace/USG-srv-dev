@@ -7,15 +7,15 @@ import datetime
 
 def index(request):
 	appointments = Appointment.objects.filter(isActive=True).filter(time__gte=datetime.datetime.now()).order_by('time')
-	return render_to_response('index.html', {'appointments' : appointments})
+	return render_to_response('writetime/index.html', {'appointments' : appointments})
 
 def offer(request):
 	dates = [datetime.datetime.now() + datetime.timedelta(1) * i for i in range(10)]
-	return render_to_response('offer.html', {'times' : range(9, 22), 'dates' : dates})
+	return render_to_response('writetime/offer.html', {'times' : range(9, 22), 'dates' : dates})
 
 def accept(request, pk):
 	appointment = Appointment.objects.get(pk=pk)
-	return render_to_response('accept.html', {'appointment' : appointment})
+	return render_to_response('writetime/accept.html', {'appointment' : appointment})
 
 def submitOffer(request):
 	name = request.REQUEST['name']
@@ -43,9 +43,3 @@ def submitRemove(request, pk):
 	appointment.isActive = False
 	appointment.save()
 	return redirect("/")
-	
-def verify(request):
-	ticket = request.REQUEST['ticket']
-	url = 'https://fed.princeton.edu/cas/validate?service=http://localhost&ticket=' + ticket
-	response = urllib2.urlopen(url).read()
-	return HttpResponse(url)
