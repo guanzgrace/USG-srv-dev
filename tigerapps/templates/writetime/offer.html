@@ -1,0 +1,78 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>Write Time</title>
+		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>	
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+		<div class="row-fluid" style="margin-top:20px">
+		<div class="span3"></div>
+		<div class="container span6">
+			<div style="text-align: center; margin-left:-30px"><img src="static/WriteTime.png"></img></div>
+			<h5 style="text-align: center; margin-bottom: 10px;">Offer your own writing center appointment.</h5>
+			<p style="text-align: center;"><a href="/">Return to the full list.</a></p>
+			<div style="margin-left: auto; margin-right: auto; width: 400px;">
+			<form class="form" action="submitOffer">
+				<table>
+					<tr>
+						<td style="width: 50px; text-align: right;"></td>
+						<td style="width: 20px;"></td>
+						<td style="width: 300px; text-align:center"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Name</td>
+						<td></td>
+						<td><input type="text" name="name" style="height: 35px; width:300px"></input></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Email</td>
+						<td></td>
+						<td><input type="text" name="email" style="height: 35px; width:300px"></input></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Date</td>
+						<td></td>
+						<td style="height: 35px; width:300px">
+							<select name="date">
+								{% for date in dates %}
+									<option value="{{date.year}}_{{date.month}}_{{date.day}}">{{date|date:"l, F j"}}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Time</td>
+						<td></td>
+						<td style="height: 35px; width:300px">
+							<select name="time">
+								{% for time in times %}
+									<option value="{{time}}">
+									{% if time < 12 %}
+										{{time}}:00 a.m.
+									{% endif %}
+									{% if time == 12 %}
+										12:00 p.m.
+									{% endif %}
+									{% if time > 12 %}
+										{{time|add:"-12"}}:00 p.m.
+									{% endif %}
+									</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td><input type="submit" value="Offer" style="float: right;" class="btn btn-primary"></input></td>
+					</tr>
+				</table>
+  			</form>
+
+		</div>	
+		</div>
+	</body>
+</html>

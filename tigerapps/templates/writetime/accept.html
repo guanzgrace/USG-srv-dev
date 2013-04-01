@@ -1,0 +1,46 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>Write Time</title>
+		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>	
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+		<div class="row-fluid" style="margin-top:20px">
+		<div class="span3"></div>
+		<div class="container span6">
+			<div style="text-align: center; margin-left: -30px"><img src="../static/WriteTime.png"></img></div>
+			<h5 style="text-align: center; margin-bottom: 10px;">Accept a writing center appointment offer.</h5>
+			<p style="text-align: center;"><a href="/">Return to the full list.</a></p>
+			<div style="margin-left: auto; margin-right: auto; width: 400px;">
+				<p style="margin-bottom: 15px;">By clicking the "Accept" button below, you agree to attend the writing seminar appointment  <b>{{appointment.time|date:"l, F j" }}</b> at <b>{{appointment.time|date:"g:i a"}}</b> You will receive a reminder email in a few moments.</p>
+			<form class="form" action="/submitAccept/{{appointment.pk}}">
+				<table>
+					<tr>
+						<td style="width: 50px; text-align: right;"></td>
+						<td style="width: 20px;"></td>
+						<td style="width: 200px;"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Name</td>
+						<td></td>
+						<td><input name="name" type="text" style="height: 35px; width:300px"></input></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">Email</td>
+						<td></td>
+						<td><input name="email" type="text" style="height: 35px; width:300px"></input></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td><input type="submit" value="Accept" style="float: right;" class="btn btn-primary btn-success"></input></td>
+					</tr>
+				</table>
+  			</form>
+		</div>	
+		</div>
+	</body>
+</html>
