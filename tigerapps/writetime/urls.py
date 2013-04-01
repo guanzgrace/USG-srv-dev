@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^$', 'writetime.views.index'),
     url(r'^offer$', 'writetime.views.offer'),
     url(r'^accept/(\d*)$', 'writetime.views.accept'),
-    url(r'^submitOffer/$', 'writetime.views.submitOffer'),
+    url(r'^submitOffer$', 'writetime.views.submitOffer'),
     url(r'^submitAccept/(\d*)$', 'writetime.views.submitAccept'),
     url(r'^submitRemove/(\d*)$', 'writetime.views.submitRemove'),
 
