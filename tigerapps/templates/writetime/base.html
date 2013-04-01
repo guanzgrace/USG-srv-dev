@@ -1,0 +1,47 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title>Write Time</title>
+		<link rel="stylesheet" type="text/css" href="/static/writetime/bootstrap/css/bootstrap.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>	
+		<style type="text/css">
+			a {
+				cursor: pointer;
+			}
+			body {
+				background-color: orange;
+			}	
+			#content {
+				display: block;
+				position:absolute;
+				height:auto;
+				bottom:0;
+				top:0;
+				padding: 20px 0;
+				margin-left: auto; 
+				margin-right: auto; 
+				background: white; 
+				border-left: 1px solid black; 
+				border-right: 1px solid black;
+				-webkit-box-shadow: 0 0 3px rgb(0,0,0);
+				-moz-box-shadow: 0 0 3px rgb(0,0,0);
+			}
+/* 			body {background: url('http://i.imgur.com/q31PgRp.jpg');} WOOD */
+/* 			body {background: url('http://i.imgur.com/QO6UpGi.png');} GRAY */
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3"></div>
+			<div class="span6">
+				<div id="content">
+					<div style="text-align: center;"><img src="/static/writetime/WriteTime.png"></img></div>
+					{% block content %}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+		</div>
+	</body>
+</html>
