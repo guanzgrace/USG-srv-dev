@@ -149,6 +149,10 @@ a:hover{
     text-align:right;
     padding-bottom:12px;
 }
+.info-timestamp {
+	margin: 10px 0;
+    min-height: 14px;
+}
 .info-divider {
     padding: 0 !important;
 	margin:12px -10px 0 !important;
@@ -163,23 +167,6 @@ a:hover{
 #info-bot {
 	overflow-y: auto;
 	margin:0;
-}
-
-
-.info-table {
-	text-align:center;
-	margin:auto;
-}
-.info-table th, .info-table td {
-	padding:12px 20px 12px 0;
-	vertical-align: middle;
-}
-.info-table th {
-	font-weight:bold;
-	text-align: left;
-}
-.info-table td {
-	text-align: left;
 }
 
 
@@ -199,10 +186,43 @@ a:hover{
 	padding-top: 6px !important;
 	padding-bottom: 8px !important;
 }
+
 .info-event-subtitle {
 }
 .info-event-description {
 	color:#464646;
+}
+
+.info-menu {
+	text-align:center;
+}
+.info-menu h3.info-bldg-name {
+	font-size:16px !important;
+	width:70%;
+	padding:3px 0;
+	border-top:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	margin:6px auto 0;
+}
+.info-menu h4.info-sub-name {
+	margin:6px 0 2px !important;
+	text-decoration:underline;
+}
+
+.info-printers > div {
+	text-align:center;
+}
+.info-printers > div > div {
+	width:130px;
+	display:inline-block;
+	padding:4px 16px 4px 0;
+	vertical-align: middle;
+}
+.printers-left {
+	text-align:right;
+}
+.printers-right {
+	text-align:left;
 }
 
 
@@ -358,8 +378,12 @@ div.isolated {
 
 
 /*************/
-/* Scrollbar */
+/* Other */
 /*************/
+.loading-spinner {
+    width:20px;
+    height:20px;
+}
 ::-webkit-scrollbar {
     width: 10px;
 }

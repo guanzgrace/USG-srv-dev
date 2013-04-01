@@ -99,12 +99,13 @@ def render(scraped=None):
     if not scraped:
         scraped = scrape()
     timestamp, menu_mapping = scraped
-    menu_list = list(set([(BLDG_INFO[hall][0], menu) for hall, menu in menu_mapping.items()]))
-    menu_list = sorted(menu_list, key = lambda x: x[0])
+    menu_list = [(bldg_code, BLDG_INFO[bldg_code][0], menu) \
+                 for bldg_code, menu in menu_mapping.items()]
+    menu_list = sorted(menu_list, key = lambda x: x[1])
     for tup in menu_list:
-        tup[1].meals = [(name, meal) for name, meal in tup[1].meals.items()]
-        tup[1].meals = sorted(tup[1].meals, key = lambda x: sorter(x[0]))
+        tup[2].meals = [(name, meal) for name, meal in tup[2].meals.items()]
+        tup[2].meals = sorted(tup[2].meals, key = lambda x: sorter(x[0]))
     html = render_to_string('pom/data_menus.html',
                             {'menus': menu_list})
-    return {'timestamp': timestamp.strftime("%c"),
+    return {'timestamp': timestamp.strftime("%B %e, %l:%M %p"),
             'html': html}

@@ -1,12 +1,14 @@
 from django.template.loader import render_to_string
 import requests
 import datetime
+from collections import defaultdict
 from bs4 import BeautifulSoup
+from pom.bldg_info import *
 
 
 url = 'http://clusters-lamp.princeton.edu/cgi-bin/clusterinfo.pl'
 PRINTER_BLDGS = {
-    '1901': '1901H',
+    '1901': 'LAUGH',
     '1937': '1937H',
     '1981': 'HARGH',
     'Blair': 'BLAIR',
@@ -38,7 +40,7 @@ PRINTER_BLDGS = {
     # Lawrence_14
     'Little_North': 'LITTL',
     'Little_South': 'LITTL',
-    'Madison': 'MADIS',
+    'Madison': 'MADIH',
     'McCosh_B59': 'MCCOS',
     'New_GC': 'GRADC',
     'Pyne': 'PYNEH',
@@ -54,12 +56,14 @@ PRINTER_BLDGS = {
 
 
 class Printer:
-    def __init__(self, bldg, room, loc, color, status):
+    def __init__(self, bldg, room, loc):
         self.bldg = str(bldg)
         self.room = str(room)
         self.loc = str(loc)
-        self.color = str(color)
-        self.status = str(status)
+        self.statuses = []
+    def add_status(self, color, status):
+        self.statuses.append((str(color), str(status)))
+
     def __str__(self):
         return "%s: %s" % (self.loc, self.status)
     __repr__ = __str__
@@ -81,31 +85,27 @@ def scrape():
     bs = BeautifulSoup(resp.content)
     table = bs.find('table')
     rows = table.find_all('tr')[1:]
-    clusters = {}
+    clusters = defaultdict(list)
     for row in rows:
         ps = row.find_all('p')
         loc = ps[0].contents[0][:-1].rstrip('*')
-        bldg = ps[1]
-        room = ps[2]
+        bldg = ps[1].contents[0][:-1]
+        room = ps[2].contents[0][:-1]
         statusTag = ps[3]
         if loc in PRINTER_BLDGS:
             code = PRINTER_BLDGS[loc]
         else:
             continue
         
-        printers = []
+        p = Printer(bldg, room, loc)
         for font_tag in statusTag.find_all('font'):
             try:
                 status = font_tag.contents[0]
                 color = font_tag.attrs['color']
             except:
                 continue
-            p = Printer(bldg, room, loc, color, status)
-            printers.append(p)
-        if code in clusters:
-            clusters[code] += printers
-        else:
-            clusters[code] = printers
+            p.add_status(color, status)
+        clusters[code].append(p)
 
     return (timestamp, clusters)
 
@@ -113,10 +113,11 @@ def render(scraped=None):
     if not scraped:
         scraped = scrape()
     timestamp, printer_mapping = scraped
-    printer_list = [printer for bldg_code,printers_bldg in printer_mapping.items() for printer in printers_bldg]
-    printer_list = sorted(printer_list, key=lambda printer: printer.loc)
+    printer_list = [(bldg_code, BLDG_INFO[bldg_code][0], printers) \
+                    for bldg_code, printers in printer_mapping.items()]
+    printer_list = sorted(printer_list, key=lambda tup: tup[1])
     html = render_to_string('pom/data_printers.html',
                             {'printers' : printer_list})
-    return {'timestamp': timestamp.strftime("%b %e, %l:%M %p"),
+    return {'timestamp': timestamp.strftime("%B %e, %l:%M %p"),
             'html': html}
 

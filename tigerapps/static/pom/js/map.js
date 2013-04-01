@@ -60,7 +60,7 @@ function mapInit() {
 	jevent.urlLocationsSetup = '/widget/locations/setup/';
 	
 	jevent.htmlLoading = '<div class="info-bot-loading">&nbsp;Loading...' +
-        '<img src="/static/pom/img/loading_spinner.gif"></div>';
+        '<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner"></div>';
 
 	//cache display-related tabs
 	jevent.activeLayer = -1; //events=0, hours=1, menus=2, laundry=3, printers=4
@@ -288,6 +288,7 @@ function loadTileBldgs(id) {
 	}
 }
 
+
 function setupBldg(domEle) {
 	if (jevent.bldgCodeHasEvent[bldgIdToCode(domEle.id)]) {
 		if (!jmap.loadedBldgs[domEle.id].event)
@@ -299,40 +300,114 @@ function setupBldg(domEle) {
 }
 function setupPlainBldg(domEle) {
 	domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc);
-	domEle.onmouseover = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsHoverSrc;};
-	domEle.onmouseout  = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc;};
-	if (jevent.activeLayer == 5) {
-		domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
-		$(domEle).addClass('jmap-bldg-active');
-	}
-	else {
-		domEle.onclick = function(ev){};
-		$(domEle).removeClass('jmap-bldg-active');
-	}
+	domEle.onmouseover = function(ev){plainBldgMouseover(domEle);};
+	domEle.onmouseout  = function(ev){plainBldgMouseout(domEle);};
+	domEle.onclick = function(ev){};
+	$(domEle).removeClass('jmap-bldg-active');
 	jmap.loadedBldgs[domEle.id].event = false;
 }
 function setupEventBldg(domEle) {
-	domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc);
-	domEle.onmouseover = function(ev){eventBldgMouseoverColor(domEle);eventBldgMouseover(domEle)};
-	domEle.onmouseout  = function(ev){eventBldgMouseoutColor(domEle);eventBldgMouseout(domEle)};
-	domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
+	if (jevent.activeLayer != 5) {
+		domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc);
+		domEle.onmouseover = function(ev){handleEventBldgMouseover(domEle)};
+		domEle.onmouseout  = function(ev){handleEventBldgMouseout(domEle)};
+	} else {
+		domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc);
+		domEle.onmouseover = function(ev){plainBldgMouseover(domEle);};
+		domEle.onmouseout  = function(ev){plainBldgMouseout(domEle);};
+	}
+	domEle.onclick = function(ev){handleEventBldgClick(ev,domEle);};
 	$(domEle).addClass('jmap-bldg-active');
 	jmap.loadedBldgs[domEle.id].event = true;
 }
-function eventBldgMouseoverColor(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventHoverSrc;}
-function eventBldgMouseoutColor(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc;}
 
-function handleBldgClick(ev,domEle) {
+function handleEventBldgMouseover(domEle) {
+	eventBldgMouseover(domEle);
+	if (jevent.activeLayer != 5) {
+		var bldgCode = bldgIdToCode(domEle.id);
+		if (jevent.activeLayer == 0) {
+			for (var eventid in jevent.eventsData) {
+				if (jevent.eventsData[eventid].bldgCode == bldgCode)
+					eventEntryMouseover(eventid);
+			}
+		} else {
+			eventEntryMouseover(bldgCode);
+		}
+	}
+}
+function handleEventBldgMouseout(domEle) {
+	eventBldgMouseout(domEle);
+	if (jevent.activeLayer != 5) {
+		var bldgCode = bldgIdToCode(domEle.id);
+		if (jevent.activeLayer == 0) {
+			for (var eventid in jevent.eventsData) {
+				if (jevent.eventsData[eventid].bldgCode == bldgCode)
+					eventEntryMouseout(eventid);
+			}
+		} else {
+			eventEntryMouseout(bldgCode);
+		}
+	}
+}
+function handleEventBldgClick(ev,domEle) {
 	var bldgCode = bldgIdToCode(domEle.id);
 	if (jevent.activeBldg == bldgCode) {
 		/* hide the building info if building clicked is the one that's shown */
-		if (jevent.activeLayer != 5)
+		if (jevent.activeLayer == 0)
 			AJAXdataForAllBldgs();
-		else
+		else if (jevent.activeLayer == 5)
 			hideInfoEvent();
-	} else
+		else {
+			var eventEntry = document.getElementById('event-entry-'+bldgCode);
+			eventEntryScroll(eventEntry, true);
+		}
+	} else {
 		/* otherwise, load the clicked building */
-		AJAXdataForBldg(bldgCode);
+		if (jevent.activeLayer == 0 || jevent.activeLayer == 5)
+			AJAXdataForBldg(bldgCode);
+		else {
+			var eventEntry = document.getElementById('event-entry-'+bldgCode);
+			eventEntryScroll(eventEntry);
+		}
+	}
+}
+
+
+/***************************************/
+/* Click, Mouseover/out actions for bldgs and events */
+/***************************************/
+
+function plainBldgMouseover(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsHoverSrc;}
+function plainBldgMouseout(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc;}
+function eventBldgMouseover(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventHoverSrc;}
+function eventBldgMouseout(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc;}
+
+function eventEntryMouseover(eventId) {
+	var eventEntry = document.getElementById('event-entry-'+eventId);
+	eventEntry.style.background='#ECECEC';
+	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
+		var tlMark = document.getElementById('jtl-mark-'+eventId);
+		tlMark.setAttribute('class', 'jtl-mark-hover'); 
+		tlMark.style.left = parseInt(tlMark.style.left, 10) - 1;
+		tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) + 1;
+	}
+}
+function eventEntryMouseout(eventId) {
+	var eventEntry = document.getElementById('event-entry-'+eventId);
+	eventEntry.style.background='transparent';
+	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
+		var tlMark = document.getElementById('jtl-mark-'+eventId);
+		tlMark.setAttribute('class', 'jtl-mark');
+		tlMark.style.left = parseInt(tlMark.style.left, 10) + 1;
+		tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) - 1;
+	}
+}
+function eventEntryScroll(domEle, top) {
+	var infoBot = $('#info-bot');
+	var pos = 0;
+	if (top != true)
+		pos = $(domEle).position().top+infoBot.scrollTop()-infoBot.position().top;
+	infoBot.animate({ scrollTop: pos }, 300);
 }
 
 
@@ -434,17 +509,23 @@ function handleLayerChange(newLayer) {
 		var oldLayer = jevent.activeLayer;
 		jevent.activeLayer = newLayer;
 		
-		if (oldLayer == 5 || newLayer == 5) { //changing to/from 5 is special
-			setupBldgsToFromLocation();
+		/* changing to/from 5 is special */
+		if (oldLayer == 5) {
+			for (var id in jmap.loadedBldgs)
+				setupPlainBldg(jmap.loadedBldgs[id].domEle);
 		}
-		if (newLayer != 5) {
+		
+		if (jevent.activeLayer == 5) {
+			for (var id in jmap.loadedBldgs)
+				setupEventBldg(jmap.loadedBldgs[id].domEle);
+		} else {
 			AJAXbldgsForFilter();
 			AJAXdataForAllBldgs();
 		}
 	}
 }
-/* Called when the specific filters for any particular events/hours/menus/etc tab
- * is clicked. Loads bldgs for filter + reloads events for filter */
+/* Called when any specific filters for any particular events/hours/menus/etc tab
+ * are clicked. Loads bldgs for filter + reloads events for filter */
 function handleFilterChange() {
 	AJAXbldgsForFilter();
 	if (jevent.activeBldg != null)
@@ -495,15 +576,13 @@ function AJAXdataForBldg(bldgCode) {
 	});
 }
 
-/* Success callback for AJAXdataFor__Bldg */
+/* Success callback for AJAXdataFor__ */
 function handleDataAJAX(data) {
 	if (data.error != null) {
 		hideInfoEvent();
 		alert(data.error);
 	} else {
 		$('#info-bot').html(data.html);
-        if (data.timestamp)
-            $('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
 		jevent.activeBldg = data.bldgCode;
 		if (jevent.activeLayer == 0) {
 			for (var eventid in jevent.eventsData)
@@ -512,6 +591,10 @@ function handleDataAJAX(data) {
 			jmap.markData = data.markData;
 			loadTimeline(jmap.markData);
 			showTimelineToggle();
+		}
+		else if (jevent.activeLayer != 5) {
+			$('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
+			
 		}
 	}
 }
@@ -536,15 +619,6 @@ function hideInfoEvent() {
 /* Event filters */ 
 /***************************************/
 function setupEventFilters() {
-	//event search
-	$('#events-search-form').submit(function(event) {
-		event.preventDefault();
-		handleFilterChange();
-	});
-	$('#events-search-clear').click(function(event) {
-		$('#events-search').val('');
-		handleFilterChange();
-	});
 	//other params
 	$('.jtl-params').change(function() {
 		handleFilterChange();
@@ -577,7 +651,6 @@ function getEventsParamsAJAX() {
 		i0: p.startTime[1],
 		h1: p.endTime[0]%24,
 		i1: p.endTime[1],
-		search: $('#events-search').val()
 	}
 }
 
@@ -622,10 +695,4 @@ function setupLocationSearch() {
 		}
 	});
 }
-
-function setupBldgsToFromLocation() {
-	for (var id in jmap.loadedBldgs)
-		setupPlainBldg(jmap.loadedBldgs[id].domEle);
-}
-
 

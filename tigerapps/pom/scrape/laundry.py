@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 import requests
 import datetime
 from time import strftime
+from pom.bldg_info import *
 
 
 #url_str is the base url to get the laundry data for the rooms.
@@ -166,7 +167,7 @@ def render(scraped=None):
     machine_list = sorted(machine_list, key=lambda x: x[0])
     html = render_to_string('pom/data_laundry.html',
                             {'machine_list' : machine_list})
-    return {'timestamp': timestamp.strftime("%c"),
+    return {'timestamp': timestamp.strftime("%B %e, %l:%M %p"),
             'html': html}
 
     

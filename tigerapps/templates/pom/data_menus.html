@@ -1,19 +1,23 @@
-<div style="text-align:center;">
-{% for tup in menus %}
-	<div class="info-event-entry">
-		<h3 id="info-bldg-name" style="font-size:16px;">{{ tup.0 }}</h3>
-		<hr style="width:70%">
-        {% for meal in tup.1.meals %}
-		<div class="info-event-entry">
-			<h4 style="margin:8px 0 2px;">{{meal.0}}</h4>
-			{% for entree in meal.1.entrees%}
-            <div class="info-event-subtext" style='color:{{entree.color}};'>
-                {{entree.attributes.name}}
-            </div>
-			{% endfor %}
-		</div>
-        {% endfor %}
-        <br/>
+{% for bldg_code,bldg_name,menu in menus %}
+<div class="info-event-entry info-menu" id="event-entry-{{bldg_code}}">
+	<h3 class="info-bldg-name">{{ bldg_name }}</h3>
+       {% for meal in menu.meals %}
+	<div>
+		<h4 class="info-sub-name">{{meal.0}}</h4>
+		{% for entree in meal.1.entrees%}
+           <div class="info-event-subtext" style='color:{{entree.color}};'>
+               {{entree.attributes.name}}
+           </div>
+		{% endfor %}
 	</div>
-{% endfor %}
+       {% endfor %}
 </div>
+{% endfor %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.info-event-entry').mouseover(function(ev){handleEventEntryMouseover(jtlFn.htmlIdToEventId(this.id));});
+	$('.info-event-entry').mouseout(function(ev){handleEventEntryMouseout(jtlFn.htmlIdToEventId(this.id));});
+	$('.info-event-entry').click(function(ev){handleEventEntryClick(jtlFn.htmlIdToEventId(this.id), true);});
+});
+</script>
