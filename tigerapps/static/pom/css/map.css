@@ -202,6 +202,8 @@ a:hover{
 .info-event-entry {
 	padding-top: 6px !important;
 	padding-bottom: 8px !important;
+    border-top: 1px solid #FAFCF8;
+    border-bottom: 1px solid #FAFCF8;
 }
 
 .info-event-subtitle {

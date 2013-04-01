@@ -290,7 +290,7 @@ function loadTileBldgs(id) {
 
 
 function setupBldg(domEle) {
-	if (jevent.bldgCodeHasEvent[bldgIdToCode(domEle.id)]) {
+	if (jevent.bldgCodeHasEvent[bldgIdToCode(domEle.id)] || jevent.activeLayer == 5) {
 		if (!jmap.loadedBldgs[domEle.id].event)
 			setupEventBldg(domEle);
 	} else {
@@ -307,7 +307,7 @@ function setupPlainBldg(domEle) {
 	jmap.loadedBldgs[domEle.id].event = false;
 }
 function setupEventBldg(domEle) {
-	if (jevent.activeLayer != 5) {
+	if (jevent.activeLayer != 6) {
 		domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc);
 		domEle.onmouseover = function(ev){handleEventBldgMouseover(domEle)};
 		domEle.onmouseout  = function(ev){handleEventBldgMouseout(domEle)};
