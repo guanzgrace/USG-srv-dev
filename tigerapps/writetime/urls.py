@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-import views
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -11,6 +10,9 @@ urlpatterns = patterns('',
     url(r'^submitOffer$', 'writetime.views.submitOffer'),
     url(r'^submitAccept/(\d*)$', 'writetime.views.submitAccept'),
     url(r'^submitRemove/(\d*)$', 'writetime.views.submitRemove'),
+
+    (r'^login/?$', 'django_cas.views.login'),
+    (r'^logout/?$', 'django_cas.views.logout'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
