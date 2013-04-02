@@ -13,7 +13,7 @@ DEFAULT_CLEAR_INTERVAL = 10*60
 class QueueUpdate(object):
     def __init__(self, queue_id):
         self.event = Event()
-        self.queue = Queue.objects.get(queue_id)
+        self.queue = Queue.objects.get(pk=queue_id)
 
 class QueueManager(object):
     

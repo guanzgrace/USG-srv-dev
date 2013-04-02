@@ -102,7 +102,7 @@ class Queue(models.Model):
     # Edit, merge or create.
     update_kind = models.IntegerField(choices=UPDATE_KINDS, default=CREATE)
     # Editing or joining user. Create: None.
-    update_user = models.IntegerField(null=True, default=None) 
+    update_user = models.ForeignKey('User', null=True, default=None)
 
     def __unicode__(self):
         return self.draw.name
@@ -112,19 +112,6 @@ class QueueToRoom(models.Model):
     queue = models.ForeignKey('Queue')
     room = models.ForeignKey('Room')
     ranking = models.IntegerField()
-
-# An update to a queue
-class QueueUpdate(models.Model):
-    EDIT = 0
-    MERGE = 1
-    UPDATE_KINDS = (
-        (EDIT, 'EDIT'),
-        (MERGE, 'MERGE'),
-        )
-    queue = models.ForeignKey('Queue')
-    timestamp = models.IntegerField()
-    kind = models.IntegerField(choices=UPDATE_KINDS) #either edit or merge
-    kind_id = models.IntegerField() # If merge, new queue id, otherwise edit user id
 
 # An invitation to a the queue owned by a user
 class QueueInvite(models.Model):
