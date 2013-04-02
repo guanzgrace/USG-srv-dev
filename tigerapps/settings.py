@@ -182,6 +182,7 @@ INSTALLED_APPS = (
     'elections',
     'pam',
     'pounce',
+    'writetime',
     'rooms',
     'pom',
     'storage',

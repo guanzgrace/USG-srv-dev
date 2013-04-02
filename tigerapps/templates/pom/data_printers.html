@@ -1,0 +1,21 @@
+{% for bldg_code,bldg_name,printerz in printers %}
+<div class="info-event-entry info-printers" id="event-entry-{{bldg_code}}">
+	<h3 id="info-bldg-name" style="font-size:16px;">{{ bldg_name }}</h3>
+	{% for printer in printerz %}
+	<div>
+		<div class="printers-left">{{printer.loc}}, {{printer.room}}</div>
+		<div class="printers-right">{% for color,status in printer.statuses %}
+			<p style='color:{{color}};'>{%ifequal color '#00aa00'%}OK - {%endifequal%}{{status}}</p>
+		{% endfor %}</div>
+	</div>
+	{% endfor %}
+</div>
+{% endfor %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.info-event-entry').mouseover(function(ev){handleEventEntryMouseover(jtlFn.htmlIdToEventId(this.id));});
+	$('.info-event-entry').mouseout(function(ev){handleEventEntryMouseout(jtlFn.htmlIdToEventId(this.id));});
+	$('.info-event-entry').click(function(ev){handleEventEntryClick(jtlFn.htmlIdToEventId(this.id), true);});
+});
+</script>
