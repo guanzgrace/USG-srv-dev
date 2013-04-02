@@ -148,7 +148,7 @@ class QueueInvite(models.Model):
             if not deleting:
                 qtr.pk = None
             qtr.save()
-            rooms1.add(qtr.rooom)
+            rooms1.add(qtr.room)
             ranking += 1
         # Leave old queue, delete it if possible.
         self.receiver.queues.remove(q2)

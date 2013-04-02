@@ -1,5 +1,5 @@
 import time
-from rooms.models import Room, Draw, Queue, QueueToRoom, User
+from rooms.models import Room, Draw, Queue, QueueToRoom, User, QueueInvite
 from gevent import spawn, sleep
 from gevent.event import Event
 from gevent.coros import BoundedSemaphore
@@ -15,6 +15,10 @@ class QueueUpdate(object):
         self.event = Event()
         self.queue = Queue.objects.get(pk=queue_id)
 
+    def fresh(self):
+        self.queue = Queue.objects.get(pk=self.queue.id)
+        return self
+
 class QueueManager(object):
     
     def __init__(self, clear_interval=DEFAULT_CLEAR_INTERVAL):
@@ -29,7 +33,7 @@ class QueueManager(object):
         # Hit.
         if queue_id in self.__updates:
             self.__updates_lock.release()
-            return self.__updates[queue_id]
+            return self.__updates[queue_id].fresh()
         # Miss.
         self.__updates[queue_id] = QueueUpdate(queue_id)
         self.__updates_lock.release()
@@ -87,7 +91,7 @@ class QueueManager(object):
         return {'rooms':room_list}
 
     def check(self, user, queue_id, last_version):
-        update = self._load(queue.id)
+        update = self._load(queue_id)
         print user, update.queue, last_version
         if last_version == update.queue.version:
             print 'going to wait'
@@ -113,10 +117,12 @@ class QueueManager(object):
 
 manager = QueueManager()
 
-def check(user, queue, last_version):
-    response = manager.check(user, queue, last_version)
+def check(user, queue_id, last_version):
+    print 'Check 1'
+    print user, queue_id, last_version
+    response = manager.check(user, queue_id, last_version)
     while response.get('netid') == user.netid and last_version != 0:
-        response = manager.check(user, queue, response['id'])
+        response = manager.check(user, queue_id, response['id'])
     # Add in queue invitation notification.
     response['invites'] = QueueInvite.objects.filter(receiver=user).count()
     return response
