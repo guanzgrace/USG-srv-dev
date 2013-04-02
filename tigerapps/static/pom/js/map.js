@@ -10,7 +10,6 @@ jmap = {};
 jevent = {};
 function mapInit() {
 	//links
-	jmap.cursorGrabbing = 'url(/static/pom/img/closedhand.cur)';
 	jmap.tilesDir = '/static/pom/img/tiles/';
 	jmap.bldgsDir = '/static/pom/img/bldgs/';
 	jmap.bldgsFile = '/static/pom/js/bldgs.json';
@@ -31,7 +30,6 @@ function mapInit() {
 	jmap.mapBounds = {x1:77,y1:55,x2:2715,y2:2046};
 	
 	//for dragging
-	jmap.isDragging = false;
 	jmap.mouseStart = null;
 	jmap.mapStart   = null;
 	jmap.objId		= null;
@@ -56,13 +54,13 @@ function mapInit() {
 	/***/
 	
 	//links
-	jevent.urlBldgsForFilter = '/bldgs/filter/';
-	jevent.urlEventsForBldg = '/data/bldg/';
-	jevent.urlEventsForAll = '/data/all/';
-	jevent.urlBldgNames = '/json/bldgs/names/';
+	jevent.urlFilteredBldgs = '/filtered/bldgs/';
+	jevent.urlFilteredDataBldg = '/filtered/data/bldg/';
+	jevent.urlFilteredDataAll = '/filtered/data/all/';
+	jevent.urlLocationsSetup = '/widget/locations/setup/';
 	
-	jevent.htmlLoading = '<div class="info-bot-loading">Loading...' +
-        '<img src="/static/pom/img/loading_spinner.gif"></div>';
+	jevent.htmlLoading = '<div class="info-bot-loading">&nbsp;Loading...' +
+        '<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner"></div>';
 
 	//cache display-related tabs
 	jevent.activeLayer = -1; //events=0, hours=1, menus=2, laundry=3, printers=4
@@ -128,7 +126,6 @@ function bldgCodeToId(bldgCode) {
 // bind mouseover->drag to mousemove anywhere, if drag-setup
 // bind drag-unsetup to mouseup anywhere
 function setupGlobalDrag() {
-	document.onmousemove = mouseMove;
 	document.onmouseup = recordMouseUp
 	
 	/* For getting building coordinates using mouse on map
@@ -157,8 +154,8 @@ function setupTileDrag(domEle) {
 
 // records where the mouse click-down happened
 function recordMouseDown(ev, domEle) {
-	document.body.style.cursor = jmap.cursorGrabbing;
-	jmap.isDragging = true;
+	document.onmousemove = mouseMove;
+	document.body.className = 'jmap-grabbing';
 	jmap.mouseStart = mouseCoords(ev);
 	var mapOffset = $(domEle).offset();
 	var mapContainerOffset = $('#jmap-container').offset();
@@ -166,30 +163,29 @@ function recordMouseDown(ev, domEle) {
 }
 // erases that junk
 function recordMouseUp() {
-	document.body.style.cursor = 'default';
-	jmap.isDragging = false;
+	document.onmousemove = null;
+	document.body.className = '';
 	jmap.mouseStart = null;
 	jmap.mapStart   = null;
 	loadTiles();
 }
 // Moves the map if mouse is clicked down on the map
 function mouseMove(ev){
-	if (jmap.isDragging) {
-		// find the mouse position
-		ev           = ev || window.event;
-		var mousePos = mouseCoords(ev);
-		
-		// move the map to the correct position
-		var diffX = mousePos.x - jmap.mouseStart.x;
-		var diffY = mousePos.y - jmap.mouseStart.y;
-		jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
-		jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
-		jmap.map.style.left = -jmap.dispX;
-		jmap.map.style.top  = -jmap.dispY;
+    // find the mouse position
+    ev           = ev || window.event;
+    var mousePos = mouseCoords(ev);
+    
+    // move the map to the correct position
+    var diffX = mousePos.x - jmap.mouseStart.x;
+    var diffY = mousePos.y - jmap.mouseStart.y;
+    jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
+    jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
+    jmap.map.style.left = -jmap.dispX;
+    jmap.map.style.top  = -jmap.dispY;
 
-		//it's actually noticeably slower if we load for every drag
-		//loadTiles();
-	}
+    //it's actually noticeably slower if we load for every drag
+    //loadTiles();
+
 	/* For getting building coordinates using mouse on map
 	var c = mouseCoords(ev);
 	var mapContainerOffset = $('#jmap-container').offset();
@@ -292,8 +288,9 @@ function loadTileBldgs(id) {
 	}
 }
 
+
 function setupBldg(domEle) {
-	if (jevent.bldgCodeHasEvent[bldgIdToCode(domEle.id)]) {
+	if (jevent.bldgCodeHasEvent[bldgIdToCode(domEle.id)] || jevent.activeLayer == 5) {
 		if (!jmap.loadedBldgs[domEle.id].event)
 			setupEventBldg(domEle);
 	} else {
@@ -303,42 +300,115 @@ function setupBldg(domEle) {
 }
 function setupPlainBldg(domEle) {
 	domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc);
-	domEle.onmouseover = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsHoverSrc;};
-	domEle.onmouseout  = function(ev){domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc;};
-	if (jevent.activeLayer == 5) {
-		domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
-		$(domEle).addClass('jmap-bldg-active');
-	}
-	else {
-		domEle.onclick = function(ev){};
-		$(domEle).removeClass('jmap-bldg-active');
-	}
+	domEle.onmouseover = function(ev){plainBldgMouseover(domEle);};
+	domEle.onmouseout  = function(ev){plainBldgMouseout(domEle);};
+	domEle.onclick = function(ev){};
+	$(domEle).removeClass('jmap-bldg-active');
 	jmap.loadedBldgs[domEle.id].event = false;
 }
 function setupEventBldg(domEle) {
-	domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc);
-	domEle.onmouseover = function(ev){eventBldgMouseoverColor(domEle);eventBldgMouseover(domEle)};
-	domEle.onmouseout  = function(ev){eventBldgMouseoutColor(domEle);eventBldgMouseout(domEle)};
-	domEle.onclick = function(ev){handleBldgClick(ev,domEle);};
+	if (jevent.activeLayer != 6) {
+		domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc);
+		domEle.onmouseover = function(ev){handleEventBldgMouseover(domEle)};
+		domEle.onmouseout  = function(ev){handleEventBldgMouseout(domEle)};
+	} else {
+		domEle.setAttribute('src', jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc);
+		domEle.onmouseover = function(ev){plainBldgMouseover(domEle);};
+		domEle.onmouseout  = function(ev){plainBldgMouseout(domEle);};
+	}
+	domEle.onclick = function(ev){handleEventBldgClick(ev,domEle);};
 	$(domEle).addClass('jmap-bldg-active');
 	jmap.loadedBldgs[domEle.id].event = true;
 }
-function eventBldgMouseoverColor(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventHoverSrc;}
-function eventBldgMouseoutColor(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc;}
 
-function handleBldgClick(ev,domEle) {
+function handleEventBldgMouseover(domEle) {
+	eventBldgMouseover(domEle);
+	if (jevent.activeLayer != 5) {
+		var bldgCode = bldgIdToCode(domEle.id);
+		if (jevent.activeLayer == 0) {
+			for (var eventid in jevent.eventsData) {
+				if (jevent.eventsData[eventid].bldgCode == bldgCode)
+					eventEntryMouseover(eventid);
+			}
+		} else {
+			eventEntryMouseover(bldgCode);
+		}
+	}
+}
+function handleEventBldgMouseout(domEle) {
+	eventBldgMouseout(domEle);
+	if (jevent.activeLayer != 5) {
+		var bldgCode = bldgIdToCode(domEle.id);
+		if (jevent.activeLayer == 0) {
+			for (var eventid in jevent.eventsData) {
+				if (jevent.eventsData[eventid].bldgCode == bldgCode)
+					eventEntryMouseout(eventid);
+			}
+		} else {
+			eventEntryMouseout(bldgCode);
+		}
+	}
+}
+function handleEventBldgClick(ev,domEle) {
 	var bldgCode = bldgIdToCode(domEle.id);
 	if (jevent.activeBldg == bldgCode) {
 		/* hide the building info if building clicked is the one that's shown */
-		if (jevent.activeLayer != 5)
-			AJAXeventsForAllBldgs();
-		else
+		if (jevent.activeLayer == 0)
+			AJAXdataForAllBldgs();
+		else if (jevent.activeLayer == 5)
 			hideInfoEvent();
-	} else
+		else {
+			var eventEntry = document.getElementById('event-entry-'+bldgCode);
+			eventEntryScroll(eventEntry, true);
+		}
+	} else {
 		/* otherwise, load the clicked building */
-		AJAXeventsForBldg(bldgCode);
+		if (jevent.activeLayer == 0 || jevent.activeLayer == 5)
+			AJAXdataForBldg(bldgCode);
+		else {
+			var eventEntry = document.getElementById('event-entry-'+bldgCode);
+			eventEntryScroll(eventEntry);
+		}
+	}
 }
 
+
+/***************************************/
+/* Click, Mouseover/out actions for bldgs and events */
+/***************************************/
+
+function plainBldgMouseover(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsHoverSrc;}
+function plainBldgMouseout(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsDefaultSrc;}
+function eventBldgMouseover(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventHoverSrc;}
+function eventBldgMouseout(domEle) {domEle.src=jmap.bldgsDir+domEle.id+jmap.bldgsEventSrc;}
+
+function eventEntryMouseover(eventId) {
+	var eventEntry = document.getElementById('event-entry-'+eventId);
+	eventEntry.style.background='#ECECEC';
+	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
+		var tlMark = document.getElementById('jtl-mark-'+eventId);
+		tlMark.setAttribute('class', 'jtl-mark-hover'); 
+		tlMark.style.left = parseInt(tlMark.style.left, 10) - 1;
+		tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) + 1;
+	}
+}
+function eventEntryMouseout(eventId) {
+	var eventEntry = document.getElementById('event-entry-'+eventId);
+	eventEntry.style.background='transparent';
+	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
+		var tlMark = document.getElementById('jtl-mark-'+eventId);
+		tlMark.setAttribute('class', 'jtl-mark');
+		tlMark.style.left = parseInt(tlMark.style.left, 10) + 1;
+		tlMark.style.zIndex = parseInt(tlMark.style.zIndex, 10) - 1;
+	}
+}
+function eventEntryScroll(domEle, top) {
+	var infoBot = $('#info-bot');
+	var pos = 0;
+	if (top != true)
+		pos = $(domEle).position().top+infoBot.scrollTop()-infoBot.position().top;
+	infoBot.animate({ scrollTop: pos }, 300);
+}
 
 
 /***************************************/
@@ -347,7 +417,7 @@ function handleBldgClick(ev,domEle) {
 
 function AJAXbldgsForFilter() {
 	showMapLoading();
-	$.ajax(jevent.urlBldgsForFilter, {
+	$.ajax(jevent.urlFilteredBldgs, {
 		data: getFilterParams(),
 		dataType: 'json',
 		success: displayFilteredBldgs,
@@ -433,29 +503,35 @@ function hideMapLoading() {
 
 /* Called when the events/hours/menus/etc tabs are clicked. Changes the filters
  * displayed + loads bldgs for filter + reloads events for filter */
-function handleFilterTypeChange(newFilterType) {
-	if (jevent.activeLayer != newFilterType) {
+function handleLayerChange(newLayer) {
+	if (jevent.activeLayer != newLayer) {
 		hideInfoEvent();
-		var oldFilterType = jevent.activeLayer;
-		jevent.activeLayer = newFilterType;
+		var oldLayer = jevent.activeLayer;
+		jevent.activeLayer = newLayer;
 		
-		if (oldFilterType == 5 || newFilterType == 5) { //changing to/from 5 is special
-			setupBldgsToFromLocation();
+		/* changing to/from 5 is special */
+		if (oldLayer == 5) {
+			for (var id in jmap.loadedBldgs)
+				setupPlainBldg(jmap.loadedBldgs[id].domEle);
 		}
-		if (newFilterType != 5) {
+		
+		if (jevent.activeLayer == 5) {
+			for (var id in jmap.loadedBldgs)
+				setupEventBldg(jmap.loadedBldgs[id].domEle);
+		} else {
 			AJAXbldgsForFilter();
-			AJAXeventsForAllBldgs();
+			AJAXdataForAllBldgs();
 		}
 	}
 }
-/* Called when the specific filters for any particular events/hours/menus/etc tab
- * is clicked. Loads bldgs for filter + reloads events for filter */
+/* Called when any specific filters for any particular events/hours/menus/etc tab
+ * are clicked. Loads bldgs for filter + reloads events for filter */
 function handleFilterChange() {
 	AJAXbldgsForFilter();
 	if (jevent.activeBldg != null)
-		AJAXeventsForBldg(jevent.activeBldg);
+		AJAXdataForBldg(jevent.activeBldg);
 	else
-        AJAXeventsForAllBldgs();
+        AJAXdataForAllBldgs();
 }
 
 /* These return the GET params that should be sent in every AJAX call */
@@ -474,12 +550,12 @@ function getFilterParams() {
 /* For rendering event/etc data in the info box */ 
 /***************************************/
 
-function AJAXeventsForAllBldgs() {
+function AJAXdataForAllBldgs() {
 	showInfoLoading();
-	$.ajax(jevent.urlEventsForAll, {
+	$.ajax(jevent.urlFilteredDataAll, {
 		data: getFilterParams(),
 		dataType: 'json',
-		success: handleEventsAJAX,
+		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
 			hideInfoEvent();
 			handleAjaxError(jqXHR, textStatus, errorThrown);
@@ -487,12 +563,12 @@ function AJAXeventsForAllBldgs() {
 	});
 }
 
-function AJAXeventsForBldg(bldgCode) {
+function AJAXdataForBldg(bldgCode) {
 	showInfoLoading();
-	$.ajax(jevent.urlEventsForBldg+bldgCode, {
+	$.ajax(jevent.urlFilteredDataBldg+bldgCode, {
 		data: getFilterParams(),
 		dataType: 'json',
-		success: handleEventsAJAX,
+		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
 			hideInfoEvent();
 			handleAjaxError(jqXHR, textStatus, errorThrown);
@@ -500,8 +576,8 @@ function AJAXeventsForBldg(bldgCode) {
 	});
 }
 
-/* Success callback for AJAXeventsFor__Bldg */
-function handleEventsAJAX(data) {
+/* Success callback for AJAXdataFor__ */
+function handleDataAJAX(data) {
 	if (data.error != null) {
 		hideInfoEvent();
 		alert(data.error);
@@ -516,11 +592,16 @@ function handleEventsAJAX(data) {
 			loadTimeline(jmap.markData);
 			showTimelineToggle();
 		}
+		else if (jevent.activeLayer != 5) {
+			$('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
+			
+		}
 	}
 }
 
 function showInfoLoading() {
 	$('#info-bot').html(jevent.htmlLoading);
+    $('#info-timestamp-'+jevent.activeLayer).html('');
 }
 
 function hideInfoEvent() {
@@ -538,15 +619,6 @@ function hideInfoEvent() {
 /* Event filters */ 
 /***************************************/
 function setupEventFilters() {
-	//event search
-	$('#events-search-form').submit(function(event) {
-		event.preventDefault();
-		handleFilterChange();
-	});
-	$('#events-search-clear').click(function(event) {
-		$('#events-search').val('');
-		handleFilterChange();
-	});
 	//other params
 	$('.jtl-params').change(function() {
 		handleFilterChange();
@@ -579,7 +651,6 @@ function getEventsParamsAJAX() {
 		i0: p.startTime[1],
 		h1: p.endTime[0]%24,
 		i1: p.endTime[1],
-		search: $('#events-search').val()
 	}
 }
 
@@ -591,7 +662,7 @@ function getEventsParamsAJAX() {
 //load the bldgs.json file that holds all HTML-element data for the buildings
 function setupLocationSearch() {
 	/* setup location search autocomplete */
-	$.ajax(jevent.urlBldgNames, {		
+	$.ajax(jevent.urlLocationsSetup, {		
 		dataType: 'json',
 		success: function(data) {
 			jevent.bldgNames = data;
@@ -617,17 +688,11 @@ function setupLocationSearch() {
 		if (bldgCode != undefined) {
 			displayLocationBldgs(bldgCode);
 			centerOnBldg(bldgCode);
-			AJAXeventsForBldg(bldgCode);
+			AJAXdataForBldg(bldgCode);
 		} else {
 			$('#location-search-submit').effect('shake',{times:5,distance:3},30);
 			$('#location-search').val('');
 		}
 	});
 }
-
-function setupBldgsToFromLocation() {
-	for (var id in jmap.loadedBldgs)
-		setupPlainBldg(jmap.loadedBldgs[id].domEle);
-}
-
 

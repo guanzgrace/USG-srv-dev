@@ -1,7 +1,0 @@
-<table class="info-table">
-{% for printer in printers %}
-	<tr><th><div style="max-width:100px;">{{printer.loc}}</div></th>
-		<td><div style="max-width:200px;"><span style='color:{{printer.color}};'>
-			{%ifequal printer.color '#00aa00'%}OK - {%endifequal%}{{printer.status}}</span></div></td></tr>
-{% endfor %}
-</table>

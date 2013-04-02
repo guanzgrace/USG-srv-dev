@@ -96,7 +96,7 @@ a:hover{
 }
 #logo-link {
     color:black;
-    font-size:30px;
+    font-size:36px;
     margin:4px -2px 0;
     font-weight:bold;
     font-family:Bentham;
@@ -109,6 +109,23 @@ a:hover{
 	position:relative;
 	top:-3px;
 }
+#layer-tabs .ui-button-text {
+    font-size:15px;
+}
+.ui-state-active {
+  border: 1px solid rgb(168, 147, 96);
+  background: rgb(228, 162, 91) url(images/ui-bg_highlight-hard_75_f5f5b5_1x100.png) 50% top repeat-x;
+  color: rgba(43, 18, 6, 0.9);
+  -moz-box-shadow: 0 0 2px #888;
+  -webkit-box-shadow: 0 0 2px #888;
+  box-shadow: 0 0 2px #888;
+}
+.ui-state-active:hover, .ui-state-active:active {
+  -moz-box-shadow: 0 0 2px #000;
+  -webkit-box-shadow: 0 0 2px #000;
+  box-shadow: 0 0 2px #000;
+}
+
 
 
 /*************/
@@ -144,10 +161,21 @@ a:hover{
 #info-top > div {
 	padding: 4px 0 12px;
 }
-#info-divider {
-	margin:12px -10px 0;
+.info-legend {
+    float:right;
+    text-align:right;
+    padding-bottom:12px;
+}
+.info-timestamp {
+	margin: 10px 0;
+    min-height: 14px;
+}
+.info-divider {
+    padding: 0 !important;
+	margin:12px -10px 0 !important;
 	height: 0px;
 	border-top: 1px solid #C0C0C0;
+    clear:both;
 }
 
 .top-tab {
@@ -156,23 +184,6 @@ a:hover{
 #info-bot {
 	overflow-y: auto;
 	margin:0;
-}
-
-
-.info-table {
-	text-align:center;
-	margin:auto;
-}
-.info-table th, .info-table td {
-	padding:12px 20px 12px 0;
-	vertical-align: middle;
-}
-.info-table th {
-	font-weight:bold;
-	text-align: left;
-}
-.info-table td {
-	text-align: left;
 }
 
 
@@ -191,11 +202,46 @@ a:hover{
 .info-event-entry {
 	padding-top: 6px !important;
 	padding-bottom: 8px !important;
+    border-top: 1px solid #FAFCF8;
+    border-bottom: 1px solid #FAFCF8;
 }
+
 .info-event-subtitle {
 }
 .info-event-description {
 	color:#464646;
+}
+
+.info-menu {
+	text-align:center;
+}
+.info-menu h3.info-bldg-name {
+	font-size:16px !important;
+	width:70%;
+	padding:3px 0;
+	border-top:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	margin:6px auto 0;
+}
+.info-menu h4.info-sub-name {
+	margin:6px 0 2px !important;
+	text-decoration:underline;
+}
+
+.info-printers > div {
+	text-align:center;
+}
+.info-printers > div > div {
+	width:130px;
+	display:inline-block;
+	padding:4px 16px 4px 0;
+	vertical-align: middle;
+}
+.printers-left {
+	text-align:right;
+}
+.printers-right {
+	text-align:left;
 }
 
 
@@ -208,13 +254,9 @@ div.isolated {
 }
 
 
-.ui-button-text {
-    font-size:13px;
-}
-
 .info-bot-loading {
 	font-size: 16px;
-	margin:20px 0;
+	margin:0;
 	text-align:center;
 }
 .info-bot-loading img {
@@ -325,12 +367,12 @@ div.isolated {
 }
 #map-loading {
 	position:absolute;
-	padding:10px;
+	padding:12px;
 	top:50%;
 	left:50%;
-	height:24px;
+	height:20px;
 	width:125px;
-	margin-top:-22px;
+	margin-top:-20px;
 	margin-left:-62px;
 }
 
@@ -345,11 +387,18 @@ div.isolated {
 	font-size:11px;
 }
 
+.jmap-grabbing {
+    cursor:url(/static/pom/img/closedhand.cur) !important;
+}
 
 
 /*************/
-/* Scrollbar */
+/* Other */
 /*************/
+.loading-spinner {
+    width:20px;
+    height:20px;
+}
 ::-webkit-scrollbar {
     width: 10px;
 }

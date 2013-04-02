@@ -12,6 +12,7 @@
   load: function(event, ui) {
   $("#drawtable" + current_draw).tablesorter({headers: { 0: { sorter: false}}});
   $("#drawtable" + current_draw).tableFilter();
+  $.publish("sync_marks");
   }});
   });
   $("#tabs").tabs("option", "cache", true);

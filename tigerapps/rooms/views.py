@@ -30,7 +30,7 @@ def get_user(username):
             user.save()
             # Create queues for each draw
             for draw in Draw.objects.all():
-                queue = Queue.make(draw=draw, user=user)
+                queue = Queue(draw=draw)
                 queue.save()
                 user.queues.add(queue)
         else:
@@ -200,7 +200,7 @@ def create_queue(request, drawid):
     # Check if user already has queue for this draw
     if user.queues.filter(draw=draw):
         return HttpResponse("fail")
-    queue = Queue.make(draw=draw, user=request.rooms_user)
+    queue = Queue(draw=draw)
     queue.save()
     request.rooms_user.queues.add(queue)
     return HttpResponse("pass")
@@ -288,13 +288,16 @@ def leave_queue(request):
     q1 = user.queues.get(draw=draw)
     if 1 == q1.user_set.count():
         return HttpResponse('')
-    q2 = Queue.make(draw=draw, user=user)
+    # Create a new queue for the person leaving.
+    q2 = Queue(draw=draw)
     q2.save()
+    # Copy over the current queue contents.
     qtrs = q1.queuetoroom_set.all()
     for qtr in qtrs:
         qtr.pk = None
         qtr.queue = q2
         qtr.save()
+    # Switch the user's queue.
     user.queues.remove(q1)
     user.queues.add(q2)
     return manage_queues_helper(request);

@@ -3,8 +3,6 @@
 - Functions that return a list of buildings with certain properties
 '''
 import operator
-from pom.scrape.menus import DINING_HALLS
-from pom.scrape.printers import PRINTER_BLDGS
 
 BLDG_INFO = {
     'AL099': ('99 Alexander (Forbes College)',(),True),
@@ -203,19 +201,4 @@ BLDG_INFO = {
 }
 
 BLDG_CODE = sorted(tuple((code, info[0]) for code,info in BLDG_INFO.iteritems()), key=operator.itemgetter(1))
-
-
-def getBldgsWithHours():
-    return tuple()
-
-def getBldgsWithMenus():
-    return tuple(bldg_code for bldg_code in DINING_HALLS.keys())
-
-def getBldgsWithLaundry():
-    return ('BLOOM','HARGH', 'SCULL', 'PATTN', 'PYNEH', 'HAMIL', 'JOLIN', 'LOCKH', 'LITTL', 
-                'EDWAR', 'FEINB', 'BLAIR', 'CLAPP', 'DODHA', 'BROWN', 'WITHR',  'LAUGH', 
-                'C1915', 'HENHO', 'FORBC', 'SPELM', 'HOLDE', '1903H', '1976H', 'YOSEL',)
-
-def getBldgsWithPrinters():
-    return tuple(bldg_code for bldg_code in PRINTER_BLDGS.values())
 
