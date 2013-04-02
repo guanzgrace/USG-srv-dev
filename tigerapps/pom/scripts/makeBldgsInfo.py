@@ -25,6 +25,8 @@ for k,v in l:
             else:
                 f.write(u"    u'%s': u'%s',\n" % (unicode(k1),unicode(v1)))
         else:
+            if type(v1) == list and len(v1) > 0 and type(v1[0]) == dict:
+                v1 = sorted(v1, key=operator.methodcaller('get', 'name'))
             f.write(u"    u'%s': %s,\n" % (unicode(k1),unicode(v1)))
     f.write("  },\n")
 f.write("}")

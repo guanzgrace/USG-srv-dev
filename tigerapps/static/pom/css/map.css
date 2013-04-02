@@ -244,6 +244,26 @@ a:hover{
 	text-align:left;
 }
 
+.info-locations {
+    text-align:center;
+}
+.info-locations img.locations-img {
+    max-width: 100%;
+    max-height: 400px;
+    padding: 4px 0;
+}
+.info-locations p.locations-error {
+    padding: 4px 0;
+    font-style:italic;
+}
+.info-locations h4.locations-name {
+    font-weight: bold;
+    text-decoration:underline;
+    margin: 2px auto 4px;
+}
+.info-locations li.locations-org {
+    margin: 3px 0;
+}
 
 span.desc-help {
 	font-style:italic;
@@ -284,7 +304,7 @@ div.isolated {
 #jtl-toggle {
 	position:absolute;
 	top: 28px;
-	right: 370px;
+	right: 374px;
 	
 	height:16px;
 	width:16px;
@@ -297,6 +317,14 @@ div.isolated {
     z-index:102;
     cursor:pointer;
 }
+#jtl-toggle span {
+    display: block;
+}
+.toggle-text {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+}
+
 #jtl-content {
 	height:100%;
 	width:150px;
