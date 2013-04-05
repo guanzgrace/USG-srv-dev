@@ -273,14 +273,14 @@ function loadTimeline(markData) {
 	for (var eventid in jevent.eventsData) {
 		var $domEle = $('#jtl-mark-'+eventid);
 		$domEle.attr('title',jevent.eventsData[eventid].tooltip);
-		$domEle.tipsy({gravity:'w',html:true,manual:true});
+		$domEle.tipsy({gravity:'e',html:true,manual:true});
 	}
 }
 
 function handleEventEntryMouseover(eventId) {
 	eventEntryMouseover(eventId);
 	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
-		$('jtl-mark-'+eventId).tipsy('show');
+		$('#jtl-mark-'+eventId).tipsy('show');
 	}
 	var bldgCode;
 	if (jevent.activeLayer == 0)
@@ -293,7 +293,7 @@ function handleEventEntryMouseover(eventId) {
 function handleEventEntryMouseout(eventId) {
 	eventEntryMouseout(eventId);
 	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
-		$('jtl-mark-'+eventId).tipsy('hide');
+		$('#jtl-mark-'+eventId).tipsy('hide');
 	}
 	if (jevent.activeLayer == 0)
 		bldgCode = jevent.eventsData[eventId].bldgCode;
