@@ -9,8 +9,7 @@ function displayInit() {
 	jdisp.jtl = $("#jtl-content")
 	jdisp.jtlContainer = $("#jmap-jtl");
 	jdisp.jtlToggle = $("#jtl-toggle");
-	jdisp.jtlToggleArrow = jdisp.jtlToggle.children(".toggle-arrow");
-    jdisp.jtlToggleText = jdisp.jtlToggle.children(".toggle-text");
+	jdisp.jtlToggleArrow = jdisp.jtlToggle.children("span");
 	
 	$("input:submit").button();
 	$(":button").button();
@@ -156,6 +155,8 @@ function showTimelineToggle() {
 	jdisp.jtlToggle.show();
 	if (jdisp.jtlShown)
         showTimeline();
+    else
+        hideTimeline();
 }
 function hideTimelineToggle() {
 	jdisp.jtlToggle.hide();
@@ -172,7 +173,6 @@ function showTimeline() {
 		right:'542px'
 	}, 100);
 	jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-e');
-    jdisp.jtlToggleText.html('hide timeline');
 	$('#jmap-info').addClass('jmap-info-expanded');
 	jdisp.jtlShown = true;
 }
@@ -184,7 +184,6 @@ function hideTimeline() {
 		right:'380px'
 	}, 100);
     jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-w');
-    jdisp.jtlToggleText.html('show timeline');
 	$('#jmap-info').removeClass('jmap-info-expanded');
 	jdisp.jtlShown = false;
 }
