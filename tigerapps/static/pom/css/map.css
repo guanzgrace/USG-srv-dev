@@ -246,10 +246,7 @@ a:hover{
 	padding:4px 16px 4px 0;
 	vertical-align: middle;
 }
-.printers-left {
-	text-align:right;
-}
-.printers-right {
+.printers-left, .printers-right {
 	text-align:left;
 }
 

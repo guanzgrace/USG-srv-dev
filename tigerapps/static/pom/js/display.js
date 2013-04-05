@@ -51,7 +51,7 @@ function setupLayers() {
 		loadWindowSizeDependent();
 	});
 	displayLayer(0);
-	jdisp.jtlShown = false;
+	jdisp.jtlShown = true;
 	handleLayerChange(0);
 }
 function displayLayer(layer) {
@@ -76,6 +76,10 @@ function setupLocationSearch() {
     var input = $("#location-search"),
         submit = $('#location-search-submit'),
         form = $("#location-search-form");
+
+    input.focus(function(event) {
+        $('#filter-locations').click();
+    });
 
 	/* setup location search autocomplete */
 	$.ajax('/widget/locations/setup/', {		
@@ -265,7 +269,7 @@ function loadTimeline(markData) {
 	$(jdisp.jtl).timeline(getJTLParams(), markData,
 			handleEventEntryMouseover,
 			handleEventEntryMouseout,
-			handleEventEntryClick);
+			handleEventTickClick);
 	for (var eventid in jevent.eventsData) {
 		var $domEle = $('#jtl-mark-'+eventid);
 		$domEle.attr('title',jevent.eventsData[eventid].tooltip);
@@ -298,13 +302,18 @@ function handleEventEntryMouseout(eventId) {
 	var bldgDict = jmap.loadedBldgs[bldgCodeToId(bldgCode)];
 	if (bldgDict != undefined) eventBldgMouseout(bldgDict.domEle);
 }
-function handleEventEntryClick(eventId, dontScroll) {
+function handleEventEntryClick(eventId) {
 	var eventEntry = document.getElementById('event-entry-'+eventId);
-	if (dontScroll != true) eventEntryScroll(eventEntry);
 	if (jevent.activeLayer == 0) {
 		$(eventEntry).find('.info-event-dots').toggle();
 		$(eventEntry).find('.info-event-long').toggle(300);
 	}
+}
+function handleEventTickClick(eventId) {
+	var eventEntry = document.getElementById('event-entry-'+eventId);
+    eventEntryScroll(eventEntry);
+    $(eventEntry).find('.info-event-dots').hide();
+    $(eventEntry).find('.info-event-long').show(300);
 }
 
 
