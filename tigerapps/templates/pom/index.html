@@ -5,14 +5,17 @@
 
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/jquery-ui-1.8.20.custom.css"/>
 <!--    <link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/static/shared/css/jqueryui-mod.css"/>-->
-	<link rel="stylesheet" type="text/css" href="/static/pom/css/tipsy.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/shared/css/tipsy.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/shared/css/keyword-ui.css"/>
+
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/timeline.css"/>
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/map.css"/>
     <link href='http://fonts.googleapis.com/css?family=Bentham' rel='stylesheet' type='text/css'>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/static/pom/js/jquery-ui-1.8.20.custom.min.js"></script>
-	<script type="text/javascript" src="/static/pom/js/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="/static/shared/js/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="/static/shared/js/keyword-ui.js"></script>
 
 	<script type="text/javascript" src="/static/pom/js/timeline.js"></script>
 	<script type="text/javascript" src="/static/pom/js/map.js"></script>
@@ -41,8 +44,8 @@
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
 
 			<input type="radio"  id="filter-menus" name="top-tab" value="2"><label for="filter-menus">Menus</label></input>
-			<!-- uncomment when laundry backend is ready -->
-		    <!--input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input-->
+
+		    <input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input>
 
 		    <input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
 
@@ -50,6 +53,12 @@
 
 		</div>
 	
+        <form id="location-search-form">
+            <input id="location-search" type="text" style="width:250px;" name="locations" placeholder="e.g. Frist, McCosh..."/>
+            <div id="location-search-div">
+            <input id="location-search-submit" type="submit" value="Go" />
+            </div>
+        </form>
 </div>
 <div id="jmap-info">
 <div id="info-content"> <!-- second div so scrollbar has margin from right -->
@@ -157,12 +166,7 @@ connect to this queue from your personal machine, see the
 				<h2 class="info-title">Campus Locations</h2>
 				<div class="isolated">
 <p>Click any building to the left, or enter a location name in the
-search bar below, to find any campus location!</p><br/>
-					<span class="desc-help">Search for a building/location:</span><br/>
-					<form id="location-search-form">
-						<table><tr><td><input id="location-search" type="text" style="width:200px;" name="locations"/>&nbsp;&nbsp;</td>
-						<td><input id="location-search-submit" type="submit" value="Jump to Location" /></td></tr></table>
-					</form>
+search bar, to find a campus location!</p>
 				</div>
 				<div class="info-divider"></div>
 			</div>

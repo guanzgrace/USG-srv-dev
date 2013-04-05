@@ -42,7 +42,8 @@ function loadWindowSizeDependent() {
 /* Tabs display */ 
 /***************************************/
 
-/* These setup the filters so that AJAX calls are sent when the filters are changed */
+/* These setup the layer tabs so that AJAX calls are sent
+ * when the layer is changed */
 function setupLayers() {
 	$("#layer-tabs input").change(function(ev) {
 		displayLayer(ev.target.value);
@@ -60,11 +61,68 @@ function displayLayer(layer) {
     else            hideTimelineToggle();
 }
 
+/* These setup the layer-specific filters so that AJAX calls
+ * are sent when the filters are changed */
 function setupLayerFilters() {
-	setupEventFilters();
+	$('.jtl-params').change(function() {
+		handleFilterChange();
+	});
 	setupLocationSearch();
 }
 
+/* load the JSON file that holds all HTML-element data
+ * for the buildings */
+function setupLocationSearch() {
+    var input = $("#location-search"),
+        submit = $('#location-search-submit'),
+        form = $("#location-search-form");
+
+	/* setup location search autocomplete */
+	$.ajax('/widget/locations/setup/', {		
+		dataType: 'json',
+		success: function(data) {
+			jevent.bldgNames = data;
+			var bldgNameList = [];
+			var i = 0;
+			for (name in data)
+				bldgNameList[i++] = name;
+			input.autocomplete({
+                autoFocus: true,
+				delay: 0,
+				minLength: 2,
+				source: bldgNameList,
+                select: function(event, ui) {
+                    input.val(ui.item.value);
+                    form.submit();
+                },
+			})/*.data("ui-autocomplete")._renderItem = function(ul, item) {
+                var re = new RegExp(input.val(), 'gi');
+                return $('<li>')
+                    .append('<a>' + item.label.replace(re, '<b>$&</b>') + '</a>')
+                    .appendTo(ul);
+            }*/;
+		},
+		error: handleAjaxError
+	});
+	
+	/* setup location search submit */
+	form.submit(function(event) {
+		event.preventDefault();
+        $('#filter-locations').click()
+
+		// get submitted building's code, center map on it, and display its events
+		var bldgName = $('#location-search').val();
+		var bldgCode = jevent.bldgNames[bldgName];
+		if (bldgCode != undefined) {
+			displayLocationBldgs(bldgCode);
+			centerOnBldg(bldgCode);
+			AJAXdataForBldg(bldgCode);
+		} else {
+			submit.effect('shake',{times:5,distance:3},30);
+			input.val('');
+		}
+	});
+}
 
 /***************************************/
 /* Tab-specific filters display */ 
@@ -136,6 +194,20 @@ function printTime(timeArr) {
     return hours + ":" + timeArr[1] + zeroPad + ' ' + (am ? "AM" : "PM");
 }
 
+/* Return dictionary of params in the input box for javascript */
+function getJTLParams() {
+	//var startDate = $('#jtl-startDate').datepicker("getDate");
+	var inDate = $('#jtl-startDate').val().split('/');
+	var startDate = new Date();
+	clearDateTime(startDate);
+	startDate.setFullYear(inDate[2]);
+	startDate.setMonth(inDate[0]-1);
+	startDate.setDate(inDate[1]);
+	var nDays = $('#jtl-nDays').val();
+	var startTime = $('#jtl-startTime').val().split(':');
+	var endTime = $('#jtl-endTime').val().split(':');
+	return {startDate:startDate, nDays:nDays, startTime:startTime, endTime:endTime};
+}
 
 
 /***************************************/

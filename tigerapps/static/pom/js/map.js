@@ -57,7 +57,6 @@ function mapInit() {
 	jevent.urlFilteredBldgs = '/filtered/bldgs/';
 	jevent.urlFilteredDataBldg = '/filtered/data/bldg/';
 	jevent.urlFilteredDataAll = '/filtered/data/all/';
-	jevent.urlLocationsSetup = '/widget/locations/setup/';
 	
 	jevent.htmlLoading = '<div class="info-bot-loading">&nbsp;Loading...' +
         '<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner"></div>';
@@ -539,7 +538,18 @@ function getFilterParams() {
 	var get_params = {type: jevent.activeLayer};
 	if (jevent.activeLayer == 0) {
 		//get dates from JTL if searching events
-		$.extend(get_params, getEventsParamsAJAX());
+		var p = getJTLParams();
+		var eventParams = {
+			m0: p.startDate.getMonth()+1,
+			d0: p.startDate.getDate(),
+			y0: p.startDate.getFullYear(),
+			nDays: p.nDays,
+			h0: p.startTime[0]%24,
+			i0: p.startTime[1],
+			h1: p.endTime[0]%24,
+			i1: p.endTime[1],
+		}
+		$.extend(get_params, eventParams);
 	}
 	return get_params;
 }
@@ -609,90 +619,4 @@ function hideInfoEvent() {
 	$('#info-bot').html('');
 }
 
-
-
-/***************************************************************************/
-/***************************************************************************/
-/***************************************************************************/
-
-/***************************************/
-/* Event filters */ 
-/***************************************/
-function setupEventFilters() {
-	//other params
-	$('.jtl-params').change(function() {
-		handleFilterChange();
-	});
-}
-
-/* Return dictionary of params in the input box for javascript */
-function getJTLParams() {
-	//var startDate = $('#jtl-startDate').datepicker("getDate");
-	var inDate = $('#jtl-startDate').val().split('/');
-	var startDate = new Date();
-	clearDateTime(startDate);
-	startDate.setFullYear(inDate[2]);
-	startDate.setMonth(inDate[0]-1);
-	startDate.setDate(inDate[1]);
-	var nDays = $('#jtl-nDays').val();
-	var startTime = $('#jtl-startTime').val().split(':');
-	var endTime = $('#jtl-endTime').val().split(':');
-	return {startDate:startDate, nDays:nDays, startTime:startTime, endTime:endTime};
-}
-/* Return dictionary of params in the input box for a GET request */
-function getEventsParamsAJAX() {
-	var p = getJTLParams();
-	return {
-		m0: p.startDate.getMonth()+1,
-		d0: p.startDate.getDate(),
-		y0: p.startDate.getFullYear(),
-		nDays: p.nDays,
-		h0: p.startTime[0]%24,
-		i0: p.startTime[1],
-		h1: p.endTime[0]%24,
-		i1: p.endTime[1],
-	}
-}
-
-
-/***************************************/
-/* Location filters */ 
-/***************************************/
-
-//load the bldgs.json file that holds all HTML-element data for the buildings
-function setupLocationSearch() {
-	/* setup location search autocomplete */
-	$.ajax(jevent.urlLocationsSetup, {		
-		dataType: 'json',
-		success: function(data) {
-			jevent.bldgNames = data;
-			var bldgNameList = [];
-			var i = 0;
-			for (name in data)
-				bldgNameList[i++] = name;
-			$("#location-search").autocomplete({
-				source: bldgNameList, 
-				delay: 0,
-				minLength: 3,
-			});
-		},
-		error: handleAjaxError
-	});
-	
-	/* setup location search submit */
-	$('#location-search-form').submit(function(event) {
-		event.preventDefault();
-		// get submitted building's code, center map on it, and display its events
-		var bldgName = $('#location-search').val();
-		var bldgCode = jevent.bldgNames[bldgName];
-		if (bldgCode != undefined) {
-			displayLocationBldgs(bldgCode);
-			centerOnBldg(bldgCode);
-			AJAXdataForBldg(bldgCode);
-		} else {
-			$('#location-search-submit').effect('shake',{times:5,distance:3},30);
-			$('#location-search').val('');
-		}
-	});
-}
 

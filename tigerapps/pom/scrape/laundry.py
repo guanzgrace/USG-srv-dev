@@ -32,7 +32,7 @@ bldg_id_to_laundry_info = {
     'WITHR' : (('Witherspoon', '3073422'),), 
     'LAUGH' : (('Laughlin Hall', '3073412'),), 
     'C1915' : (('1915', '3073424'),), 
-    'HENHO' : (('Henry', '3073410'),), 
+    'HENRY' : (('Henry', '3073410'),), 
     'FORBC' : (('Forbes Annex', '307348'), ('Forbes Main', '307347')), 
     'SPELM' : (('Spelman', '3073421'),), 
     'HOLDE' : (('Holder', '307349'),), 
