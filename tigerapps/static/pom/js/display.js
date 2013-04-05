@@ -154,20 +154,15 @@ function setupJTLDisplay() {
 }
 function showTimelineToggle() {
 	jdisp.jtlToggle.show();
-	if (jdisp.jtlShown) {
+	if (jdisp.jtlShown)
         showTimeline();
-        jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-e');
-        jdisp.jtlToggleText.html('hide timeline');
-    } else {
-    	jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-w');
-        jdisp.jtlToggleText.html('show timeline');
-    }
 }
 function hideTimelineToggle() {
-	var tmp = jdisp.jtlShown;
 	jdisp.jtlToggle.hide();
-	hideTimeline();
-	jdisp.jtlShown = tmp;
+    if (jdisp.jtlShown) {
+        hideTimeline();
+        jdisp.jtlShown = true;
+    }
 }
 function showTimeline() {
 	jdisp.jtlContainer.animate({
@@ -176,7 +171,8 @@ function showTimeline() {
 	jdisp.jtlToggle.animate({
 		right:'542px'
 	}, 100);
-	jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-e');
+	jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-e');
+    jdisp.jtlToggleText.html('hide timeline');
 	$('#jmap-info').addClass('jmap-info-expanded');
 	jdisp.jtlShown = true;
 }
@@ -187,7 +183,8 @@ function hideTimeline() {
 	jdisp.jtlToggle.animate({
 		right:'380px'
 	}, 100);
-	jdisp.jtlToggle.children('span').attr('class', 'ui-icon ui-icon-carat-1-w');
+    jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-w');
+    jdisp.jtlToggleText.html('show timeline');
 	$('#jmap-info').removeClass('jmap-info-expanded');
 	jdisp.jtlShown = false;
 }
