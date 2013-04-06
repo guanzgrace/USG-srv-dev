@@ -352,12 +352,19 @@ function clearDateTime(d) {
 
 function handleAjaxError(jqXHR, textStatus, errorThrown) {
 	if (errorThrown.length == 0) return;
-	var e1 = 'Sorry! An error occurred: "'+errorThrown+'".',
-		e2 = 'Please contact our team at it@princetonusg.com with this error if this gets to be a problem.';
-    if (confirm(e1+'\n\n'+e2+'\n\nView error?')) {
-        win = window.open();
-        win.document.write(jqXHR.responseText);
+	var e1 = 'Sorry! An error occurred:',
+        err,
+		e2 = 'Please contact our team at it@princetonusg.com with this error message if this gets to be a problem.';
+    if (jqXHR.responseText.length < 32) {
+        err = jqXHR.responseText;
+        alert(e1+'\n\n'+err+'\n\n'+e2);
+    } else {
+        err = errorThrown;
+        if (confirm(e1+'\n\n'+err+'\n\n'+e2+'\n\nView error?')) {
+            win = window.open();
+            win.document.write(jqXHR.responseText);
+        }
     }
-	$('#info-bot').html('<div class="info-error">'+e1+'<br/><br/>'+e2+'</div>');
+    $('#info-bot').empty().append($('<div>').addClass('info-error')
+        .append('<div class="info-error">'+e1+'<br/><br/><b>'+err+'</b><br/><br/>'+e2));
 }
-
