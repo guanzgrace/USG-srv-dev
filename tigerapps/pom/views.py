@@ -65,23 +65,34 @@ def widget_locations_setup(request):
     filtering
     '''
     response_json = cache.get('pom.locations_setup')
-    if not response_json:
+    if response_json is None:
         bldg_names = []
+        already = set()
         for code,nums in campus_codes.iteritems():
             for num in nums:
                 if num != 0:
-                    bldg_names.append({
-                        'value': code,
-                        'label': campus_info[num]['name'],
-                        'order': 1
-                    })
+                    name = campus_info[num]['name']
+                    if name not in already:
+                        bldg_names.append({
+                            'value': name,
+                            'label': name,
+                            'code': code,
+                            'order': 1
+                        })
+                        already.add(name)
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
                     for org in campus_info[num]['organizations']:
-                        if org['name'] != campus_info[num]['name']:
+                        name = org['name']
+                        if name not in already:
                             bldg_names.append({
-                                'value': code,
-                                'label': org['name'],
+                                'value': name,
+                                'label': name,
+                                'code': code,
                                 'order': 2
                             })
+                            already.add(name)
         bldg_names = sorted(bldg_names, key=lambda x: (x['order'], x['label']))
         response_json = json.dumps(bldg_names)
         cache.set('pom.locations_setup', response_json)

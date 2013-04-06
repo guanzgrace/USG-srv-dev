@@ -120,7 +120,7 @@ function setupLocationSearch() {
 				},
 				select: function(event, ui) {
 					input.val(ui.item.label);
-					incode.val(ui.item.value);
+					incode.val(ui.item.code);
 					form.submit();
 					return false;
 				},
