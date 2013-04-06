@@ -36,7 +36,24 @@ function loadWindowSizeDependent() {
 	if (jevent.activeLayer == 0) {
 		loadTimeline(jmap.markData);
 	}
+    var tbar = $('#jmap-topbar'),
+        logo = $('#logo'),
+        ele1 = $('#layer-tabs'),
+        h = tbar.height();
+    $('#jmap-container').css('top', h+1+'px');
+    if (h < 60) {
+        logo.css('margin-bottom','12px');
+        ele1.css('margin-bottom','12px');
+    }
+    else if (h < 120) {
+        logo.css('margin-bottom','0px');
+        ele1.css('margin-bottom','12px');
+    } else {
+        logo.css('margin-bottom','0px');
+        ele1.css('margin-bottom','0px');
+    }
 }
+
 
 /***************************************/
 /* Tabs display */ 
@@ -141,7 +158,7 @@ function setupJTLSlider() {
         range: true,
         min: 0,
         max: 48,
-        values: [20, 40], //initial
+        values: [16, 48], //initial
         slide: function( event, ui ) {
         	//sliderLeftTimeVal and sliderRightTimeVal will contain arrays where the zeroth 
         	//element is the hour (0-23) and the first element is the minutes (0 or 30)

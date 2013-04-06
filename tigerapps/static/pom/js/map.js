@@ -27,7 +27,7 @@ function mapInit() {
 	//static constants
 	jmap.tileSZ = 256; //square
 	//jmap.mapBounds = {x1:68,y1:55,x2:2816,y2:2048};
-	jmap.mapBounds = {x1:77,y1:55,x2:2715,y2:2046};
+	jmap.mapBounds = {x1:77,y1:57,x2:2715,y2:2046};
 	
 	//for dragging
 	jmap.mouseStart = null;

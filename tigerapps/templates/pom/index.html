@@ -32,11 +32,12 @@
   
 <body>
 {% include 'toolbar/links.html' %}
-
+<div id="container">
 
 <div id="jmap-topbar">
         <div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
 
+        <div id="topbar-input">
 		<div id="layer-tabs">
 
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
@@ -57,6 +58,7 @@
             <input id="location-search-submit" type="submit" value="Go" />
             </div>
         </form>
+        </div>
 </div>
 <div id="jmap-info">
 <div id="info-content"> <!-- second div so scrollbar has margin from right -->
@@ -100,9 +102,9 @@ of the buildings to the left.</p>
 								<select class="jtl-params" id="jtl-nDays">
 									<option value=1> 1 </option>
 									<option value=2> 2 </option>
-									<option value=3> 3 </option>
+									<option value=3 selected="selected"> 3 </option>
 									<option value=4> 4 </option>
-									<option value=5 selected="selected"> 5 </option>
+									<option value=5> 5 </option>
 									<option value=6> 6 </option>
 									<option value=7> 7 </option>								
 								</select>
@@ -164,7 +166,7 @@ connect to this queue from your personal machine, see the
 				<h2 class="info-title">Campus Locations</h2>
 				<div class="isolated">
 <p>Click any building to the left, or enter a location name in the
-search bar, to find a campus location!</p>
+search bar, to find a place on campus!</p>
 				</div>
 				<div class="info-divider"></div>
 			</div>
@@ -188,6 +190,7 @@ search bar, to find a campus location!</p>
 	<div id="jmap-movable">
 	</div>
 </div>
-	
+
+</div>
 </body>
 </html>

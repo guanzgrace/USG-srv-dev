@@ -70,17 +70,23 @@ a:hover{
 }
 
 
+#container {
+    min-width: 950px;
+    position: absolute;
+    top:28px;
+    bottom:0px;
+    width:100%;
+}
+
 
 /*************/
 /* Top panel */
 /*************/
 #jmap-topbar {
 	background-color:#eee;
-	height:60px;
 	left:0px;
 	right:380px;
 	position:absolute;
-	/*box-shadow:0px 0px 4px #333;*/
 	border-bottom:1px solid #bbb;
 	z-index:99;
 	
@@ -95,7 +101,7 @@ a:hover{
 #logo {
     vertical-align: middle;
     display:inline-block;
-    padding: 9px 10px;
+    margin: 11px 10px;
     font-size:28px;
     font-weight:bold;
     font-family:Bentham;
@@ -109,11 +115,14 @@ a:hover{
     text-decoration:none;
 }
 
+#topbar-input {
+    display: inline-block;
+}
+
 #layer-tabs {
     vertical-align: middle;
     display:inline-block;
-	padding:10px 0;
-    margin: 0 10px;
+    margin: 12px 0 12px 10px;
 }
 #layer-tabs .ui-button-text {
     font-size:14px;
@@ -121,7 +130,7 @@ a:hover{
 
 #location-search-form {
     display:inline-block;
-    padding: 10px 0;
+    margin: 12px 44px 12px 10px;
 }
 #location-search {
     vertical-align: middle;
@@ -142,7 +151,7 @@ a:hover{
 /*************/
 #jmap-info {
 	position:absolute;
-	top: 28px;
+	top: 0px;
 	right: 0px;
 	bottom: 0px;
 	width:380px;
@@ -298,7 +307,7 @@ div.isolated {
 /*************/
 #jmap-jtl {
 	position:absolute;
-	top: 28px;
+	top: 0px;
 	right: 208px;
 	bottom: 0px;
 	width:162px;
@@ -310,7 +319,7 @@ div.isolated {
 }
 #jtl-toggle {
 	position:absolute;
-	top: 28px;
+	top: 0px;
 	right: 380px;
 	
 	height:16px;
@@ -351,7 +360,7 @@ div.isolated {
 /*************/
 #jmap-container {
 	position: absolute;
-	top: 88px;
+	top: 60px;
 	left: 0px;
 	right: 380px;
 	bottom: 0px;
