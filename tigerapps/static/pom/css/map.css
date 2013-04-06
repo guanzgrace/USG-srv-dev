@@ -382,9 +382,11 @@ div.isolated {
     bottom:0px;
     left:0px;
     z-index:1000;
-    background-color:#eee;
+
     padding:2px 7px;
-    border: 1px solid #aaa;
+    background-color:#eee;
+    border-right: 1px solid #aaa;
+    border-top: 1px solid #aaa;
     color: #666;
     opacity:0.75;
     filter:Alpha(opacity=75);
