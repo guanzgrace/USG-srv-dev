@@ -357,7 +357,11 @@ div.isolated {
 	color:#000000;
 	font-weight:bold;
 }
-
+.jtl-slider-val {
+    border:0;
+    width:60px;
+    background:transparent;
+}
 
 
 /*************/

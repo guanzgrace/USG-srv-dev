@@ -154,7 +154,7 @@ function setupLocationSearch() {
 function setupJTLSlider() {
     oldLeft = -1;
     oldRight = -1;
-    var sliderEle = $("#jtl-hours-slider");
+    var sliderEle = $("#jtl-slider");
 	
     sliderEle.slider({
         range: true,
