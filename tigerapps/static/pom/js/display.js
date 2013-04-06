@@ -27,6 +27,8 @@ function displayInit() {
 	setupLayers();
 	setupLayerFilters();
     loadWindowSizeDependent();
+
+    $("#jmap-about a").tipsy({gravity:'sw',html:true,manual:true});
 }
 
 function loadWindowSizeDependent() {

@@ -8,7 +8,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Map-related
     url(r'^/?$', direct_to_template, {'template': 'pom/index.html'}),
-    url(r'^about/?$', direct_to_template, {'template': 'pom/about.html'}),
     url(r'^refresh/?$', 'pom.views.refresh_cache'),
 
 

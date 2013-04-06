@@ -372,6 +372,7 @@ div.isolated {
     position:absolute;
     bottom:0px;
     left:0px;
+    z-index:1000;
     background-color:#eee;
     padding:2px 7px;
     border: 1px solid #aaa;
