@@ -340,7 +340,10 @@ function handleEventTickClick(eventId) {
     $(eventEntry).find('.info-event-dots').hide();
     $(eventEntry).find('.info-event-long').show(300);
 }
-
+function handleEventEntryUnclick(bldgId) {
+    if (jevent.activeBldg != bldgId)
+        handleEventBldgUnclick();
+}
 
 /***************************************/
 /* Utility functions */
