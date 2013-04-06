@@ -23,14 +23,16 @@ from pom.scrape import menus, printers, laundry
 def index(request, offset):
     return render_to_response('pom/index.html', {}, RequestContext(request))
 
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def refresh_cache(request):
-    cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
-    cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
-    cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
-    return HttpResponse('success')
+    # causes internal server error because HTTP request takes too long. need to
+    # replace with something that makes async caching call instead
+    #cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
+    #cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
+    #cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
+    #return HttpResponse('success')
+    return HttpResponse('feature currently disabled')
 
 
 

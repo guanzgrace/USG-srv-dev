@@ -8,7 +8,6 @@ from django.http import HttpResponse
 from dvd.emails import *
 from dvd.models import *
 from utils.dsml import gdi
-from dvd import cron
 from dvd import permissions
 import datetime
 import dvd.emails as dvd_emails

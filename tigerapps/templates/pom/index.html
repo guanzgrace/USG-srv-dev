@@ -1,15 +1,15 @@
 {% load value_from_settings %}
 <html>
 <head>
-    <title>Pursuit of Mappyness</title>
+	<title>Pursuit of Mappyness</title>
 
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/jquery-ui-1.8.20.custom.css"/>
-<!--    <link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/static/shared/css/jqueryui-mod.css"/>-->
+<!--	<link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/static/shared/css/jqueryui-mod.css"/>-->
 	<link rel="stylesheet" type="text/css" href="/static/shared/css/tipsy.css"/>
 
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/timeline.css"/>
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/map.css"/>
-    <link href='http://fonts.googleapis.com/css?family=Bentham' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Bentham' rel='stylesheet' type='text/css'>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/static/pom/js/jquery-ui-1.8.20.custom.min.js"></script>
@@ -35,35 +35,35 @@
 <div id="container">
 
 <div id="jmap-topbar">
-        <div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
+		<div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
 
-        <div id="topbar-input">
+		<div id="topbar-input">
 		<div id="layer-tabs">
 
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
 
 			<input type="radio"  id="filter-menus" name="top-tab" value="2"><label for="filter-menus">Menus</label></input>
 
-		    <input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input>
+			<input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input>
 
-		    <input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
+			<input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
 
 			<input type="radio" id="filter-locations" name="top-tab" value="5"><label for="filter-locations">Locations</label></input>
 
 		</div>
 	
-        <form id="location-search-form">
-            <input id="location-search" type="text" style="width:250px;" name="locations" placeholder="e.g. Frist, McCosh..."/>
-            <div id="location-search-div">
-            <input id="location-search-submit" type="submit" value="Go" />
-            </div>
-        </form>
-        </div>
+		<form id="location-search-form">
+			<input id="location-search" type="text" style="width:250px;" name="locations" placeholder="e.g. Frist, McCosh..."/>
+			<div id="location-search-div">
+			<input id="location-search-submit" type="submit" value="Go" />
+			</div>
+		</form>
+		</div>
 </div>
 <div id="jmap-info">
 <div id="info-content"> <!-- second div so scrollbar has margin from right -->
 	<div id="info-top">
-	        
+			
 		<div id="info-top-filters">
 			<div id="top-tab-0" class="top-tab">
 				<div style="float:right;">
@@ -144,11 +144,11 @@ of the buildings to the left.</p>
 				<div class="info-divider"></div>
 			</div>
 
-            <div id="top-tab-3" class="top-tab">
-                <h2 class="info-title">Laundry Rooms</h2>
-                <h5 class="info-timestamp" id="info-timestamp-3"></h5>
-                <div class="info-divider"></div>
-            </div>
+			<div id="top-tab-3" class="top-tab">
+				<h2 class="info-title">Laundry Rooms</h2>
+				<h5 class="info-timestamp" id="info-timestamp-3"></h5>
+				<div class="info-divider"></div>
+			</div>
 			
 			<div id="top-tab-4" class="top-tab">
 				<h2 class="info-title">OIT "All Clusters" Printers</h2>
@@ -179,7 +179,7 @@ search bar, to find a place on campus!</p>
 </div>
 
 <div id="jtl-toggle">
-    <span></span>
+	<span></span>
 </div>
 <div id="jmap-jtl">
 	<div id="jtl-content"></div>
@@ -187,8 +187,8 @@ search bar, to find a place on campus!</p>
 
 
 <div id="jmap-container">
-	<div id="jmap-movable">
-	</div>
+	<div id="jmap-movable"></div>
+	<div id="jmap-about">&copy;2013- USG&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/about/" target="_blank">About</a></div>
 </div>
 
 </div>
