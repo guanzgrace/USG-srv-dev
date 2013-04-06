@@ -53,7 +53,7 @@ def widget_search_resp(request):
     KWAC_terms = [v.split() for v in KWAC.values()]
 
     for (layer, v) in KWAC.iteritems():
-        f
+        pass
 
     response_json = json.dumps(matches)
     return HttpResponse(response_json, content_type="application/javascript")
@@ -64,22 +64,27 @@ def widget_locations_setup(request):
     Return json dictionary of name, code pairs for use in location-based
     filtering
     '''
-    bldg_names = []
-    for code,nums in campus_codes.iteritems():
-        for num in nums:
-            if num != 0:
-                bldg_names.append({
-                    'value': code,
-                    'label': campus_info[num]['name'],
-                    'order': 1
-                })
-                for org in campus_info[num]['organizations']:
+    response_json = cache.get('pom.locations_setup')
+    if not response_json:
+        bldg_names = []
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
                     bldg_names.append({
                         'value': code,
-                        'label': org['name'],
-                        'order': 2
+                        'label': campus_info[num]['name'],
+                        'order': 1
                     })
-    response_json = json.dumps(bldg_names)
+                    for org in campus_info[num]['organizations']:
+                        if org['name'] != campus_info[num]['name']:
+                            bldg_names.append({
+                                'value': code,
+                                'label': org['name'],
+                                'order': 2
+                            })
+        bldg_names = sorted(bldg_names, key=lambda x: (x['order'], x['label']))
+        response_json = json.dumps(bldg_names)
+        cache.set('pom.locations_setup', response_json)
     return HttpResponse(response_json, content_type="application/javascript")
 
 
