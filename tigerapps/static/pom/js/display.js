@@ -297,36 +297,42 @@ function loadTimeline(markData) {
 }
 
 function handleEventEntryMouseover(eventId) {
-	eventEntryMouseover(eventId);
-	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
-		$('#jtl-mark-'+eventId).tipsy('show');
-	}
-	var bldgCode;
-	if (jevent.activeLayer == 0)
+	if (jevent.activeLayer == 0) {
+		if (jdisp.jtlShown)
+			$('#jtl-mark-'+eventId).tipsy('show');
+		eventEntryMouseover(eventId);
 		bldgCode = jevent.eventsData[eventId].bldgCode;
-	else
+	}
+	else {
 		bldgCode = eventId;
-	var bldgDict = jmap.loadedBldgs[bldgCodeToId(bldgCode)];
-	if (bldgDict != undefined) eventBldgMouseover(bldgDict.domEle);
+		if (jevent.activeBldg != bldgCode)
+			eventEntryMouseover(eventId);
+	}
+	if (jevent.activeBldg != bldgCode) {
+		var bldgDict = jmap.loadedBldgs[bldgCodeToId(bldgCode)];
+		if (bldgDict != undefined) eventBldgMouseover(bldgDict.domEle);		
+	}	
 }
 function handleEventEntryMouseout(eventId) {
-	eventEntryMouseout(eventId);
-	if (jevent.activeLayer == 0 && jdisp.jtlShown) {
-		$('#jtl-mark-'+eventId).tipsy('hide');
-	}
-	if (jevent.activeLayer == 0)
-		bldgCode = jevent.eventsData[eventId].bldgCode;
-	else
-		bldgCode = eventId;
-	var bldgDict = jmap.loadedBldgs[bldgCodeToId(bldgCode)];
-	if (bldgDict != undefined) eventBldgMouseout(bldgDict.domEle);
-}
-function handleEventEntryClick(eventId) {
-	var eventEntry = document.getElementById('event-entry-'+eventId);
 	if (jevent.activeLayer == 0) {
-		$(eventEntry).find('.info-event-dots').toggle();
-		$(eventEntry).find('.info-event-long').toggle(300);
+		if (jdisp.jtlShown)
+			$('#jtl-mark-'+eventId).tipsy('hide');
+		eventEntryMouseout(eventId);
+		bldgCode = jevent.eventsData[eventId].bldgCode;
 	}
+	else {
+		bldgCode = eventId;
+		if (jevent.activeBldg != bldgCode)
+			eventEntryMouseout(eventId);
+	}
+	if (jevent.activeBldg != bldgCode) {
+		var bldgDict = jmap.loadedBldgs[bldgCodeToId(bldgCode)];
+		if (bldgDict != undefined) eventBldgMouseout(bldgDict.domEle);
+	}
+}
+function handleEventEntryClick(domEle) {
+	$(domEle).find('.info-event-dots').toggle();
+	$(domEle).find('.info-event-long').toggle(300);
 }
 function handleEventTickClick(eventId) {
 	var eventEntry = document.getElementById('event-entry-'+eventId);
@@ -345,8 +351,9 @@ function clearDateTime(d) {
 }
 
 function handleAjaxError(jqXHR, textStatus, errorThrown) {
-	var e1 = 'Sorry! A server error occurred while you were browsing the page: "'+errorThrown+'".';
-	var e2 = 'Please contact our team at it@princetonusg.com if you see this message again.';
+	if (errorThrown.length == 0) return;
+	var e1 = 'Sorry! An error occurred: "'+errorThrown+'".',
+		e2 = 'Please contact our team at it@princetonusg.com with this error if this gets to be a problem.';
     if (confirm(e1+'\n\n'+e2+'\n\nView error?')) {
         win = window.open();
         win.document.write(jqXHR.responseText);

@@ -100,8 +100,7 @@ def get_filtered_bldgs(request):
     else:
         return HttpResponseServerError("Bad layer in GET request: %s" % layer)
         
-    response_json = json.dumps({'error': None,
-                                'bldgs': tuple(bldgsList)})
+    response_json = json.dumps({'bldgs': tuple(bldgsList)})
     return HttpResponse(response_json, content_type="application/javascript")
 
 
@@ -122,7 +121,6 @@ def get_filtered_data_bldg(request, bldg_code):
                                      'events': events})
             rendered = build_events_data(request, events)
             rendered['html'] = html
-            rendered['error'] = None
             rendered['bldgCode'] = bldg_code
         
         elif layer == '5': #location
@@ -134,13 +132,13 @@ def get_filtered_data_bldg(request, bldg_code):
             html = render_to_string('pom/data_locations.html',
                                     {'bldg_name':BLDG_INFO[bldg_code][0],
                                      'info':info})
-            rendered = {'error': None, 'html': html, 'bldgCode': bldg_code}
+            rendered = {'html': html, 'bldgCode': bldg_code}
         
         else:
             return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        rendered = {'error': str(e)}
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
@@ -163,19 +161,17 @@ def get_filtered_data_all(request):
                                      'events': events})
             rendered = build_events_data(request, events)
             rendered['html'] = html
-            rendered['error'] = None
             
         elif layer in SCRAPE_LAYERS:
             cache_key = 'pom.' + SCRAPE_LAYERS[layer][0]
             scraped = cache.get(cache_key)
             rendered = SCRAPE_LAYERS[layer][1].render(scraped)
-            rendered['error'] = None
    
         else:
             return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        rendered = {'error': str(e)}
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
