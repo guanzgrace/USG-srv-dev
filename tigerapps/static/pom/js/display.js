@@ -69,9 +69,10 @@ function setupLayers() {
 		handleLayerChange(ev.target.value);
 		loadWindowSizeDependent();
 	});
-	displayLayer(0);
+    var val = $("#layer-tabs input:checked").val();
+	displayLayer(val);
 	jdisp.jtlShown = true;
-	handleLayerChange(0);
+	handleLayerChange(val);
 }
 function displayLayer(layer) {
 	$(".top-tab").css('display', 'none');
