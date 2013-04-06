@@ -276,8 +276,13 @@ a:hover{
     text-decoration:underline;
     margin: 2px auto 4px;
 }
+.info-locations ul {
+    max-width:325px;
+    margin: 0 auto;
+}
 .info-locations li.locations-org {
-    margin: 3px 0;
+    margin: 6px 0;
+    line-height:1;
 }
 
 span.desc-help {
