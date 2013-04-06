@@ -93,37 +93,41 @@ function setupLayerFilters() {
  * for the buildings */
 function setupLocationSearch() {
     var input = $("#location-search"),
+        incode = $('#location-search-code'),
         submit = $('#location-search-submit'),
         form = $("#location-search-form");
 
     input.focus(function(event) {
         $('#filter-locations').click();
+    }).keydown(function(event) {
+        if (event.keyCode == 8 || event.keyCode == 46)
+            incode.val('');
+    }).keypress(function(event) {
+        incode.val('');
     });
 
 	/* setup location search autocomplete */
-	$.ajax('/widget/locations/setup/', {		
+	$.ajax('/widget/locations/setup/', {
 		dataType: 'json',
 		success: function(data) {
-			jevent.bldgNames = data;
-			var bldgNameList = [];
-			var i = 0;
-			for (name in data)
-				bldgNameList[i++] = name;
 			input.autocomplete({
                 autoFocus: true,
 				delay: 0,
 				minLength: 2,
-				source: bldgNameList,
+				source: data,
                 select: function(event, ui) {
-                    input.val(ui.item.value);
+                    input.val(ui.item.label);
+                    incode.val(ui.item.value);
                     form.submit();
+                    return false;
                 },
-			})/*.data("ui-autocomplete")._renderItem = function(ul, item) {
+			}).data("autocomplete")._renderItem = function(ul, item) {
                 var re = new RegExp(input.val(), 'gi');
                 return $('<li>')
+                    .data("item.autocomplete", item)
                     .append('<a>' + item.label.replace(re, '<b>$&</b>') + '</a>')
                     .appendTo(ul);
-            }*/;
+            };
 		},
 		error: handleAjaxError
 	});
@@ -134,15 +138,14 @@ function setupLocationSearch() {
         $('#filter-locations').click()
 
 		// get submitted building's code, center map on it, and display its events
-		var bldgName = $('#location-search').val();
-		var bldgCode = jevent.bldgNames[bldgName];
-		if (bldgCode != undefined) {
+		var bldgCode = incode.val();
+		if (bldgCode.length == 0) {
+			submit.effect('shake',{times:5,distance:3},30);
+			input.val('');
+		} else {
 			displayLocationBldgs(bldgCode);
 			centerOnBldg(bldgCode);
 			AJAXdataForBldg(bldgCode);
-		} else {
-			submit.effect('shake',{times:5,distance:3},30);
-			input.val('');
 		}
 	});
 }

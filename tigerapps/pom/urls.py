@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^filtered/data/bldg/(?P<bldg_code>\S+)/?$', 'pom.views.get_filtered_data_bldg'),
     url(r'^filtered/data/all/?$', 'pom.views.get_filtered_data_all'),
 
-    url(r'^widget/search/resp/?$', 'pom.views.widget_search/resp'),
+    url(r'^widget/search/resp/?$', 'pom.views.widget_search_resp'),
     url(r'^widget/locations/setup/?$', 'pom.views.widget_locations_setup'),
 
 

@@ -64,7 +64,21 @@ def widget_locations_setup(request):
     Return json dictionary of name, code pairs for use in location-based
     filtering
     '''
-    bldg_names = dict((name[0], code) for code, name in BLDG_INFO.iteritems())
+    bldg_names = []
+    for code,nums in campus_codes.iteritems():
+        for num in nums:
+            if num != 0:
+                bldg_names.append({
+                    'value': code,
+                    'label': campus_info[num]['name'],
+                    'order': 1
+                })
+                for org in campus_info[num]['organizations']:
+                    bldg_names.append({
+                        'value': code,
+                        'label': org['name'],
+                        'order': 2
+                    })
     response_json = json.dumps(bldg_names)
     return HttpResponse(response_json, content_type="application/javascript")
 
