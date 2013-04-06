@@ -8,6 +8,7 @@
 # Info :  rendering pages and executing actions related to events
 ################################################################
 
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.forms.formsets import formset_factory
 from django.utils.encoding import smart_unicode, smart_str
@@ -216,7 +217,10 @@ def evlist_render_page(request, out_dict):
     out_dict['hotest_events'] = Event.objects.filter(q_upcoming, event_cluster__cluster_image__isnull=False, event_attendee_count__gte=1).exclude(event_cluster__cluster_image='').order_by('-event_attendee_count')[0:7]
 
     # Features: just show all
-    feat_list = EventFeature.objects.all()
+    feat_list = cache.get('cal.eventfeature_all')
+    if feat_list is None:
+        feat_list = EventFeature.objects.all()
+        cache.set('cal.eventfeature_all', feat_list)
     out_dict['feat_opts'] = feat_list    
 
     return render_to_response(request, "cal/evlist.html", out_dict)
