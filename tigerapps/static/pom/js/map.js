@@ -59,7 +59,7 @@ function mapInit() {
 	jevent.urlFilteredDataAll = '/filtered/data/all/';
 	
 	jevent.htmlLoading = '<div class="info-bot-loading">&nbsp;Loading...' +
-        '<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner"></div>';
+		'<img src="/static/shared/img/loading-spinner.gif" class="loading-spinner"></div>';
 
 	//cache display-related tabs
 	jevent.activeLayer = -1; //events=0, hours=1, menus=2, laundry=3, printers=4
@@ -170,20 +170,20 @@ function recordMouseUp() {
 }
 // Moves the map if mouse is clicked down on the map
 function mouseMove(ev){
-    // find the mouse position
-    ev           = ev || window.event;
-    var mousePos = mouseCoords(ev);
-    
-    // move the map to the correct position
-    var diffX = mousePos.x - jmap.mouseStart.x;
-    var diffY = mousePos.y - jmap.mouseStart.y;
-    jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
-    jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
-    jmap.map.style.left = -jmap.dispX;
-    jmap.map.style.top  = -jmap.dispY;
+	// find the mouse position
+	ev		   = ev || window.event;
+	var mousePos = mouseCoords(ev);
+	
+	// move the map to the correct position
+	var diffX = mousePos.x - jmap.mouseStart.x;
+	var diffY = mousePos.y - jmap.mouseStart.y;
+	jmap.dispX = boundDispX(jmap.mapStart.x+diffX);
+	jmap.dispY = boundDispY(jmap.mapStart.y+diffY);
+	jmap.map.style.left = -jmap.dispX;
+	jmap.map.style.top  = -jmap.dispY;
 
-    //it's actually noticeably slower if we load for every drag
-    //loadTiles();
+	//it's actually noticeably slower if we load for every drag
+	//loadTiles();
 
 	/* For getting building coordinates using mouse on map
 	var c = mouseCoords(ev);
@@ -550,7 +550,7 @@ function handleFilterChange() {
 	if (jevent.activeBldg != null)
 		AJAXdataForBldg(jevent.activeBldg);
 	else
-        AJAXdataForAllBldgs();
+		AJAXdataForAllBldgs();
 }
 
 /* These return the GET params that should be sent in every AJAX call */
@@ -632,7 +632,7 @@ function handleDataAJAX(data) {
 
 function showInfoLoading() {
 	$('#info-bot').html(jevent.htmlLoading);
-    $('#info-timestamp-'+jevent.activeLayer).html('');
+	$('#info-timestamp-'+jevent.activeLayer).html('');
 }
 
 function hideInfoEvent() {

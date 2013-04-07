@@ -19,7 +19,7 @@
 
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
   border: 1px solid #d9bb73;
-  background: #f5f5b5 url(images/ui-bg_highlight-hard_75_f5f5b5_1x100.png) 50% top repeat-x;
+  background: #f5f5b5 50% top repeat-x;
   color: #060200;
 }
 

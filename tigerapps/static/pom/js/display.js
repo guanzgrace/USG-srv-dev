@@ -17,7 +17,7 @@ function displayInit() {
 	
 	//timeline display
 	$("#jtl-startDate").datepicker({
-        firstDay: 1,
+		firstDay: 1,
 	});
 	$("#jtl-startDate").datepicker('setDate', new Date());
 	setupJTLSlider();
@@ -26,9 +26,9 @@ function displayInit() {
 	window.onresize = loadWindowSizeDependent;
 	setupLayers();
 	setupLayerFilters();
-    loadWindowSizeDependent();
+	loadWindowSizeDependent();
 
-    $("#jmap-about a").tipsy({gravity:'sw',html:true,manual:true});
+	$("#jmap-about a").tipsy({gravity:'sw',html:true,manual:true});
 }
 
 function loadWindowSizeDependent() {
@@ -38,22 +38,22 @@ function loadWindowSizeDependent() {
 	if (jevent.activeLayer == 0) {
 		loadTimeline(jmap.markData);
 	}
-    var tbar = $('#jmap-topbar'),
-        logo = $('#logo'),
-        ele1 = $('#layer-tabs'),
-        h = tbar.height();
-    $('#jmap-container').css('top', h+1+'px');
-    if (h < 60) {
-        logo.css('margin-bottom','12px');
-        ele1.css('margin-bottom','12px');
-    }
-    else if (h < 120) {
-        logo.css('margin-bottom','0px');
-        ele1.css('margin-bottom','12px');
-    } else {
-        logo.css('margin-bottom','0px');
-        ele1.css('margin-bottom','0px');
-    }
+	var tbar = $('#jmap-topbar'),
+		logo = $('#logo'),
+		ele1 = $('#layer-tabs'),
+		h = tbar.height();
+	$('#jmap-container').css('top', h+1+'px');
+	if (h < 60) {
+		logo.css('margin-bottom','12px');
+		ele1.css('margin-bottom','12px');
+	}
+	else if (h < 120) {
+		logo.css('margin-bottom','0px');
+		ele1.css('margin-bottom','12px');
+	} else {
+		logo.css('margin-bottom','0px');
+		ele1.css('margin-bottom','0px');
+	}
 }
 
 
@@ -69,15 +69,16 @@ function setupLayers() {
 		handleLayerChange(ev.target.value);
 		loadWindowSizeDependent();
 	});
-	displayLayer(0);
+    var val = $("#layer-tabs input:checked").val();
+	displayLayer(val);
 	jdisp.jtlShown = true;
-	handleLayerChange(0);
+	handleLayerChange(val);
 }
 function displayLayer(layer) {
 	$(".top-tab").css('display', 'none');
 	$("#top-tab-"+layer).css('display', 'block');
-    if (layer == 0) showTimelineToggle();
-    else            hideTimelineToggle();
+	if (layer == 0) showTimelineToggle();
+	else			hideTimelineToggle();
 }
 
 /* These setup the layer-specific filters so that AJAX calls
@@ -92,38 +93,45 @@ function setupLayerFilters() {
 /* load the JSON file that holds all HTML-element data
  * for the buildings */
 function setupLocationSearch() {
-    var input = $("#location-search"),
-        submit = $('#location-search-submit'),
-        form = $("#location-search-form");
+	var input = $("#location-search"),
+		incode = $('#location-search-code'),
+		submit = $('#location-search-submit'),
+		form = $("#location-search-form");
 
-    input.focus(function(event) {
-        $('#filter-locations').click();
-    });
+	input.focus(function(event) {
+		$('#filter-locations').click();
+	}).keydown(function(event) {
+		if (event.keyCode == 8 || event.keyCode == 46)
+			incode.val('');
+	}).keypress(function(event) {
+		incode.val('');
+	});
 
 	/* setup location search autocomplete */
-	$.ajax('/widget/locations/setup/', {		
+	$.ajax('/widget/locations/setup/', {
 		dataType: 'json',
 		success: function(data) {
-			jevent.bldgNames = data;
-			var bldgNameList = [];
-			var i = 0;
-			for (name in data)
-				bldgNameList[i++] = name;
 			input.autocomplete({
-                autoFocus: true,
+				autoFocus: true,
 				delay: 0,
 				minLength: 2,
-				source: bldgNameList,
-                select: function(event, ui) {
-                    input.val(ui.item.value);
-                    form.submit();
-                },
-			})/*.data("ui-autocomplete")._renderItem = function(ul, item) {
-                var re = new RegExp(input.val(), 'gi');
-                return $('<li>')
-                    .append('<a>' + item.label.replace(re, '<b>$&</b>') + '</a>')
-                    .appendTo(ul);
-            }*/;
+				source: function(request, response) {
+					var results = $.ui.autocomplete.filter(data, request.term);
+					response(results.slice(0, 12));
+				},
+				select: function(event, ui) {
+					input.val(ui.item.label);
+					incode.val(ui.item.code);
+					form.submit();
+					return false;
+				},
+			}).data("autocomplete")._renderItem = function(ul, item) {
+				var re = new RegExp(input.val(), 'gi');
+				return $('<li>')
+					.data("item.autocomplete", item)
+					.append('<a>' + item.label.replace(re, '<b>$&</b>') + '</a>')
+					.appendTo(ul);
+			};
 		},
 		error: handleAjaxError
 	});
@@ -131,18 +139,17 @@ function setupLocationSearch() {
 	/* setup location search submit */
 	form.submit(function(event) {
 		event.preventDefault();
-        $('#filter-locations').click()
+		$('#filter-locations').click()
 
 		// get submitted building's code, center map on it, and display its events
-		var bldgName = $('#location-search').val();
-		var bldgCode = jevent.bldgNames[bldgName];
-		if (bldgCode != undefined) {
+		var bldgCode = incode.val();
+		if (bldgCode.length == 0) {
+			submit.effect('shake',{times:5,distance:3},30);
+			input.val('');
+		} else {
 			displayLocationBldgs(bldgCode);
 			centerOnBldg(bldgCode);
 			AJAXdataForBldg(bldgCode);
-		} else {
-			submit.effect('shake',{times:5,distance:3},30);
-			input.val('');
 		}
 	});
 }
@@ -152,45 +159,45 @@ function setupLocationSearch() {
 /***************************************/
 
 function setupJTLSlider() {
-    oldLeft = -1;
-    oldRight = -1;
-    var sliderEle = $("#jtl-slider");
+	oldLeft = -1;
+	oldRight = -1;
+	var sliderEle = $("#jtl-slider");
 	
-    sliderEle.slider({
-        range: true,
-        min: 0,
-        max: 48,
-        values: [16, 48], //initial
-        slide: function( event, ui ) {
-        	//sliderLeftTimeVal and sliderRightTimeVal will contain arrays where the zeroth 
-        	//element is the hour (0-23) and the first element is the minutes (0 or 30)
-        	if (ui.values[1] - ui.values[0] < 4) return false;
-        	var startTime = indexToTimeArr(ui.values[0]);
-    		var endTime = indexToTimeArr(ui.values[1]);
-            $("#jtl-slider-start").val(printTime(startTime));
-            $("#jtl-slider-end").val(printTime(endTime));
-        },
-        
-        stop: function (event, ui) {
-        	if (oldLeft != ui.values[0] || oldRight != ui.values[1]) {
-            	var startTime = indexToTimeArr(ui.values[0]);
-        		var endTime = indexToTimeArr(ui.values[1]);
-                $("#jtl-startTime").val(printTimeMilit(startTime));
-                $("#jtl-endTime").val(printTimeMilit(endTime));
-            	oldLeft = ui.values[0];
-            	oldRight = ui.values[1];
-            	
-        		handleFilterChange();
-            }
-        }
-    });
+	sliderEle.slider({
+		range: true,
+		min: 0,
+		max: 48,
+		values: [16, 48], //initial
+		slide: function( event, ui ) {
+			//sliderLeftTimeVal and sliderRightTimeVal will contain arrays where the zeroth 
+			//element is the hour (0-23) and the first element is the minutes (0 or 30)
+			if (ui.values[1] - ui.values[0] < 4) return false;
+			var startTime = indexToTimeArr(ui.values[0]);
+			var endTime = indexToTimeArr(ui.values[1]);
+			$("#jtl-slider-start").val(printTime(startTime));
+			$("#jtl-slider-end").val(printTime(endTime));
+		},
+		
+		stop: function (event, ui) {
+			if (oldLeft != ui.values[0] || oldRight != ui.values[1]) {
+				var startTime = indexToTimeArr(ui.values[0]);
+				var endTime = indexToTimeArr(ui.values[1]);
+				$("#jtl-startTime").val(printTimeMilit(startTime));
+				$("#jtl-endTime").val(printTimeMilit(endTime));
+				oldLeft = ui.values[0];
+				oldRight = ui.values[1];
+				
+				handleFilterChange();
+			}
+		}
+	});
 
 	var startTime = indexToTimeArr(sliderEle.slider( "values", 0 ));
 	var endTime = indexToTimeArr(sliderEle.slider( "values", 1 ));
-    $("#jtl-slider-start").val(printTime(startTime));
-    $("#jtl-slider-end").val(printTime(endTime));
-    $("#jtl-startTime").val(printTimeMilit(startTime));
-    $("#jtl-endTime").val(printTimeMilit(endTime));
+	$("#jtl-slider-start").val(printTime(startTime));
+	$("#jtl-slider-end").val(printTime(endTime));
+	$("#jtl-startTime").val(printTimeMilit(startTime));
+	$("#jtl-endTime").val(printTimeMilit(endTime));
 }
 
 function indexToTimeArr(sliderVal) {
@@ -200,21 +207,21 @@ function printTimeMilit(timeArr) {
 	return timeArr[0] + ':' + timeArr[1];
 }
 function printTime(timeArr) {
-    var hours = timeArr[0];
-    hours %= 24
-    var am = true;
-    if (hours > 12) {
-       am = false;
-       hours -= 12;
-    } else if (hours == 12) {
-       am = false;
-    } else if (hours == 0) {
-       hours = 12;
-    }
-    zeroPad = ''
-    if (timeArr[1] == 0)
-    	zeroPad += "0"
-    return hours + ":" + timeArr[1] + zeroPad + ' ' + (am ? "AM" : "PM");
+	var hours = timeArr[0];
+	hours %= 24
+	var am = true;
+	if (hours > 12) {
+	   am = false;
+	   hours -= 12;
+	} else if (hours == 12) {
+	   am = false;
+	} else if (hours == 0) {
+	   hours = 12;
+	}
+	zeroPad = ''
+	if (timeArr[1] == 0)
+		zeroPad += "0"
+	return hours + ":" + timeArr[1] + zeroPad + ' ' + (am ? "AM" : "PM");
 }
 
 /* Return dictionary of params in the input box for javascript */
@@ -249,16 +256,16 @@ function setupJTLDisplay() {
 function showTimelineToggle() {
 	jdisp.jtlToggle.show();
 	if (jdisp.jtlShown)
-        showTimeline();
-    else
-        hideTimeline();
+		showTimeline();
+	else
+		hideTimeline();
 }
 function hideTimelineToggle() {
 	jdisp.jtlToggle.hide();
-    if (jdisp.jtlShown) {
-        hideTimeline();
-        jdisp.jtlShown = true;
-    }
+	if (jdisp.jtlShown) {
+		hideTimeline();
+		jdisp.jtlShown = true;
+	}
 }
 function showTimeline() {
 	jdisp.jtlContainer.animate({
@@ -278,7 +285,7 @@ function hideTimeline() {
 	jdisp.jtlToggle.animate({
 		right:'380px'
 	}, 100);
-    jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-w');
+	jdisp.jtlToggleArrow.attr('class', 'ui-icon ui-icon-carat-1-w');
 	$('#jmap-info').removeClass('jmap-info-expanded');
 	jdisp.jtlShown = false;
 }
@@ -336,11 +343,14 @@ function handleEventEntryClick(domEle) {
 }
 function handleEventTickClick(eventId) {
 	var eventEntry = document.getElementById('event-entry-'+eventId);
-    eventEntryScroll(eventEntry);
-    $(eventEntry).find('.info-event-dots').hide();
-    $(eventEntry).find('.info-event-long').show(300);
+	eventEntryScroll(eventEntry);
+	$(eventEntry).find('.info-event-dots').hide();
+	$(eventEntry).find('.info-event-long').show(300);
 }
-
+function handleEventEntryUnclick(bldgId) {
+	if (jevent.activeBldg != bldgId)
+		handleEventBldgUnclick();
+}
 
 /***************************************/
 /* Utility functions */
@@ -352,12 +362,19 @@ function clearDateTime(d) {
 
 function handleAjaxError(jqXHR, textStatus, errorThrown) {
 	if (errorThrown.length == 0) return;
-	var e1 = 'Sorry! An error occurred: "'+errorThrown+'".',
-		e2 = 'Please contact our team at it@princetonusg.com with this error if this gets to be a problem.';
-    if (confirm(e1+'\n\n'+e2+'\n\nView error?')) {
-        win = window.open();
-        win.document.write(jqXHR.responseText);
-    }
-	$('#info-bot').html('<div class="info-error">'+e1+'<br/><br/>'+e2+'</div>');
+	var e1 = 'Sorry! An error occurred:',
+		err,
+		e2 = 'Please contact our team at it@princetonusg.com with this error message if this gets to be a problem.';
+	if (jqXHR.responseText.length < 32) {
+		err = jqXHR.responseText;
+		alert(e1+'\n\n'+err+'\n\n'+e2);
+	} else {
+		err = errorThrown;
+		if (confirm(e1+'\n\n'+err+'\n\n'+e2+'\n\nView error?')) {
+			win = window.open();
+			win.document.write(jqXHR.responseText);
+		}
+	}
+	$('#info-bot').empty().append($('<div>').addClass('info-error')
+		.append('<div class="info-error">'+e1+'<br/><br/><b>'+err+'</b><br/><br/>'+e2));
 }
-
