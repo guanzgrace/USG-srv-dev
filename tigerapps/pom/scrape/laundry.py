@@ -110,6 +110,7 @@ def scrape():
         laundry = []
         for x in info:
             room_obj = Room(url_str + x[1])
+            print id
             # sleep so laundryview doesn't get suspicious
             time.sleep(random.random()/2)
             laundry.append((x[0], room_obj.washers()[0], room_obj.washers()[1], room_obj.dryers()[0], room_obj.dryers()[1]))
