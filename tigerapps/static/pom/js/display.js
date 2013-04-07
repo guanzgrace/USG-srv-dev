@@ -23,7 +23,7 @@ function displayInit() {
 	setupJTLSlider();
 	setupJTLDisplay();
 
-	window.onresize = loadWindowSizeDependent;
+	$(window).resize(loadWindowSizeDependent);
 	setupLayers();
 	setupLayerFilters();
 	loadWindowSizeDependent();
@@ -32,7 +32,7 @@ function displayInit() {
 }
 
 function loadWindowSizeDependent() {
-	var newHeight = jmap.info.offsetHeight-jmap.infoTop.offsetHeight-20;
+	var newHeight = jmap.info.offsetHeight-jmap.infoTop.offsetHeight-13;
 	$('#info-bot').css('height', newHeight+'px');
 	loadTiles();
 	if (jevent.activeLayer == 0) {
@@ -42,7 +42,6 @@ function loadWindowSizeDependent() {
 		logo = $('#logo'),
 		ele1 = $('#layer-tabs'),
 		h = tbar.height();
-	$('#jmap-container').css('top', h+1+'px');
 	if (h < 60) {
 		logo.css('margin-bottom','12px');
 		ele1.css('margin-bottom','12px');
@@ -54,6 +53,7 @@ function loadWindowSizeDependent() {
 		logo.css('margin-bottom','0px');
 		ele1.css('margin-bottom','0px');
 	}
+	$('#jmap-container').css('top', tbar.height()+'px');
 }
 
 

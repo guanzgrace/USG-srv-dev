@@ -74,7 +74,7 @@ a:hover{
 #container {
     min-width: 950px;
     position: absolute;
-    top:28px;
+    top:30px;
     bottom:0px;
     width:100%;
 }
@@ -102,7 +102,7 @@ a:hover{
 #logo {
     vertical-align: middle;
     display:inline-block;
-    margin: 11px 10px;
+    margin: 9px 10px 11px;
     font-size:28px;
     font-weight:bold;
     font-family:Bentham;
@@ -123,7 +123,7 @@ a:hover{
 #layer-tabs {
     vertical-align: middle;
     display:inline-block;
-    margin: 12px 0 12px 10px;
+    margin: 10px 0 12px 10px;
 }
 #layer-tabs .ui-button-text {
     font-size:14px;
@@ -131,7 +131,7 @@ a:hover{
 
 #location-search-form {
     display:inline-block;
-    margin: 12px 44px 12px 10px;
+    margin: 10px 44px 12px 10px;
 }
 #location-search {
     vertical-align: middle;
@@ -169,7 +169,7 @@ a:hover{
 #info-content {
     float:right;
 	width: 370px;
-    padding:10px 5px;
+    padding:5px 5px 8px;
 }
 
 
@@ -247,17 +247,24 @@ a:hover{
 	text-decoration:underline;
 }
 
-.info-printers > div {
+.info-printers > div, .info-laundry > div {
 	text-align:center;
 }
-.info-printers > div > div {
-	width:130px;
+.info-printers > div > div, .info-laundry > div > div {
 	display:inline-block;
 	padding:4px 16px 4px 0;
 	vertical-align: middle;
+	text-align:left;
 }
 .printers-left, .printers-right {
-	text-align:left;
+	width:130px;
+}
+.laundry-left {
+    width:70px;
+    padding-left:10px !important;
+}
+.laundry-right {
+    width:80px;
 }
 
 .info-locations {
@@ -330,7 +337,6 @@ div.isolated {
 	
 	height:16px;
 	width:16px;
-	margin-top:2px;
 	padding: 7px;
 	background-color:#FAFCF8;
     box-shadow:-5px 5px 0.8em -5px hsla(0, 0%, 0%, 1.0);
