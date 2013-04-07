@@ -1,3 +1,7 @@
+"""
+Script to scrape laundry data on a Princeton server (since that site limits visitors to
+Princeton IP's only), and put that data onto the tigerapps servers.
+"""
 import sys
 import datetime
 from time import strftime

@@ -41,7 +41,8 @@ b {
 body {
 	font-family: helvetica,sans-serif;
 	font-size: 13px;
-	overflow: hidden;
+	overflow-y: hidden;
+    overflow-x: auto;
 }
 h1, h2, h3 {
 	-webkit-margin-before: 0;

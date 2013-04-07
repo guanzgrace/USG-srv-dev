@@ -119,6 +119,7 @@ def get_filtered_bldgs(request):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
 
     if layer == '0': #event
         events = filter_events(request)
@@ -130,7 +131,7 @@ def get_filtered_bldgs(request):
     else:
         return HttpResponseServerError("Bad layer in GET request: %s" % layer)
         
-    response_json = json.dumps({'bldgs': tuple(bldgsList)})
+    response_json = json.dumps({'bldgs': tuple(bldgsList), 'rid': rid})
     return HttpResponse(response_json, content_type="application/javascript")
 
 
@@ -142,6 +143,7 @@ def get_filtered_data_bldg(request, bldg_code):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
         if layer == '0': #event
@@ -170,6 +172,7 @@ def get_filtered_data_bldg(request, bldg_code):
     except Exception, e:
         return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
+    rendered['rid'] = rid
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 
@@ -182,6 +185,7 @@ def get_filtered_data_all(request):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
         if layer == '0': #event
@@ -203,6 +207,7 @@ def get_filtered_data_all(request):
     except Exception, e:
         return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
+    rendered['rid'] = rid
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 
