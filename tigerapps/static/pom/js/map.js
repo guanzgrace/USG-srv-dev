@@ -435,9 +435,9 @@ function eventEntryScroll(domEle) {
 function AJAXbldgsForFilter() {
 	showMapLoading();
 	$.ajax(jevent.urlFilteredBldgs, {
-		data: getFilterParams(),
+		data: getFilterParams('Bldgs'),
 		dataType: 'json',
-		success: displayFilteredBldgs,
+		success: handleBldgsAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
 			hideMapLoading();
 			handleAjaxError(jqXHR, textStatus, errorThrown);
@@ -446,10 +446,11 @@ function AJAXbldgsForFilter() {
 }
 
 /* Grays and un-grays the correct bldgs, given the `data` of bldgs with events */
-function displayFilteredBldgs(data) {
-	//data.bldgs = true for building codes that should be lit up
+function handleBldgsAJAX(data) {
+    if (data.rid != jevent.ridBldgs) return;
 	for (var bldgCode in jevent.bldgCodeHasEvent)
 		jevent.bldgCodeHasEvent[bldgCode] = false;
+	/*data.bldgs = true for building codes that should be lit up*/
 	for (var i in data.bldgs)
 		jevent.bldgCodeHasEvent[data.bldgs[i]] = true;
 	for (var id in jmap.loadedBldgs)
@@ -460,7 +461,8 @@ function displayFilteredBldgs(data) {
 function displayLocationBldgs(bldgCode) {
 	for (var code in jevent.bldgCodeHasEvent)
 		jevent.bldgCodeHasEvent[code] = false;
-	jevent.bldgCodeHasEvent[bldgCode] = true;
+    if (bldgCode != undefined)
+        jevent.bldgCodeHasEvent[bldgCode] = true;
 	for (var id in jmap.loadedBldgs)
 		setupBldg(jmap.loadedBldgs[id].domEle);
 }
@@ -522,7 +524,6 @@ function hideMapLoading() {
 function handleLayerChange(newLayer) {
 	if (jevent.activeLayer != newLayer) {
 		activeBldgRefresh();
-		
 		hideInfoEvent();
 		var oldLayer = jevent.activeLayer;
 		jevent.activeLayer = newLayer;
@@ -534,8 +535,7 @@ function handleLayerChange(newLayer) {
 		}
 		/* Must set all buildings if changing to 5 */
 		if (jevent.activeLayer == 5) {
-			for (var id in jmap.loadedBldgs)
-				setupEventBldg(jmap.loadedBldgs[id].domEle);
+            displayLocationBldgs();
 		}
 		else {
 			AJAXbldgsForFilter();
@@ -554,8 +554,10 @@ function handleFilterChange() {
 }
 
 /* These return the GET params that should be sent in every AJAX call */
-function getFilterParams() {
-	var get_params = {type: jevent.activeLayer};
+function getFilterParams(caller) {
+    var rid = Math.random().toString(36).substring(7);
+    jevent['rid'+caller] = rid;
+	var get_params = {type:jevent.activeLayer, rid:rid};
 	if (jevent.activeLayer == 0) {
 		//get dates from JTL if searching events
 		var p = getJTLParams();
@@ -583,7 +585,7 @@ function getFilterParams() {
 function AJAXdataForAllBldgs() {
 	showInfoLoading();
 	$.ajax(jevent.urlFilteredDataAll, {
-		data: getFilterParams(),
+		data: getFilterParams('Data'),
 		dataType: 'json',
 		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -596,7 +598,7 @@ function AJAXdataForAllBldgs() {
 function AJAXdataForBldg(bldgCode) {
 	showInfoLoading();
 	$.ajax(jevent.urlFilteredDataBldg+bldgCode, {
-		data: getFilterParams(),
+		data: getFilterParams('Data'),
 		dataType: 'json',
 		success: handleDataAJAX,
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -608,6 +610,7 @@ function AJAXdataForBldg(bldgCode) {
 
 /* Success callback for AJAXdataFor__ */
 function handleDataAJAX(data) {
+    if (data.rid != jevent.ridData) return;
 	if (jevent.activeBldg != data.bldgCode) {
 		activeBldgRefresh();
 		if (data.bldgCode != undefined) {
