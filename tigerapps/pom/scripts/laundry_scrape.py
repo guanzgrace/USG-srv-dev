@@ -12,7 +12,9 @@ if __name__ == "__main__":
     except:
         sys.stderr.write(cronlog.fmt("pom.scrape.laundry failed to scrape/render"))
         sys.exit()
-    mc = memcache.Client(['174.143.241.115:11211'], debug=0)
-    mc.set('pom.laundry', data)
+    mcdev = memcache.Client(['dev.tigerapps.org:11211'], debug=0)
+    mcdev.set(':1:pom.laundry', data)
+    mcprod = memcache.Client(['www.tigerapps.org:11211'], debug=0)
+    mcprod.set(':1:pom.laundry', data)
     sys.stdout.write(cronlog.fmt("pom.scrape.laundry scraped/rendered successfully"))
 
