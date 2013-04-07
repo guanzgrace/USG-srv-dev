@@ -3,7 +3,10 @@ Created on Apr 26, 2012
 
 @author: Nader
 '''
-from django.template.loader import render_to_string
+try:
+    from django.template.loader import render_to_string
+except ImportError:
+    pass
 import requests
 import datetime
 from time import strftime
@@ -47,7 +50,7 @@ class Room(object):
         self._time = strftime("%Y-%m-%d %H:%M:%S")
 
         resp = requests.get(laundryurl)
-        f = resp.content
+        f = resp.content.split('\n')
 
         try:
             self._washers = []
@@ -67,8 +70,6 @@ class Room(object):
                     break
         except:
             raise Exception("couldn't parse the LaundryView page")
-        finally:
-            f.close()
 
     def time(self):
         return self._time
@@ -102,7 +103,7 @@ def scrape():
     '''
 
     timestamp = datetime.datetime.now()
-    
+    '''
     laundry_info = {
         'BLOOM' : (('Bloomberg 269', 2, 2, 3, 4), ('Bloomberg 332', 2, 2, 2, 4), ('Bloomberg 460', 0, 2, 1, 2), ('Bloomberg 41', 0, 2, 4, 4)), 
         'HARGH' : (('Whitman FB11', 5, 5, 9, 10), ('Whitman S201', 2, 2, 3, 4), ('Whitman C205', 2, 2, 4, 4), ('Whitman A119', 2, 2, 4, 4), ('Whitman C305', 2, 2, 4, 4), ('Whitman S301', 0, 2, 1, 4), ('Whitman C407', 1, 1, 1, 2), ('Whitman S401', 1, 1, 1, 2), ('Whitman F403', 1, 1, 2, 2), ('Whitman F312', 2, 2, 4, 4)), 
@@ -130,16 +131,20 @@ def scrape():
         '1976H' : (('1976', 9, 9, 9, 10),), 
         'YOSEL' : (('Yoseloff', 9, 9, 7, 10),)
     }
-    
     '''
+
     laundry_info = {}
     for id, info in bldg_id_to_laundry_info.iteritems():
         laundry = []
         for x in info:
-            room_obj = room.Room(url_str + x[1])
+            room_obj = Room(url_str + x[1])
+            '''
+            print x[0]
+            print room_obj.washers()
+            print room_obj.dryers()
+            '''
             laundry.append((x[0], room_obj.washers()[0], room_obj.washers()[1], room_obj.dryers()[0], room_obj.dryers()[1]))
         laundry_info[id] = tuple(laundry)
-    '''
     
     mapping = {}
     for building,rooms in laundry_info.items():
