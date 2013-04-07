@@ -522,7 +522,6 @@ function hideMapLoading() {
 function handleLayerChange(newLayer) {
 	if (jevent.activeLayer != newLayer) {
 		activeBldgRefresh();
-		
 		hideInfoEvent();
 		var oldLayer = jevent.activeLayer;
 		jevent.activeLayer = newLayer;
