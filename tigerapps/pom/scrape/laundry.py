@@ -134,15 +134,18 @@ def scrape():
         mapping[building] = rooms_list
     return (timestamp, mapping)
 
+
 def render(scraped=None):
     if not scraped:
         scraped = scrape()
     timestamp, machine_mapping = scraped
-    machine_list = [(bldg_code, BLDG_INFO[bldg_code][0], machines) for bldg_code, machines in machine_mapping.iteritems()]
+    machine_list = []
+    for bldg_code, machines in machine_mapping.iteritems():
+        machines = sorted(machines, key=lambda x: x[0])
+        machine_list.append((bldg_code, BLDG_INFO[bldg_code][0], machines))
     machine_list = sorted(machine_list, key=lambda x: x[1])
     html = render_to_string('pom/data_laundry.html',
                             {'machine_list' : machine_list})
     return {'timestamp': timestamp.strftime("%B %e, %l:%M %p"),
             'html': html}
 
-    

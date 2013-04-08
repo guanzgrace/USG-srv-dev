@@ -3,12 +3,11 @@
 	<h3 class="info-bldg-name" style="font-size:16px;">{{bldg_name}}</h3>
 	{% for room,wa_f,wa_t,dr_f,dr_t,wa_col,dr_col in machines %}
 	<div>
-		<div class="laundry-left">Washers</div>
-		<div class="laundry-right"><span style='color:{{wa_col}};'>{{wa_f}} free of {{wa_t}}</span><br/></div>
-	</div>
-	<div>
-		<div class="laundry-left">Dryers</div>
-		<div class="laundry-right"><span style='color:{{dr_col}};'>{{dr_f}} free of {{dr_t}}</span></div>
+		<div class="laundry-left">{{room}}</div>
+		<div class="laundry-right">
+			<span style='color:{{wa_col}};'>{{wa_f}} free of {{wa_t}} washers</span><br/>
+			<span style='color:{{dr_col}};'>{{dr_f}} free of {{dr_t}} dryers</span>
+		</div>
 	</div>
 	{% endfor %}
 </div>

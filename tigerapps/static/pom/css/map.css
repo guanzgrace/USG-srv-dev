@@ -260,11 +260,11 @@ a:hover{
 	width:130px;
 }
 .laundry-left {
-	width:70px;
-	padding-left:10px !important;
+	width:100px;
+	padding-left:20px !important;
 }
 .laundry-right {
-	width:80px;
+	width:120px;
 }
 
 .info-locations {
