@@ -1,23 +1,23 @@
 {% for bldg_code,bldg_name,menu in menus %}
 <div class="info-event-entry info-menu" id="event-entry-{{bldg_code}}">
 	<h3 class="info-bldg-name">{{ bldg_name }}</h3>
-       {% for meal in menu.meals %}
+	   {% for meal in menu.meals %}
 	<div>
 		<h4 class="info-sub-name">{{meal.0}}</h4>
 		{% for entree in meal.1.entrees%}
-           <div class="info-event-subtext" style='color:{{entree.color}};'>
-               {{entree.attributes.name}}
-           </div>
+		   <div class="info-event-subtext" style='color:{{entree.color}};'>
+			   {{entree.attributes.name}}
+		   </div>
 		{% endfor %}
 	</div>
-       {% endfor %}
+	   {% endfor %}
 </div>
 {% endfor %}
 
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.info-event-entry').mouseover(function(ev){handleEventEntryMouseover(jtlFn.htmlIdToEventId(this.id));})
-        .mouseout(function(ev){handleEventEntryMouseout(jtlFn.htmlIdToEventId(this.id));})
-	    .click(function(ev){handleEventEntryUnclick(jtlFn.htmlIdToEventId(this.id));});
+		.mouseout(function(ev){handleEventEntryMouseout(jtlFn.htmlIdToEventId(this.id));})
+		.click(function(ev){handleEventEntryUnclick(jtlFn.htmlIdToEventId(this.id));});
 });
 </script>
