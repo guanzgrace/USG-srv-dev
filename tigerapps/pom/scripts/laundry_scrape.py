@@ -6,7 +6,7 @@ import sys
 import datetime
 from time import strftime
 import memcache, requests
-import pom.scrape.laundry as laundry
+from pom.scrape import laundry
 from pom.bldg_info import *
 import cronlog
 

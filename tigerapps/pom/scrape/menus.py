@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from pom.bldg_info import *
 
 
+url_alt = 'http://facilities.princeton.edu/dining/_Foodpro/location.asp'
 url_stub = 'http://facilities.princeton.edu/dining/_Foodpro/menu.asp?locationNum=0'
 DINING_HALLS = {
     'WILCH': (2, "Butler/Wilson College: "),

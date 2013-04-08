@@ -1,17 +1,18 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.cache import cache
 from utils import cronlog
-from pom import scrape
+from pom.scrape import laundry, menus, printers
 
 class Command(BaseCommand):
     args = '<modules to scrape>'
     help = 'Scrapes data and stores in memcached with a timestamp'
 
     def handle(self, *args, **options):
+        scrape = {'laundry':laundry, 'menus':menus, 'printers':printers}
         for mod_name in args:
             try:
-                mod = getattr(scrape, mod_name)
-            except AttributeError:
+                mod = scrape[mod_name]
+            except KeyError:
                 self.stderr.write(cronlog.fmt("pom.scrape.%s does not exist" % mod_name))
                 continue
             try:
