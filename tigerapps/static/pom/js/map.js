@@ -447,7 +447,7 @@ function AJAXbldgsForFilter() {
 
 /* Grays and un-grays the correct bldgs, given the `data` of bldgs with events */
 function handleBldgsAJAX(data) {
-    if (data.rid != jevent.ridBldgs) return;
+	if (data.rid != jevent.ridBldgs) return;
 	for (var bldgCode in jevent.bldgCodeHasEvent)
 		jevent.bldgCodeHasEvent[bldgCode] = false;
 	/*data.bldgs = true for building codes that should be lit up*/
@@ -461,8 +461,8 @@ function handleBldgsAJAX(data) {
 function displayLocationBldgs(bldgCode) {
 	for (var code in jevent.bldgCodeHasEvent)
 		jevent.bldgCodeHasEvent[code] = false;
-    if (bldgCode != undefined)
-        jevent.bldgCodeHasEvent[bldgCode] = true;
+	if (bldgCode != undefined)
+		jevent.bldgCodeHasEvent[bldgCode] = true;
 	for (var id in jmap.loadedBldgs)
 		setupBldg(jmap.loadedBldgs[id].domEle);
 }
@@ -535,7 +535,7 @@ function handleLayerChange(newLayer) {
 		}
 		/* Must set all buildings if changing to 5 */
 		if (jevent.activeLayer == 5) {
-            displayLocationBldgs();
+			displayLocationBldgs();
 		}
 		else {
 			AJAXbldgsForFilter();
@@ -555,8 +555,8 @@ function handleFilterChange() {
 
 /* These return the GET params that should be sent in every AJAX call */
 function getFilterParams(caller) {
-    var rid = Math.random().toString(36).substring(7);
-    jevent['rid'+caller] = rid;
+	var rid = Math.random().toString(36).substring(7);
+	jevent['rid'+caller] = rid;
 	var get_params = {type:jevent.activeLayer, rid:rid};
 	if (jevent.activeLayer == 0) {
 		//get dates from JTL if searching events
@@ -610,7 +610,7 @@ function AJAXdataForBldg(bldgCode) {
 
 /* Success callback for AJAXdataFor__ */
 function handleDataAJAX(data) {
-    if (data.rid != jevent.ridData) return;
+	if (data.rid != jevent.ridData) return;
 	if (jevent.activeBldg != data.bldgCode) {
 		activeBldgRefresh();
 		if (data.bldgCode != undefined) {
@@ -628,8 +628,11 @@ function handleDataAJAX(data) {
 		showTimelineToggle();
 	}
 	else if (jevent.activeLayer != 5) {
-		$('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
-		
+		/* scraped data */
+		if (data.timestamp == undefined)
+			$('#info-timestamp-'+jevent.activeLayer).empty();
+		else
+			$('#info-timestamp-'+jevent.activeLayer).html('Last updated ' + data.timestamp);
 	}
 }
 

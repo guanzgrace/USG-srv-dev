@@ -197,9 +197,15 @@ def get_filtered_data_all(request):
             rendered['html'] = html
             
         elif layer in SCRAPE_LAYERS:
-            cache_key = 'pom.' + SCRAPE_LAYERS[layer][0]
+            mod_name,mod = SCRAPE_LAYERS[layer]
+            cache_key = 'pom.' + mod_name
             scraped = cache.get(cache_key)
-            rendered = SCRAPE_LAYERS[layer][1].render(scraped)
+            if scraped is not None:
+                rendered = mod.render(scraped)
+            else:
+                html = render_to_string('pom/data_unavailable.html', {
+                    'url_alt': mod.url_alt})
+                rendered = {'html': render_to_string('pom/data_unavailable.html')}
    
         else:
             return HttpResponseServerError("Bad filter type in GET request: %s" % layer)

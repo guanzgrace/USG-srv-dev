@@ -69,7 +69,7 @@ function setupLayers() {
 		handleLayerChange(ev.target.value);
 		loadWindowSizeDependent();
 	});
-    var val = $("#layer-tabs input:checked").val();
+	var val = $("#layer-tabs input:checked").val();
 	displayLayer(val);
 	jdisp.jtlShown = true;
 	handleLayerChange(val);
@@ -376,5 +376,5 @@ function handleAjaxError(jqXHR, textStatus, errorThrown) {
 		}
 	}
 	$('#info-bot').empty().append($('<div>').addClass('info-error')
-		.append('<div class="info-error">'+e1+'<br/><br/><b>'+err+'</b><br/><br/>'+e2));
+		.append(e1+'<br/><br/><b>'+err+'</b><br/><br/>'+e2));
 }

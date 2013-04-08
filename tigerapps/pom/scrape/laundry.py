@@ -14,9 +14,10 @@ from time import strftime
 from pom.bldg_info import *
 
 
-#url_str is the base url to get the laundry data for the rooms.
-#url_str+roomid gives the data for a specific room with id=roomid
-url_str = 'http://classic.laundryview.com/laundry_room.php?view=c&lr='
+url_alt = 'http://laundryview.com/lvs.php'
+#url_stub is the base url to get the laundry data for the rooms.
+#url_stub+roomid gives the data for a specific room with id=roomid
+url_stub = 'http://classic.laundryview.com/laundry_room.php?view=c&lr='
 bldg_id_to_laundry_info = {
     'BLOOM' : (('Bloomberg 269', '3073440'), ('Bloomberg 332', '3073441'), ('Bloomberg 460', '3073442'), ('Bloomberg 41', '3073427')), 
     'HARGH' : (('Whitman FB11', '3073469'), ('Whitman S201', '3073472'), ('Whitman C205', '3073466'), ('Whitman A119', '3073465'), ('Whitman C305', '3073467'), ('Whitman S301', '3073473'), ('Whitman C407', '3073468'), ('Whitman S401', '3073474'), ('Whitman F403', '3073471'), ('Whitman F312', '3073470')), 
@@ -109,7 +110,7 @@ def scrape():
     for id, info in bldg_id_to_laundry_info.iteritems():
         laundry = []
         for x in info:
-            room_obj = Room(url_str + x[1])
+            room_obj = Room(url_stub + x[1])
             # sleep so laundryview doesn't get suspicious
             time.sleep(random.random()/1)
             laundry.append((x[0], room_obj.washers()[0], room_obj.washers()[1], room_obj.dryers()[0], room_obj.dryers()[1]))

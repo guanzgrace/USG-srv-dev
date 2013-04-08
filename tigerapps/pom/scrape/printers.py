@@ -7,6 +7,7 @@ from pom.bldg_info import *
 
 
 url = 'http://clusters-lamp.princeton.edu/cgi-bin/clusterinfo.pl'
+url_alt = 'http://www.princeton.edu/clusters/printer_list/'
 PRINTER_BLDGS = {
     '1901': 'LAUGH',
     '1937': '1937H',
