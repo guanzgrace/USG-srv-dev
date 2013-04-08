@@ -1,18 +1,19 @@
 {% load value_from_settings %}
 <html>
 <head>
-    <title>Pursuit of Mappyness</title>
+	<title>Pursuit of Mappyness</title>
 
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/jquery-ui-1.8.20.custom.css"/>
-<!--    <link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/static/shared/css/jqueryui-mod.css"/>-->
-	<link rel="stylesheet" type="text/css" href="/static/pom/css/tipsy.css"/>
+<!--	<link rel="stylesheet" type="text/css" href="http://{% value_from_settings CURRENT_HOST_PREFIX %}cal.tigerapps.org/static/shared/css/jqueryui-mod.css"/>-->
+	<link rel="stylesheet" type="text/css" href="/static/shared/css/tipsy.css"/>
+
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/timeline.css"/>
 	<link rel="stylesheet" type="text/css" href="/static/pom/css/map.css"/>
-    <link href='http://fonts.googleapis.com/css?family=Bentham' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Bentham' rel='stylesheet' type='text/css'>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/static/pom/js/jquery-ui-1.8.20.custom.min.js"></script>
-	<script type="text/javascript" src="/static/pom/js/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="/static/shared/js/jquery.tipsy.js"></script>
 
 	<script type="text/javascript" src="/static/pom/js/timeline.js"></script>
 	<script type="text/javascript" src="/static/pom/js/map.js"></script>
@@ -31,30 +32,39 @@
   
 <body>
 {% include 'toolbar/links.html' %}
-
+<div id="container">
 
 <div id="jmap-topbar">
-        <div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
+		<div id="logo"><a id="logo-link" href="/" >Pursuit of Mappyness</a></div>
 
+		<div id="topbar-input">
 		<div id="layer-tabs">
 
 			<input type="radio" id="filter-events" name="top-tab" value="0" checked="checked"/><label for="filter-events">Events</label></input>
 
 			<input type="radio"  id="filter-menus" name="top-tab" value="2"><label for="filter-menus">Menus</label></input>
-			<!-- uncomment when laundry backend is ready -->
-		    <!--input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input-->
 
-		    <input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
+			<input type="radio"  id="filter-laundry" name="top-tab" value="3"><label for="filter-laundry">Laundry</label></input>
+
+			<input type="radio"  id="filter-printers" name="top-tab" value="4"><label for="filter-printers">Printers</label></input>
 
 			<input type="radio" id="filter-locations" name="top-tab" value="5"><label for="filter-locations">Locations</label></input>
 
 		</div>
 	
+		<form id="location-search-form">
+			<input id="location-search" type="text" style="width:250px;" placeholder="e.g. Frist, McCosh..."/>
+			<input id="location-search-code" type="hidden"/>
+			<div id="location-search-div">
+			<input id="location-search-submit" type="submit" value="Go" />
+			</div>
+		</form>
+		</div>
 </div>
 <div id="jmap-info">
 <div id="info-content"> <!-- second div so scrollbar has margin from right -->
 	<div id="info-top">
-	        
+			
 		<div id="info-top-filters">
 			<div id="top-tab-0" class="top-tab">
 				<div style="float:right;">
@@ -70,15 +80,15 @@ of the buildings to the left.</p>
 				
 				<div class="isolated">
 					<span class="desc-help">Filter by time:</span><br/>
-					<div id="jtl-hours-slider" style="width:312px;margin-top:2px;"></div>
+					<div id="jtl-slider" style="width:312px;margin-top:2px;"></div>
 					
 					<table style="width:320px;"><tr>
 						<td style="text-align:left;">
 							<label for="jtl-startTime" class="jtl-labels">Start time:</label>&nbsp;
-								<input type="text" class="jtl-params" id="jtl-slider-start" readonly='true' style="border:0; width:115px;"/>
+							<input type="text" class="jtl-params jtl-slider-val" id="jtl-slider-start" readonly='true'/>
 						</td><td style="text-align:right;"> 
 							<label for="jtl-endTime" class="jtl-labels">End time:</label>&nbsp;
-								<input type="text" class="jtl-params" id="jtl-slider-end" readonly='true' style="border:0; width:60px;"/>
+							<input type="text" class="jtl-params jtl-slider-val" id="jtl-slider-end" readonly='true'/>
 						</td>
 					</tr></table>
 				</div>
@@ -93,9 +103,9 @@ of the buildings to the left.</p>
 								<select class="jtl-params" id="jtl-nDays">
 									<option value=1> 1 </option>
 									<option value=2> 2 </option>
-									<option value=3> 3 </option>
+									<option value=3 selected="selected"> 3 </option>
 									<option value=4> 4 </option>
-									<option value=5 selected="selected"> 5 </option>
+									<option value=5> 5 </option>
 									<option value=6> 6 </option>
 									<option value=7> 7 </option>								
 								</select>
@@ -135,11 +145,14 @@ of the buildings to the left.</p>
 				<div class="info-divider"></div>
 			</div>
 
-            <div id="top-tab-3" class="top-tab">
-                <h2 class="info-title">Laundry Rooms</h2>
-                <h5 class="info-timestamp" id="info-timestamp-3"></h5>
-                <div class="info-divider"></div>
-            </div>
+			<div id="top-tab-3" class="top-tab">
+				<h2 class="info-title">Laundry Machines</h2>
+				<div class="isolated">
+<p>Find available washers and dryers tracked by the University's <a href="http://www.laundryview.com/lvs.php">LaundryView</a> service.</p>
+				</div>
+				<h5 class="info-timestamp" id="info-timestamp-3"></h5>
+				<div class="info-divider"></div>
+			</div>
 			
 			<div id="top-tab-4" class="top-tab">
 				<h2 class="info-title">OIT "All Clusters" Printers</h2>
@@ -157,12 +170,7 @@ connect to this queue from your personal machine, see the
 				<h2 class="info-title">Campus Locations</h2>
 				<div class="isolated">
 <p>Click any building to the left, or enter a location name in the
-search bar below, to find any campus location!</p><br/>
-					<span class="desc-help">Search for a building/location:</span><br/>
-					<form id="location-search-form">
-						<table><tr><td><input id="location-search" type="text" style="width:200px;" name="locations"/>&nbsp;&nbsp;</td>
-						<td><input id="location-search-submit" type="submit" value="Jump to Location" /></td></tr></table>
-					</form>
+search bar, to find a place on campus!</p>
 				</div>
 				<div class="info-divider"></div>
 			</div>
@@ -174,16 +182,28 @@ search bar below, to find any campus location!</p><br/>
 </div>
 </div>
 
-<div id="jtl-toggle"><span></span></div>
+<div id="jtl-toggle">
+	<span></span>
+</div>
 <div id="jmap-jtl">
 	<div id="jtl-content"></div>
 </div>
 
 
 <div id="jmap-container">
-	<div id="jmap-movable">
+	<div id="jmap-movable"></div>
+	<div id="jmap-about">&copy; 2013
+<a href="http://princetonusg.com/" target="_blank">USG</a>&nbsp;&nbsp;|&nbsp;
+<a href="javascript:void(0);" target="_blank" title="<span style='font-size:12px;'>
+POM is a project of the 2012 and 2013 USG. POM was developed by Josh Chen '14,
+with significant contributions from
+Adam Suczewski '13, Gabriel Chen '14,
+John McSpedon '14, Ben Grange '14, Nader Al-Naji '13, and Lawrence Diao '14.
+Interested in building apps like this?
+Join the USG IT Committee, at it@princetonusg.com!</span>">About</a>
 	</div>
 </div>
-	
+
+</div>
 </body>
 </html>

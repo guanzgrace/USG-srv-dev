@@ -23,14 +23,16 @@ from pom.scrape import menus, printers, laundry
 def index(request, offset):
     return render_to_response('pom/index.html', {}, RequestContext(request))
 
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def refresh_cache(request):
-    cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
-    cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
-    cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
-    return HttpResponse('success')
+    # causes internal server error because HTTP request takes too long. need to
+    # replace with something that makes async caching call instead
+    #cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
+    #cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
+    #cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
+    #return HttpResponse('success')
+    return HttpResponse('feature currently disabled')
 
 
 
@@ -51,7 +53,7 @@ def widget_search_resp(request):
     KWAC_terms = [v.split() for v in KWAC.values()]
 
     for (layer, v) in KWAC.iteritems():
-        f
+        pass
 
     response_json = json.dumps(matches)
     return HttpResponse(response_json, content_type="application/javascript")
@@ -62,8 +64,38 @@ def widget_locations_setup(request):
     Return json dictionary of name, code pairs for use in location-based
     filtering
     '''
-    bldg_names = dict((name[0], code) for code, name in BLDG_INFO.iteritems())
-    response_json = json.dumps(bldg_names)
+    response_json = cache.get('pom.locations_setup')
+    if response_json is None:
+        bldg_names = []
+        already = set()
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
+                    name = campus_info[num]['name']
+                    if name not in already:
+                        bldg_names.append({
+                            'value': name,
+                            'label': name,
+                            'code': code,
+                            'order': 1
+                        })
+                        already.add(name)
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
+                    for org in campus_info[num]['organizations']:
+                        name = org['name']
+                        if name not in already:
+                            bldg_names.append({
+                                'value': name,
+                                'label': name,
+                                'code': code,
+                                'order': 2
+                            })
+                            already.add(name)
+        bldg_names = sorted(bldg_names, key=lambda x: (x['order'], x['label']))
+        response_json = json.dumps(bldg_names)
+        cache.set('pom.locations_setup', response_json)
     return HttpResponse(response_json, content_type="application/javascript")
 
 
@@ -87,6 +119,7 @@ def get_filtered_bldgs(request):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
 
     if layer == '0': #event
         events = filter_events(request)
@@ -98,8 +131,7 @@ def get_filtered_bldgs(request):
     else:
         return HttpResponseServerError("Bad layer in GET request: %s" % layer)
         
-    response_json = json.dumps({'error': None,
-                                'bldgs': tuple(bldgsList)})
+    response_json = json.dumps({'bldgs': tuple(bldgsList), 'rid': rid})
     return HttpResponse(response_json, content_type="application/javascript")
 
 
@@ -111,6 +143,7 @@ def get_filtered_data_bldg(request, bldg_code):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
         if layer == '0': #event
@@ -120,7 +153,6 @@ def get_filtered_data_bldg(request, bldg_code):
                                      'events': events})
             rendered = build_events_data(request, events)
             rendered['html'] = html
-            rendered['error'] = None
             rendered['bldgCode'] = bldg_code
         
         elif layer == '5': #location
@@ -132,14 +164,15 @@ def get_filtered_data_bldg(request, bldg_code):
             html = render_to_string('pom/data_locations.html',
                                     {'bldg_name':BLDG_INFO[bldg_code][0],
                                      'info':info})
-            rendered = {'error': None, 'html': html, 'bldgCode': bldg_code}
+            rendered = {'html': html, 'bldgCode': bldg_code}
         
         else:
             return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        rendered = {'error': str(e)}
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
+    rendered['rid'] = rid
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 
@@ -152,6 +185,7 @@ def get_filtered_data_all(request):
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
     layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
         if layer == '0': #event
@@ -161,20 +195,25 @@ def get_filtered_data_all(request):
                                      'events': events})
             rendered = build_events_data(request, events)
             rendered['html'] = html
-            rendered['error'] = None
             
         elif layer in SCRAPE_LAYERS:
-            cache_key = 'pom.' + SCRAPE_LAYERS[layer][0]
+            mod_name,mod = SCRAPE_LAYERS[layer]
+            cache_key = 'pom.' + mod_name
             scraped = cache.get(cache_key)
-            rendered = SCRAPE_LAYERS[layer][1].render(scraped)
-            rendered['error'] = None
+            if scraped is not None:
+                rendered = mod.render(scraped)
+            else:
+                html = render_to_string('pom/data_unavailable.html', {
+                    'url_alt': mod.url_alt})
+                rendered = {'html': render_to_string('pom/data_unavailable.html')}
    
         else:
             return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        rendered = {'error': str(e)}
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
+    rendered['rid'] = rid
     response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 

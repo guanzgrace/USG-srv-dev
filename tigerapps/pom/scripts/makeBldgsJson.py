@@ -1,6 +1,7 @@
-# makeJSON.py
-#
-# python makeJSON.py <csv_file> <output_file>
+"""
+April 2012 - bgrange@ or mcspedon@
+python makeJSON.py <csv_file> <output_file>
+"""
 
 import json
 import sys

@@ -4,18 +4,22 @@
 	
 {% if info %}
 	{% for bldg in info %}
-		<div class="info-event-entry" style="text-align:center;">
-		{% if bldg.image_url %}
-			<img style="max-width:100%;max-height:400px;padding:4px 0;" src="{{bldg.image_url}}" alt="{{bldg.name}}"/>
-		{% else %}
-			<!--<img style="max-width:100%;max-height:400px;padding:4px 0;" src="/static/pom/img/location_noimg.png" alt="{{bldg.name}}"/>-->
-            <div style="padding:4px 0;font-style:italic;">No image available</div>
-		{% endif %}
-		<div style="font-weight:bold;">{{bldg.name}}</div>
+		<div class="info-event-entry info-locations">
+            {% if bldg.image_url %}
+			<img class="locations-img" src="{{bldg.image_url}}"/>
+            {% else %}
+			<!--<img class="locations-img" src="/static/pom/img/location_noimg.png"/>-->
+            <p class="locations-error">No image available</p>
+            {% endif %}
+            <h4 class="locations-name">{{bldg.name}}</h4>
+            <!--{% if bldg.description %}<p class="locations-desc">{{bldg.description}}</p>{% endif %}-->
+            {% if bldg.organizations %}<ul>{% for org in bldg.organizations %}
+                <li class="locations-org">{% if org.url %}<a href="{{org.url}}" target="_blank">{% endif %}{{org.name}}{% if org.url %}</a>{% endif %}</li>
+            {% endfor %}</ul>{% endif %}
 		</div>
     {% endfor %}
 {% else %}
-	<div class="info-event-entry" style="text-align:center;font-style:italic;">
-		No information available
+	<div class="info-event-entry info-locations">
+		<p class="locations-error">No information available</p>
 	</div>
 {% endif %}

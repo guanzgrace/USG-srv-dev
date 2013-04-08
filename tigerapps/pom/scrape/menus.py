@@ -5,14 +5,15 @@ from bs4 import BeautifulSoup
 from pom.bldg_info import *
 
 
+url_alt = 'http://facilities.princeton.edu/dining/_Foodpro/location.asp'
 url_stub = 'http://facilities.princeton.edu/dining/_Foodpro/menu.asp?locationNum=0'
 DINING_HALLS = {
-    'WILCH':2,
-    'MADIH':1,
-    'FORBC':3,
-    'HARGH':8,
-    'CENJL':5,
-    'GRADC':4
+    'WILCH': (2, "Butler/Wilson College: "),
+    'MADIH': (1, "Rocky/Mathey College: "),
+    'FORBC': (3, ""),
+    'HARGH': (8, ""),
+    'CENJL': (5, ""),
+    'GRADC': (4, ""),
 }
 
 
@@ -50,7 +51,7 @@ def sorter(name):
 def scrape_single(bldg_code):
     """Scrape the menu page for the given dining hall and return the data
     as a menu object"""
-    hall_num = DINING_HALLS[bldg_code]
+    hall_num = DINING_HALLS[bldg_code][0]
     url = url_stub + str(hall_num)
     
     resp = requests.get(url)
@@ -91,15 +92,17 @@ def scrape():
     """Return a list of menus, one for each dining hall"""
     timestamp = datetime.datetime.now()
     menus = {}
-    for hall in DINING_HALLS:
-        menus[hall] = scrape_single(hall)
+    for bldg_code in DINING_HALLS:
+        menus[bldg_code] = scrape_single(bldg_code)
     return (timestamp, menus)
 
 def render(scraped=None):
     if not scraped:
         scraped = scrape()
     timestamp, menu_mapping = scraped
-    menu_list = [(bldg_code, BLDG_INFO[bldg_code][0], menu) \
+    menu_list = [(bldg_code,
+                  DINING_HALLS[bldg_code][1] + BLDG_INFO[bldg_code][0],
+                  menu) \
                  for bldg_code, menu in menu_mapping.items()]
     menu_list = sorted(menu_list, key = lambda x: x[1])
     for tup in menu_list:

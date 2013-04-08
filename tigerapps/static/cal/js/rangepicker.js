@@ -50,8 +50,6 @@ $.fn.rangepicker = function(timeselect, sd, ed, onSel) {
     rangepicker.sd = sd;
     rangepicker.ed = ed;
 
-    console.log("Called rangepicker with: " +timeselect);
-
     /* If this isn't the first time it's been called, then we only
     need to change the timeselect and re-render the datepicker */
     if (rangepicker.dp != undefined) {

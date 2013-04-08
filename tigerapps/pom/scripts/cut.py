@@ -1,6 +1,8 @@
-# cut.py
-#
-# python cut.py <image_file> <csv_file> <suffix> <output_folder>
+"""
+April 2012 - bgrange@
+Chops up image into buildings
+python cut.py <image_file> <csv_file> <suffix> <output_folder>
+"""
 
 
 import sys
