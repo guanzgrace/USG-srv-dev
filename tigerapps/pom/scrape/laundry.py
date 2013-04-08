@@ -112,7 +112,7 @@ def scrape():
         for x in info:
             room_obj = Room(url_stub + x[1])
             # sleep so laundryview doesn't get suspicious
-            #time.sleep(random.random()/2)
+            time.sleep(random.random()/1)
             laundry.append((x[0], room_obj.washers()[0], room_obj.washers()[1], room_obj.dryers()[0], room_obj.dryers()[1]))
         laundry_info[id] = tuple(laundry)
     
@@ -138,7 +138,7 @@ def render(scraped=None):
     if not scraped:
         scraped = scrape()
     timestamp, machine_mapping = scraped
-    machine_list = [(bldg_code, BLDG_INFO[bldg_code][0], machines) for bldg_code, machines in machine_mapping.iteritems()]
+    machine_list = [x for k,v in machine_mapping.iteritems() for x in v]
     machine_list = sorted(machine_list, key=lambda x: x[0])
     html = render_to_string('pom/data_laundry.html',
                             {'machine_list' : machine_list})
