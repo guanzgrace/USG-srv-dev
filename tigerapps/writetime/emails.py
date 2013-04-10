@@ -35,7 +35,7 @@ def sendEmail(appointment, toName, toEmail):
 		WriteTime!</p>
 		<p>Best,</p>
 		<p>The WriteTime Team</p>
-	""" % (toName, appointment.name, appointment.email, appointment.time.strftime("%I:%M %p on %A, %B %d"))
+	""" % (toName, appointment.name, appointment.netid + "@princeton.edu", appointment.time.strftime("%I:%M %p on %A, %B %d"))
 	
 	sendMail(toEmail, subject, body)
 
