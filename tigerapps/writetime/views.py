@@ -31,6 +31,7 @@ def submitOffer(request):
 	time = datetime.datetime(int(year), int(month), int(day), int(timeString))
 	appointment = Appointment(name=name, netid=netid, time=time)
 	appointment.save()
+	sendConfirmEmail(appointment)
 	return redirect("/")
 
 @login_required
@@ -41,7 +42,7 @@ def submitAccept(request, pk):
 		appointment = Appointment.objects.get(pk=pk)
 		appointment.isActive = False
 		appointment.save()
-		sendEmail(appointment, name, netid + "@princeton.edu")
+		sendNotifyEmail(appointment, name, netid + "@princeton.edu")
 	return redirect("/")
 
 @login_required	

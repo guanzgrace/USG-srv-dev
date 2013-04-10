@@ -14,7 +14,7 @@ def sendMail(to, subject, body):
 	smtpserver.sendmail(gmail_user, to, msg)
 	smtpserver.close()
 
-def sendEmail(appointment, toName, toEmail):
+def sendNotifyEmail(appointment, toName, toEmail):
 	subject = "Your Writing Center Appointment Has Been Claimed"
 	body = """
 		<p>Hello %s,</p>
