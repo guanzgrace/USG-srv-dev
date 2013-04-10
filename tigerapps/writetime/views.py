@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from models import *
-from emails import sendEmail
+from emails import sendConfirmEmail, sendNotifyEmail
 import urllib2
 import datetime
 
