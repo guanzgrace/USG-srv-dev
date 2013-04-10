@@ -86,16 +86,24 @@ class User(models.Model):
 
 # queues
 class Queue(models.Model):
-    @staticmethod
-    def make(draw, user=None):
-        queue = Queue(draw=draw)
-        queue.save()
-        if user:
-            QueueUpdate(queue=queue, timestamp=int(time.time()), kind=QueueUpdate.MERGE,
-                        kind_id=queue.id).save()
-        return queue
+    EDIT = 0
+    JOIN = 1
+    CREATE = 2
+    UPDATE_KINDS = (
+        (EDIT, 'EDIT'),
+        (JOIN, 'JOIN'),
+        (CREATE, 'CREATE'),
+        )
 
     draw = models.ForeignKey('Draw')
+    # Last update information.
+    # The version number of this queue (how many updates has it had?).
+    version = models.IntegerField(default=1) 
+    # Edit, merge or create.
+    update_kind = models.IntegerField(choices=UPDATE_KINDS, default=CREATE)
+    # Editing or joining user. Create: None.
+    update_user = models.ForeignKey('User', null=True, default=None)
+
     def __unicode__(self):
         return self.draw.name
 
@@ -104,20 +112,6 @@ class QueueToRoom(models.Model):
     queue = models.ForeignKey('Queue')
     room = models.ForeignKey('Room')
     ranking = models.IntegerField()
-
-
-# An update to a queue
-class QueueUpdate(models.Model):
-    EDIT = 0
-    MERGE = 1
-    UPDATE_KINDS = (
-        (EDIT, 'EDIT'),
-        (MERGE, 'MERGE'),
-        )
-    queue = models.ForeignKey('Queue')
-    timestamp = models.IntegerField()
-    kind = models.IntegerField(choices=UPDATE_KINDS) #either edit or merge
-    kind_id = models.IntegerField() # If merge, new queue id, otherwise edit user id
 
 # An invitation to a the queue owned by a user
 class QueueInvite(models.Model):
@@ -130,27 +124,43 @@ class QueueInvite(models.Model):
     def __unicode__(self):
         return "%s->%s %s" % (self.sender.netid, self.receiver.netid, self.draw.name)
 
-    # Accept the invitation, merging queues
     def accept(self):
         q1 = self.sender.queues.get(draw=self.draw)
         q2 = self.receiver.queues.get(draw=self.draw)
-        # Check whether queues are same
+        # Check whether queues are same.
         if q1.id == q2.id:
             self.delete()
             return None
-        rooms1 = q1.queuetoroom_set.all()
-        rooms2 = q2.queuetoroom_set.all()
+        # Delete the old queue if no users are left with it.
+        deleting = False
+        if len(q2.user_set.all()) == 1:
+            deleting = True
+        # Merge the receiver's queue contents into the sender's.
+        rooms1 = set([qtr.room for qtr in q1.queuetoroom_set.all()])
+        qtrs2 = q2.queuetoroom_set.all()
         ranking = len(rooms1)
-        for qtr in rooms2:
-            if qtr in rooms1:
+        for qtr in qtrs2:
+            if qtr.room in rooms1:
                 continue
             qtr.ranking = ranking
             qtr.queue = q1
+            # Create a new DB row if old qtr entry still needed.
+            if not deleting:
+                qtr.pk = None
             qtr.save()
+            rooms1.add(qtr.room)
             ranking += 1
+        # Leave old queue, delete it if possible.
         self.receiver.queues.remove(q2)
+        if deleting:
+            q2.delete()
+        # Join new queue, and update its version data.
         self.receiver.queues.add(q1)
-        q2.delete()
+        q1.version += 1
+        q1.update_kind = Queue.JOIN
+        q1.update_user = self.receiver
+        q1.save()
+        # Remove this invitation.
         self.delete()
         return q1
 

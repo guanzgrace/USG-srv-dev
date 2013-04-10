@@ -35,15 +35,15 @@ def update_queue(request, drawid):
     if not queue:
         return HttpResponse('no queue')
     try:
-        return json_response(edit(user, queue, qlist, draw))
+        return json_response(edit(user, queue.id, qlist, draw))
     except Exception as e:
         return HttpResponse(e)
 
 # Ajax for displaying this user's queue
 @login_required
-def get_queue(request, drawid, last_id = 0):
+def get_queue(request, drawid, last_version = 0):
     user = get_user(request.user.username)
-    last_id = int(last_id)
+    last_version = int(last_version)
     if not user:
         return HttpResponse('no user')
     try:
@@ -52,7 +52,7 @@ def get_queue(request, drawid, last_id = 0):
     except Exception as e:
         return HttpResponse(traceback.format_exc(2) + str(draw))
     try:
-        return json_response(check(user, queue, last_id))
+        return json_response(check(user, queue.id, last_version))
     except Exception as e:
         return HttpResponse(traceback.format_exc(2))
     

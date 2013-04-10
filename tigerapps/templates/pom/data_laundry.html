@@ -1,13 +1,22 @@
-<div>
-	<h1>This data is FAKE</h1>
+{% for bldg_code,bldg_name,machines in machine_list %}
+<div class="info-event-entry info-laundry" id="event-entry-{{bldg_code}}">
+	<h3 class="info-bldg-name" style="font-size:16px;">{{bldg_name}}</h3>
+	{% for room,wa_f,wa_t,dr_f,dr_t,wa_col,dr_col in machines %}
+	<div>
+		<div class="laundry-left">{{room}}</div>
+		<div class="laundry-right">
+			<span style='color:{{wa_col}};'>{{wa_f}} free of {{wa_t}} washers</span><br/>
+			<span style='color:{{dr_col}};'>{{dr_f}} free of {{dr_t}} dryers</span>
+		</div>
+	</div>
+	{% endfor %}
 </div>
-
-<table class="info-table">
-{% for machine in machine_list %}
-	<tr><th><div style="max-width:100px;">{{machine.0}}</div></th>
-		<td><div style="max-width:200px;">
-			Washers:<span style='color:{{machine.5}};'> {{machine.1}} free of {{machine.2}}</span><br/>
-			Dryers: <span style='color:{{machine.6}};'>{{machine.3}} free of {{machine.4}}</span></div></td>
-	</tr>
 {% endfor %}
-</table>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.info-event-entry').mouseover(function(ev){handleEventEntryMouseover(jtlFn.htmlIdToEventId(this.id));})
+		.mouseout(function(ev){handleEventEntryMouseout(jtlFn.htmlIdToEventId(this.id));})
+		.click(function(ev){handleEventEntryUnclick(jtlFn.htmlIdToEventId(this.id));});
+});
+</script>
