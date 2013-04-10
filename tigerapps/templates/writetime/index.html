@@ -18,7 +18,9 @@
 				<td style="text-align: center">{{appointment.time|date:"g:i a" }}</td>
 				<td style="text-align: center">
 					<span>
-						{% if appointment.email == user.username %}
+					  {{appointment.netid}}
+					  {{user.username}}
+						{% if appointment.netid == user.username %}
 							<a href="accept/{{appointment.pk}}" class="btn btn-small btn-success" style="width: 45px;">Accept</a>
 						{% else %}
 							<a href="submitRemove/{{appointment.pk}}" class="btn btn-small btn-danger" style="width: 45px;">Remove</a>
