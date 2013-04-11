@@ -54,5 +54,5 @@ def submitRemove(request, pk):
 	
 @login_required
 def authenticate(request):
-	return redirect(request.GET['url'])
+	return redirect(request.GET['url'] + "?user=" + request.user.username)
 	
