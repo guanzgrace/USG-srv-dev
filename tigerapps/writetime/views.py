@@ -52,3 +52,7 @@ def submitRemove(request, pk):
 	appointment.save()
 	return redirect("/")
 	
+@login_required
+def authenticate(request):
+	return redirect(request.GET['url'])
+	

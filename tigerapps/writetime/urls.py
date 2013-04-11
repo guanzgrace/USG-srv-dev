@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^submitOffer$', 'writetime.views.submitOffer'),
     url(r'^submitAccept/(\d*)$', 'writetime.views.submitAccept'),
     url(r'^submitRemove/(\d*)$', 'writetime.views.submitRemove'),
+    
+    (r'^authenticate/?$', 'writetime.views.authenticate'),
 
     (r'^login/?$', 'django_cas.views.login'),
     (r'^logout/?$', 'django_cas.views.logout'),

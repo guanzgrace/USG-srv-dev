@@ -38,7 +38,6 @@ def sendNotifyEmail(appointment, toName, toEmail):
 	""" % (toName, appointment.name, appointment.netid + "@princeton.edu", appointment.time.strftime("%I:%M %p on %A, %B %d"))
 	
 	sendMail(toEmail, subject, body)
-
 	
 def sendConfirmEmail(appointment):
 	sender = 'Write Time<princetonsectionswap@gmail.com>'
