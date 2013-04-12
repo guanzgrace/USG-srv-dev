@@ -276,7 +276,7 @@ def build_events_data(request, events_list=None):
     for event in events_list:
         e_start = event.event_date_time_start
         delta = e_start - start_date
-        half_hrs_delta = int(round(delta.total_seconds()/1800)) % 48
+        half_hrs_delta = int(delta.total_seconds()/1800) % 48
         time_index = str(delta.days) + '-' + str(half_hrs_delta)
         
         events_data[event.event_id] = {
