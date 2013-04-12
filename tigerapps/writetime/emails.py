@@ -1,7 +1,20 @@
-from django.core.mail import EmailMessage
+import smtplib
 
-def sendEmail(appointment, toName, toEmail):
-	sender = 'Write Time<princetonsectionswap@gmail.com>'
+def sendMail(to, subject, body):
+	gmail_user = 'princetonwritetime@gmail.com'
+	gmail_pwd = 'dondero217'
+	fromEmail = "Write Time<princetonwritetime@gmail.com>" 
+	smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+	smtpserver.ehlo()
+	smtpserver.starttls()
+	smtpserver.ehlo
+	smtpserver.login(gmail_user, gmail_pwd)
+	header = 'To:' + to + '\n' + 'From: ' + fromEmail + '\n' + 'Subject:' + subject + '\n' + 'Content-type: text/html' + '\n'
+	msg = header + '\n' + body
+	smtpserver.sendmail(gmail_user, to, msg)
+	smtpserver.close()
+
+def sendNotifyEmail(appointment, toName, toEmail):
 	subject = "Your Writing Center Appointment Has Been Claimed"
 	body = """
 		<p>Hello %s,</p>
@@ -12,10 +25,8 @@ def sendEmail(appointment, toName, toEmail):
 		<p>The WriteTime Team</p>
 	""" % (appointment.name, toName, toEmail, appointment.time.strftime("%I:%M %p on %A, %B %d"))
 	
-	msg = EmailMessage(subject, body, sender, [appointment.netid + "@princeton.edu"])
-	msg.content_subtype = 'html'
-	msg.send()
-	
+	sendMail(appointment.netid + "@princeton.edu", subject, body)
+
 	subject = "Your New Writing Center Appointment!"
 	body = """
 		<p>Hello %s,</p>
@@ -24,11 +35,9 @@ def sendEmail(appointment, toName, toEmail):
 		WriteTime!</p>
 		<p>Best,</p>
 		<p>The WriteTime Team</p>
-	""" % (toName, appointment.name, appointment.email, appointment.time.strftime("%I:%M %p on %A, %B %d"))
+	""" % (toName, appointment.name, appointment.netid + "@princeton.edu", appointment.time.strftime("%I:%M %p on %A, %B %d"))
 	
-	msg = EmailMessage(subject, body, sender, [toEmail])
-	msg.content_subtype = 'html'
-	msg.send()
+	sendMail(toEmail, subject, body)
 	
 def sendConfirmEmail(appointment):
 	sender = 'Write Time<princetonsectionswap@gmail.com>'
@@ -42,6 +51,4 @@ def sendConfirmEmail(appointment):
 		<p>The WriteTime Team</p>
 	""" % (appointment.name)
 	
-	msg = EmailMessage(subject, body, sender, [appointment.netid + "@princeton.edu"])
-	msg.content_subtype = 'html'
-	msg.send()
+	sendMail(appointment.netid + "@princeton.edu", subject, body)

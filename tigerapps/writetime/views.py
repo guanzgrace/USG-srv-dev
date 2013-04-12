@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from models import *
-from emails import sendEmail
+from emails import sendConfirmEmail, sendNotifyEmail
 import urllib2
 import datetime
 
@@ -31,6 +31,7 @@ def submitOffer(request):
 	time = datetime.datetime(int(year), int(month), int(day), int(timeString))
 	appointment = Appointment(name=name, netid=netid, time=time)
 	appointment.save()
+	sendConfirmEmail(appointment)
 	return redirect("/")
 
 @login_required
@@ -41,7 +42,7 @@ def submitAccept(request, pk):
 		appointment = Appointment.objects.get(pk=pk)
 		appointment.isActive = False
 		appointment.save()
-		sendEmail(appointment, name, netid + "@princeton.edu")
+		sendNotifyEmail(appointment, name, netid + "@princeton.edu")
 	return redirect("/")
 
 @login_required	
@@ -50,4 +51,8 @@ def submitRemove(request, pk):
 	appointment.isActive = False
 	appointment.save()
 	return redirect("/")
+	
+@login_required
+def authenticate(request):
+	return redirect(request.GET['url'] + "?user=" + request.user.username)
 	
