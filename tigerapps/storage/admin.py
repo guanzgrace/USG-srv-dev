@@ -3,7 +3,7 @@ from django.contrib import admin
 
 class PostAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title', 'content']})
+        (None, {'fields': ['title', 'content', 'visible']})
     ]
     list_display = ('title',)
     search_fields = ['title', 'content']

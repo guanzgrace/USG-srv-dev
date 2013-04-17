@@ -32,8 +32,8 @@ REAL_TIME_PORT = os.environ.get('REAL_TIME_PORT', '8031')
 #For django_cas
 LOGIN_URL = '/login/'
 #For paypal
-PAYPAL_RECEIVER_EMAIL = 'agencies@princeton.edu'
-#PAYPAL_RECEIVER_EMAIL = 'it@princetonusg.com'
+#PAYPAL_RECEIVER_EMAIL = 'agencies@princeton.edu'
+PAYPAL_RECEIVER_EMAIL = 'it@princetonusg.com'
 
 
 
