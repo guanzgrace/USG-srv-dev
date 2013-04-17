@@ -163,13 +163,23 @@ var QueueModule = (function($) {
         get_queue(current_draw, update_id);
     }
 
-        
+    // Sync the table marks with the idlist.
+    var sync_marks = function() {
+        console.log('sync_marks');
+        $('.addRoom').show();
+        $('.removeRoom').hide();
+        for (var i in idlist) {
+            $.publish('mark_as_neg', idlist[i]);
+        }
+    }
+
     // Subscribe to relevant events
     $.subscribe('queue/add', add);
     $.subscribe('queue/remove', remove);
     $.subscribe("draw", switchdraw);
     $.subscribe('mark_as_neg', mark_as_neg);
     $.subscribe('mark_as_pos', mark_as_pos);
+    $.subscribe('sync_marks', sync_marks);
     
     // Set up the draggable queue
     $(function() {

@@ -1,16 +1,19 @@
+from django.template.loader import render_to_string
 import requests
-import urllib3, urllib2
+import datetime
 from bs4 import BeautifulSoup
+from pom.bldg_info import *
 
 
+url_alt = 'http://facilities.princeton.edu/dining/_Foodpro/location.asp'
 url_stub = 'http://facilities.princeton.edu/dining/_Foodpro/menu.asp?locationNum=0'
 DINING_HALLS = {
-    'WILCH':2,
-    'MADIH':1,
-    'FORBC':3,
-    'HARGH':8,
-    'CENJL':5,
-    'GRADC':4
+    'WILCH': (2, "Butler/Wilson College: "),
+    'MADIH': (1, "Rocky/Mathey College: "),
+    'FORBC': (3, ""),
+    'HARGH': (8, ""),
+    'CENJL': (5, ""),
+    'GRADC': (4, ""),
 }
 
 
@@ -20,15 +23,14 @@ class Menu:
     def __str__(self):
         return str(self.meals)
     __repr__ = __str__
-        
+
 class Meal:
     def __init__(self):
         self.entrees = []
     def __str__(self):
         return str(self.entrees)
     __repr__ = __str__
-        
-        
+
 class Entree:
     def __init__(self):
         self.attributes = {}
@@ -37,12 +39,19 @@ class Entree:
     def __str__(self):
         return str(self.attributes)
     __repr__ = __str__
-        
 
-def scrape_single_menu(bldg_code):
+MENUS_ORDER = {'Breakfast':0, 'Brunch':1, 'Lunch':2, 'Dinner':3}
+def sorter(name):
+    if name in MENUS_ORDER:
+        return MENUS_ORDER[name]
+    else:
+        return 4
+
+
+def scrape_single(bldg_code):
     """Scrape the menu page for the given dining hall and return the data
     as a menu object"""
-    hall_num = DINING_HALLS[bldg_code]
+    hall_num = DINING_HALLS[bldg_code][0]
     url = url_stub + str(hall_num)
     
     resp = requests.get(url)
@@ -68,14 +77,38 @@ def scrape_single_menu(bldg_code):
                         entree.color = '#990000' #brownish red
             meal.entrees.append(entree)
         menu.meals[meal.name] = meal
-
     return menu
 
-def scrape_all():
+
+####
+# The following functions are common to all modules in pom.scrape
+# We may want to put them in a class for OO-programming purposes
+####
+
+def get_bldgs():
+    return tuple(DINING_HALLS.keys())
+
+def scrape():
     """Return a list of menus, one for each dining hall"""
+    timestamp = datetime.datetime.now()
     menus = {}
-    for hall in DINING_HALLS:
-        menus[hall] = scrape_single_menu(hall)
-    return menus
+    for bldg_code in DINING_HALLS:
+        menus[bldg_code] = scrape_single(bldg_code)
+    return (timestamp, menus)
 
-
+def render(scraped=None):
+    if not scraped:
+        scraped = scrape()
+    timestamp, menu_mapping = scraped
+    menu_list = [(bldg_code,
+                  DINING_HALLS[bldg_code][1] + BLDG_INFO[bldg_code][0],
+                  menu) \
+                 for bldg_code, menu in menu_mapping.items()]
+    menu_list = sorted(menu_list, key = lambda x: x[1])
+    for tup in menu_list:
+        tup[2].meals = [(name, meal) for name, meal in tup[2].meals.items()]
+        tup[2].meals = sorted(tup[2].meals, key = lambda x: sorter(x[0]))
+    html = render_to_string('pom/data_menus.html',
+                            {'menus': menu_list})
+    return {'timestamp': timestamp.strftime("%B %e, %l:%M %p"),
+            'html': html}

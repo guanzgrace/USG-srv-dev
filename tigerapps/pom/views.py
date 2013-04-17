@@ -15,252 +15,220 @@ from pom.scrape import menus, printers, laundry
 
 
 
+####
+# User-facing
+####
+
 # not used due to direct_to_template in urls.py
 def index(request, offset):
     return render_to_response('pom/index.html', {}, RequestContext(request))
 
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def refresh_cache(request):
-    cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
-    cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
-    cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
-    return HttpResponse('success')
+    # causes internal server error because HTTP request takes too long. need to
+    # replace with something that makes async caching call instead
+    #cache.set('pom.menus', (datetime.datetime.now(), menus.scrape_all()))
+    #cache.set('pom.printers', (datetime.datetime.now(), printers.scrape_all()))
+    #cache.set('pom.laundry', (datetime.datetime.now(), laundry.scrape_all()))
+    #return HttpResponse('success')
+    return HttpResponse('feature currently disabled')
 
 
-def get_bldg_names_json(request):
-    '''
-    make dictionary of name, code pairs for use in location-based filtering
-    '''
-    bldg_names = dict((name[0], code) for code, name in BLDG_INFO.iteritems())
-    response_json = json.dumps(bldg_names)
+
+
+####
+# For setting up any widgets used by the map
+####
+
+KWAC = {
+    0: 'Events matching',
+    2: 'Menus at',
+    4: 'Printers at',
+    5: 'Locations matching',
+}
+def widget_search_resp(request):
+    term = request.GET['term']
+    terms = term.split()
+    KWAC_terms = [v.split() for v in KWAC.values()]
+
+    for (layer, v) in KWAC.iteritems():
+        pass
+
+    response_json = json.dumps(matches)
     return HttpResponse(response_json, content_type="application/javascript")
 
-def get_cal_events_json(request, events_list=None):
-    if not events_list:
-        events_list = filter_cal_events(request)
-    try:
-        start_date = datetime.datetime(int(request.GET['y0']), int(request.GET['m0']), int(request.GET['d0']))
-        start_index = 2*int(request.GET['h0']) + round(int(request.GET['i0'])/30)
-        end_index = 2*int(request.GET['h1']) + round(int(request.GET['i1'])/30)
-        n_days = int(request.GET['nDays'])
-    except Exception, e:
-        return HttpResponseServerError('Bad GET request: missing get params (%s)' % str(e))
-    
-    events_data = {}
-    mark_data = defaultdict(list)
-    for event in events_list:
-        e_start = event.event_date_time_start
-        delta = e_start - start_date
-        half_hrs_delta = int(round(delta.total_seconds()/1800)) % 48
-        time_index = str(delta.days) + '-' + str(half_hrs_delta)
-        
-        events_data[event.event_id] = {'bldgCode': event.event_location,
-                                       'tooltip': '<span class="tipsy-bold">%s-%s</span>: %s'%(event.time_start_str, event.time_end_str, cgi.escape(event.event_cluster.cluster_title))}
-        mark_data[time_index].append(event.event_id)
-        
-    return {'eventsData': events_data, 'markData': mark_data}
+
+def widget_locations_setup(request):
+    '''
+    Return json dictionary of name, code pairs for use in location-based
+    filtering
+    '''
+    response_json = cache.get('pom.locations_setup')
+    if response_json is None:
+        bldg_names = []
+        already = set()
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
+                    name = campus_info[num]['name']
+                    if name not in already:
+                        bldg_names.append({
+                            'value': name,
+                            'label': name,
+                            'code': code,
+                            'order': 1
+                        })
+                        already.add(name)
+        for code,nums in campus_codes.iteritems():
+            for num in nums:
+                if num != 0:
+                    for org in campus_info[num]['organizations']:
+                        name = org['name']
+                        if name not in already:
+                            bldg_names.append({
+                                'value': name,
+                                'label': name,
+                                'code': code,
+                                'order': 2
+                            })
+                            already.add(name)
+        bldg_names = sorted(bldg_names, key=lambda x: (x['order'], x['label']))
+        response_json = json.dumps(bldg_names)
+        cache.set('pom.locations_setup', response_json)
+    return HttpResponse(response_json, content_type="application/javascript")
 
 
 
-def bldgs_for_filter(request):
+
+####
+# Directly called when a filter or layer is clicked
+####
+
+SCRAPE_LAYERS = {
+    '2': ('menus', menus),
+    '3': ('laundry', laundry),
+    '4': ('printers', printers)
+}
+
+def get_filtered_bldgs(request):
     '''
     Return a JSON-list of building codes that should be highlighted given
     the filters in the GET parameters of the request.
     '''
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
-    filter_type = request.GET['type']
+    layer = request.GET['type']
+    rid = request.GET['rid']
 
-    if filter_type == '0': #standard event
-        events = filter_cal_events(request)
+    if layer == '0': #event
+        events = filter_events(request)
         bldgsList = list(set((event.event_location for event in events)))
         
-    elif filter_type == '2': #menus
-        bldgsList = getBldgsWithMenus()
-    
-    elif filter_type == '3': #laundry
-        bldgsList = getBldgsWithLaundry()
-    
-    elif filter_type == '4': #printers
-        bldgsList = getBldgsWithPrinters()
+    elif layer in SCRAPE_LAYERS:
+        bldgsList = SCRAPE_LAYERS[layer][1].get_bldgs()
         
     else:
-        return HttpResponseServerError("Bad filter type in GET request: %s" % filter_type)
+        return HttpResponseServerError("Bad layer in GET request: %s" % layer)
         
-    response_json = json.dumps({'error': None,
-                                      'bldgs': tuple(bldgsList)})
+    response_json = json.dumps({'bldgs': tuple(bldgsList), 'rid': rid})
     return HttpResponse(response_json, content_type="application/javascript")
 
 
-
-
-def data_for_bldg(request, bldg_code):
+def get_filtered_data_bldg(request, bldg_code):
     '''
     Return the HTML that should be rendered in the info box given the
     building in the GET parameter of the request
     '''
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
-    filter_type = request.GET['type']
+    layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
-        if filter_type == '0': #standard event
-            events = filter_cal_events(request, bldg_code)
-            html = render_to_string('pom/event_info.html',
+        if layer == '0': #event
+            events = filter_events(request, bldg_code)
+            html = render_to_string('pom/data_events.html',
                                     {'bldg_name': BLDG_INFO[bldg_code][0],
                                      'events': events})
-            response_dict = dict({'error': None, 'html': html, 'bldgCode': bldg_code}.items() + get_cal_events_json(request, events).items())
+            rendered = build_events_data(request, events)
+            rendered['html'] = html
+            rendered['bldgCode'] = bldg_code
         
-        elif filter_type == '2': #menus        
-            #assert building is a dining hall
-            if bldg_code not in getBldgsWithMenus():
-                err = 'requested menu info from invalid building ' + BLDG_INFO[bldg_code][0]
-                response_dict = {'error': err}
-            else:
-                menu_list, timestamp = cache.get('pom.menus')
-                menu_list = list(set([(hall, menu) for hall, menu in menu_list.items()]))
-                menu_list = sorted(menu_list, key = lambda x: x[0])
-                for tup in menu_list:
-                    tup[1].meals = [(name, meal) for name, meal in tup[1].meals.items()]
-                    tup[1].meals = sorted(tup[1].meals, key = lambda x: menus_sorter(x[0]))
-                menu = dict(menu_list)[bldg_code]
-                html = render_to_string('pom/menu_info.html',
-                                        {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'menu': menu,
-                                         'timestamp': timestamp})
-                response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
-    
-        elif filter_type == '3': #laundry
-            #assert building contains laundry room
-            if bldg_code not in getBldgsWithLaundry():
-                err = 'requested laundry info from invalid building ' + BLDG_INFO[bldg_code][0]
-                response_dict = {'error': err}
-            else:
-                machine_mapping, timestamp = cache.get('pom.laundry')
-                machine_list_bldg = machine_mapping[bldg_code]
-                html = render_to_string('pom/laundry_info.html',
-                                        {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'machine_list' : machine_list_bldg,
-                                         'timestamp': timestamp})
-                response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
-    
-        elif filter_type == '4': #printers
-            #assert building contains printer
-            if bldg_code not in getBldgsWithPrinters():
-                err = 'requested printer info from invalid building ' + BLDG_INFO[bldg_code][0]
-                response_dict = {'error': err}
-            else:
-                printer_mapping, timestamp = cache.get('pom.printers')
-                printer_list = [printer for printer in printer_mapping[bldg_code]]
-                printer_list = sorted(printer_list, key=lambda printer: printer.loc)
-    
-                html = render_to_string('pom/printer_info.html',
-                                        {'bldg_name': BLDG_INFO[bldg_code][0],
-                                         'printers' : printer_list,
-                                         'timestamp': timestamp})
-                response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
-    
-        elif filter_type == '5': #location
+        elif layer == '5': #location
             codes = campus_codes[bldg_code]
             if codes[0] == 0:
                 info = None
             else:
                 info = [campus_info[code] for code in codes]
-            html = render_to_string('pom/location_info.html',
+            html = render_to_string('pom/data_locations.html',
                                     {'bldg_name':BLDG_INFO[bldg_code][0],
                                      'info':info})
-            response_dict = {'error': None, 'html': html, 'bldgCode': bldg_code}
+            rendered = {'html': html, 'bldgCode': bldg_code}
         
         else:
-            return HttpResponseServerError("Bad filter type in GET request: %s" % filter_type)
+            return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        response_dict = {'error': str(e)}
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
-    
-    response_json = json.dumps(response_dict)
+    rendered['rid'] = rid
+    response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 
 
-
-def data_for_all(request):
+def get_filtered_data_all(request):
     '''
     Return the HTML that should be rendered in the info box given the
     building in the GET parameter of the request
     '''
     if 'type' not in request.GET:
         return HttpResponseServerError("No type in GET")
-    filter_type = request.GET['type']
-    
+    layer = request.GET['type']
+    rid = request.GET['rid']
     
     try:
-        if filter_type == '0': #standard event
-            events = filter_cal_events(request)
-            html = render_to_string('pom/event_info.html',
+        if layer == '0': #event
+            events = filter_events(request)
+            html = render_to_string('pom/data_events.html',
                                     {'all_events': True, 
                                      'events': events})
-            response_json = json.dumps(dict({'error': None, 'html': html}.items() + get_cal_events_json(request, events).items()))
+            rendered = build_events_data(request, events)
+            rendered['html'] = html
             
-        elif filter_type == '2': #menus
-            menu_list, timestamp = cache.get('pom.menus')
-            menu_list = list(set([(hall, menu) for hall, menu in menu_list.items()]))
-            menu_list = sorted(menu_list, key = lambda x: x[0])
-            for tup in menu_list:
-                tup[1].meals = [(name, meal) for name, meal in tup[1].meals.items()]
-                tup[1].meals = sorted(tup[1].meals, key = lambda x: menus_sorter(x[0]))
-            html = render_to_string('pom/menu_info_all.html',
-                                    {'menu_list': menu_list,
-                                     'bldg_info': BLDG_INFO,
-                                     'timestamp': timestamp})
-            response_json = json.dumps({'error': None,
-                                              'html': html})
+        elif layer in SCRAPE_LAYERS:
+            mod_name,mod = SCRAPE_LAYERS[layer]
+            cache_key = 'pom.' + mod_name
+            scraped = cache.get(cache_key)
+            if scraped is not None:
+                rendered = mod.render(scraped)
+            else:
+                html = render_to_string('pom/data_unavailable.html', {
+                    'url_alt': mod.url_alt})
+                rendered = {'html': render_to_string('pom/data_unavailable.html')}
    
-        elif filter_type == '3': #laundry
-            machine_mapping, timestamp = cache.get('pom.laundry')
-            machine_list = [x for k,v in machine_mapping.iteritems() for x in v]
-            machine_list = sorted(machine_list, key=lambda x: x[0])
-            html = render_to_string('pom/laundry_info.html',
-                                    {'bldg_name': 'All Laundry Machines',
-                                     'machine_list' : machine_list,
-                                     'timestamp': timestamp})
-            response_json = json.dumps({'error': None,
-                                              'html': html})
-
-        elif filter_type == '4': #printers
-            printer_mapping, timestamp = cache.get('pom.printers')
-            printer_list = [printer for bldg_code,printers_bldg in printer_mapping.items() for printer in printers_bldg]
-            printer_list = sorted(printer_list, key=lambda printer: printer.loc)
-            html = render_to_string('pom/printer_info.html',
-                                    {'bldg_name': "All Printers",
-                                     'printers' : printer_list,
-                                     'timestamp': timestamp})
-            response_json = json.dumps({'error': None,
-                                              'html': html})
-        
         else:
-            return HttpResponseServerError("Bad filter type in GET request: %s" % filter_type)
+            return HttpResponseServerError("Bad filter type in GET request: %s" % layer)
 
     except Exception, e:
-        response_json = json.dumps({'error': str(e)})
+        return HttpResponseServerError("Uncaught exception: %s" % str(e))
         
+    rendered['rid'] = rid
+    response_json = json.dumps(rendered)
     return HttpResponse(response_json, content_type="application/javascript")
 
 
 
+
 ####
-#Helper functions for views above
+# For filtering data for a layer
 ####
 
-def filter_cal_events(request, bldg_code=None):
+def filter_events(request, bldg_code=None):
     events = []
     try:
         if bldg_code: #Filter by bldg
             events = cal_event_query.filter_by_bldg(events, bldg_code)
-            if not events: return events
-        if request.GET['search']: #Filter by search term
-            events = cal_event_query.filter_by_search(events, request.GET['search'])
             if not events: return events
         
         #Filter by time, must be last since it's hacky
@@ -286,11 +254,39 @@ def filter_cal_events(request, bldg_code=None):
     return events
      
 
-MENUS_ORDER = {'Breakfast':0, 'Brunch':1, 'Lunch':2, 'Dinner':3}
-def menus_sorter(name):
-    if name in MENUS_ORDER:
-        return MENUS_ORDER[name]
-    else:
-        return 4
 
+
+####
+# For building filtered data for a layer
+####
+
+def build_events_data(request, events_list=None):
+    if not events_list:
+       events_list = filter_events(request)
+    try:
+        start_date = datetime.datetime(int(request.GET['y0']), int(request.GET['m0']), int(request.GET['d0']))
+        start_index = 2*int(request.GET['h0']) + round(int(request.GET['i0'])/30)
+        end_index = 2*int(request.GET['h1']) + round(int(request.GET['i1'])/30)
+        n_days = int(request.GET['nDays'])
+    except Exception, e:
+        return HttpResponseServerError('Bad GET request: missing get params (%s)' % str(e))
+    
+    events_data = {}
+    mark_data = defaultdict(list)
+    for event in events_list:
+        e_start = event.event_date_time_start
+        delta = e_start - start_date
+        half_hrs_delta = int(delta.total_seconds()/1800) % 48
+        time_index = str(delta.days) + '-' + str(half_hrs_delta)
+        
+        events_data[event.event_id] = {
+            'bldgCode': event.event_location,
+            'tooltip': '<span class="tipsy-bold">%s-%s</span>: %s' % (
+                event.time_start_str,
+                event.time_end_str,
+                cgi.escape(event.event_cluster.cluster_title)),
+        }
+        mark_data[time_index].append(event.event_id)
+        
+    return {'eventsData': events_data, 'markData': mark_data}
 
