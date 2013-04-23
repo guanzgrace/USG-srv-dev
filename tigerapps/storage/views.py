@@ -50,7 +50,7 @@ def register(request):
         pass
     
     #Get the list of dropoffpickuptimes
-    dp_qset = DropoffPickupTime.objects.filter(year=2013)
+    dp_qset = DropoffPickupTime.objects.filter(year=2013).extra(order_by= ['slot_id'])
     tmp = [str(x).split(', ') for x in dp_qset]
     dp_times = [(str(x.id),
                  y[0],
