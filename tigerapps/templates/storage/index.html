@@ -1,9 +1,9 @@
 {% extends "storage/base.html" %}
 
 {% block content %}
-    <div style="width:560px;margin:0 auto 20px;">
+    <!--div style="width:560px;margin:0 auto 20px;">
         <iframe width="560" height="315" src="http://www.youtube.com/embed/89Nhqa4asUE" frameborder="0" allowfullscreen></iframe>
-    </div>
+    </div-->
 
     {% for post in posts.object_list %}
         {% ifnotequal forloop.counter0 0 %}<hr style="margin:36px 0;">{% endifnotequal %}
