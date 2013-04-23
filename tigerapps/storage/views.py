@@ -86,8 +86,8 @@ def register(request):
                     (0, 'Proxy name:', unpaid_order.proxy_name),
                     (0, 'Proxy email:', unpaid_order.proxy_email))
         pp_details = {
-            #'business': 'agencies@princeton.edu',
-            'business': 'it@princetonusg.com',
+            'business': 'agencies@princeton.edu',
+            #'business': 'it@princetonusg.com',
             'item_name': "USG summer storage boxes",
             'item_number': "box",
             'amount': reg_form.BOX_PRICE,
