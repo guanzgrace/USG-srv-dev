@@ -31,7 +31,9 @@ apache2.conf
 tigerapps/card/*.txt
 tigerapps/card/cronjobs/archive/
 tigerapps/media/
+tigerapps/facebook/Stdntdata.txt
 _autogen.html
+
 
 # Temp files #
 ##############
