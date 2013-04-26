@@ -59,9 +59,7 @@ class Subscription(models.Model):
  			body = r"""
 You've subscribed to %s via PrincetonPounce!  We'll send you an email if seats in the class open up.
  			""" % str(self.theclass)
- 			sender = "notifications@princetonpounce.com"
- 			message = EmailMessage(subject, body, sender, [self.address])
-  			message.send()
+  			emails.sendEmail(self.address, subject, body)
   			
   		elif self.type == TEXT:
 			account = "ACb6ccec5f910e1789a22033c47223a8e6"
@@ -80,14 +78,8 @@ You've subscribed to %s via PrincetonPounce!  We'll send you an email if seats i
 			<p>A spot has opened up in <a href="https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=%s&term=1134">%s</a>!</p>
 			<p><b>If the class fills up before you can make it to SCORE, you'll have to resubscribe for notifications <a href="http://princetonpounce.com/reactivate/%s">here</a>.<b></p>
 			""" % (str(self.theclass.course.number), str(self.theclass), str(self.pk))
-			sender = "notifications@princetonpounce.com"
-			message = EmailMessage(subject, body, sender, [self.address])
-			message.content_subtype = 'html'
-			try:
-				message.send()
-			except:
-				pass
-			
+  			emails.sendEmail(self.address, subject, body)
+
 		elif self.type == TEXT:
 			account = "ACb6ccec5f910e1789a22033c47223a8e6"
 			token = "07e6c98d7ec04ca28abec4c57e556af3"
