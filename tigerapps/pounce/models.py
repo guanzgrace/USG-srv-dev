@@ -4,6 +4,7 @@ from twilio.rest import TwilioRestClient
 import json
 import random
 import string
+import emails
 
 class Course(models.Model):
 	code = models.CharField(max_length=150)
