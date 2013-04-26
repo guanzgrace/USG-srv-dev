@@ -15,6 +15,7 @@ TERM = '1142' # CHANGE WITH THE SEMESTER
 
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
+	print "updating", str(course)
 		
  	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, TERM)
 	html = urllib2.urlopen(url).read()
@@ -71,7 +72,9 @@ def scrape():
 			courseNumber = fields[1].a['href'][28:34]
 			section = fields[4].get_text().strip()
 			enroll = int(fields[8].get_text().strip())
-			closed = fields[10].get_text().strip() == "Closed"
+			closed = fields[10].get_text().strip() == "Closed" # or Closed Closed? 
+			
+			print "scraping", courseNumber, section
 			
 			entry, created = Entry.objects.get_or_create(courseNumber=courseNumber, section=section)
  			if created or enroll != entry.totalEnroll or closed != entry.totalClosed:
