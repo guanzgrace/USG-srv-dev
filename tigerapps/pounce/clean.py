@@ -4,6 +4,8 @@ import settings
 from django.core.management import setup_environ
 setup_environ(settings)
 
+from pounce.models import Entry
+
 entries = Entry.objects.all()
 past = []
 for entry in entries:
