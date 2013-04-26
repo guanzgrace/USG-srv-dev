@@ -41,7 +41,7 @@ def updateCourse(course):
 			isClosed = fields[6].get_text().strip() == "Closed"
 			if not isClosed:
 				freeSpots = theclass.max - theclass.enroll
-# 				twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
+ 				twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
 				log.log("Class %s is now open!" % str(classNumber))
 				for subscription in Subscription.objects.filter(theclass=theclass, active=True):
 					log.log("Sending subscription %s." % str(subscription))

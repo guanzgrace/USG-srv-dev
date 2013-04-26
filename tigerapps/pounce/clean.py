@@ -6,10 +6,16 @@ setup_environ(settings)
 
 from pounce.models import Entry
 
+def contains(list, entry):
+	for e in list:
+		if entry.courseNumber == e.courseNumber and entry.section == e.section:
+			return True
+	return False
+
 entries = Entry.objects.all()
 past = []
 for entry in entries:
-	if entry in past:
+	if contains(past, entry):
 		print "Deleting", entry.courseNumber, entry.section
 		entry.delete()
 	else:
