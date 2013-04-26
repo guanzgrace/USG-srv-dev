@@ -36,7 +36,6 @@ def subscribe(request):
 			subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
 			subscription.save()
 			subscription.sendConfirmation()
-
 		return "+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
 		log.log("subscribe ERROR")
