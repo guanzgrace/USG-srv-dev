@@ -11,7 +11,7 @@ import urllib2
 from bs4 import BeautifulSoup
 
 
-TERM = '1132' # CHANGE WITH THE SEMESTER
+TERM = '1142' # CHANGE WITH THE SEMESTER
 
 def updateCourse(course):
 	log.log("Updating %s" % str(course))

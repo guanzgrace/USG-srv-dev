@@ -20,4 +20,4 @@ for course in Course.objects.all():
 for entry in Entry.objects.all():
 	entry.delete()
 	
-CourseList.objects.all()[0].delete()
+CoursesList.objects.all()[0].delete()
