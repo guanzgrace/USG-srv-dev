@@ -40,6 +40,7 @@ def subscribe(request):
 		return HttpResponse("+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
 		log.log("subscribe ERROR")
+		return HttpResponse(traceback.format_exc())
 		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>." % str(theclass))
 		
 def reactivate(request, id):

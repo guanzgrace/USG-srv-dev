@@ -9,7 +9,7 @@ import pounce.log as log
 from django.core.mail import EmailMessage
 import urllib2
 from bs4 import BeautifulSoup
-
+import twitter
 
 TERM = '1142' # CHANGE WITH THE SEMESTER
 
@@ -40,6 +40,8 @@ def updateCourse(course):
 			
 			isClosed = fields[6].get_text().strip() == "Closed"
 			if not isClosed:
+				freeSpots = theclass.max - theclass.enroll
+				twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
 				log.log("Class %s is now open!" % str(classNumber))
 				for subscription in Subscription.objects.filter(theclass=theclass, active=True):
 					log.log("Sending subscription %s." % str(subscription))
@@ -54,7 +56,6 @@ def updateCourse(course):
 def scrape():	
 	# Gets the main page of all classes
 	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term={}".format(TERM)
-# 	url = 'http://princetonpounce.com/static/course_offerings_test.html'
 
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
