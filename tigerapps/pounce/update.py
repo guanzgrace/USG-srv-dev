@@ -11,8 +11,8 @@ from bs4 import BeautifulSoup
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
 		
- 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term=1134".format(course.number)
-# 	url = "http://princetonpounce.com/course-offerings/course_details.xml?courseid={}&term=1134".format(course.number)
+	term = '1132' # CHANGE WITH THE SEMESTER
+ 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, term)
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
 	

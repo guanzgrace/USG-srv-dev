@@ -5,18 +5,22 @@ import log
 import json
 import urllib2
 import traceback
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
  	return render(request, 'pounce/index.html')
 	
+@login_required
 def courses(request):
 	coursesJson = CoursesList.objects.all()[0].json
 	return HttpResponse(coursesJson)
 	
+@login_required
 def subscribeEmail(request):
 	try:
 		classNumber = request.GET['classNumber']
-		email = request.GET['netid'] + "@princeton.edu"
+		email = request.user.username + "@princeton.edu"
 		log.log("subscribeEmail %s %s" % (classNumber, email))
 		theclass = Class.objects.get(number=classNumber)
 		subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
@@ -25,8 +29,9 @@ def subscribeEmail(request):
 		return HttpResponse("+<b>Success!</b> You will soon receive an email verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
 		log.log("subscribeEmail ERROR")
-		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:princetonpounce@gmail.com'>contact the developers</a>." % str(theclass))
+		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>." % str(theclass))
 		
+@login_required
 def subscribeText(request):
 	try:
 		classNumber = request.GET['classNumber']
@@ -40,7 +45,7 @@ def subscribeText(request):
 	except:
 		return HttpResponse(traceback.format_exc())
 		log.log("subscribeEmail ERROR")
-		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:princetonpounce@gmail.com'>contact the developers</a>." % str(theclass))
+		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>." % str(theclass))
 
 def reactivate(request, id):
 	subscription = Subscription.objects.get(pk=id)
