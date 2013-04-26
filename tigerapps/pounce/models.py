@@ -59,7 +59,7 @@ class Subscription(models.Model):
  			body = r"""
 You've subscribed to %s via PrincetonPounce!  We'll send you an email if seats in the class open up.
  			""" % str(self.theclass)
-  			emails.sendMmail(self.address, subject, body)
+  			emails.sendMail(self.address, subject, body)
   			
   		elif self.type == TEXT:
 			account = "ACb6ccec5f910e1789a22033c47223a8e6"
