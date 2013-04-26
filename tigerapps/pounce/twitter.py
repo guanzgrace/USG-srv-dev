@@ -1,3 +1,5 @@
+import tweepy
+
 # TODO: fix this!  It's insecure.
 
 consumerKey = "fMqSK9WSlqb0dpDiuijSg"
