@@ -18,7 +18,7 @@ def courses(request):
 	
 @login_required
 def subscribe(request):
-	classNumber = request.GET['classNumber']
+	classNumber = request.REQUEST['classNumber']
 	theclass = Class.objects.get(number=classNumber)
 	try:
 		# Subscribe email
@@ -29,8 +29,8 @@ def subscribe(request):
 		subscription.sendConfirmation()
 		
 		# Subscribe text, if appropriate
-		if 'phoneNumber' in request.GET:
-			phoneNumber = request.GET['phoneNumber']
+		if 'phoneNumber' in request.REQUEST:
+			phoneNumber = request.REQUEST['phoneNumber']
 			log.log("subscribeText %s %s" % (classNumber, phoneNumber))
 			theclass = Class.objects.get(number=classNumber)
 			subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
