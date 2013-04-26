@@ -20,7 +20,7 @@ from django.core.mail import send_mail
 from django.dispatch import receiver
 
 def home(request):
-    postList = Post.objects.all().order_by('posted').reverse()
+    postList = Post.objects.filter(visible=True).order_by('posted').reverse()
     paginator = Paginator(postList, 3)
     # Make sure page request is an int. If not, deliver first page.
     try:
@@ -40,17 +40,17 @@ def home(request):
 @login_required
 def register(request):
     #XXX: close registration
-    return HttpResponseRedirect('/register/closed/')
+    #return HttpResponseRedirect('/register/closed/')
 
     #Make sure user didn't already register
     try:    
-        status = Order.objects.get(user=request.user)
+        status = Order.objects.filter(user=request.user, year=2013)[0]
         return HttpResponseRedirect('/order/')
     except:
         pass
     
     #Get the list of dropoffpickuptimes
-    dp_qset = DropoffPickupTime.objects.all()
+    dp_qset = DropoffPickupTime.objects.filter(year=2013).extra(order_by= ['slot_id'])
     tmp = [str(x).split(', ') for x in dp_qset]
     dp_times = [(str(x.id),
                  y[0],
@@ -95,6 +95,7 @@ def register(request):
             
             'invoice': unpaid_order.invoice_id,
             'notify_url': settings.SITE_DOMAIN+'/paypal/ipntesturl123/',
+            'test_ipn':1,
             'return_url': settings.SITE_DOMAIN+'/register/complete/',
             'cancel_return': settings.SITE_DOMAIN+'/register/',
         }
@@ -163,8 +164,8 @@ import random, cgi, re
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_emails(request, form_contents=None, errors=None, success_msg=None):
-    order_emails = Order.emails.all()
-    unpaid_order_emails = UnpaidOrder.emails.all()
+    order_emails = Order.emails.filter(year=2013)
+    unpaid_order_emails = UnpaidOrder.emails.filter(year=2013)
     send_email_key = gen_random_word(8)
     return render_to_response('storage/emails.html',
                               {'u_orders': unpaid_order_emails,
@@ -197,9 +198,9 @@ def admin_send_emails(request):
         return admin_emails(request, form_contents, errors)
 
     if order_type == 'paid':
-        receivers = Order.emails.all()
+        receivers = Order.emails.filter(year=2013)
     elif order_type == 'unpaid':
-        receivers = UnpaidOrder.emails.all()
+        receivers = UnpaidOrder.emails.filter(year=2013)
     receivers = list(receivers)
     receivers.append(sender)
 
@@ -219,19 +220,19 @@ def gen_random_word(wordLen):
 
 def my_ipn(request):
     try:
-        send_mail('my_ipn', 'in my_ipn', 'from@example.com', ['mfrankli@princeton.edu'], fail_silently=False)
+        send_mail('my_ipn', 'in my_ipn', 'from@example.com', ['asuczews@princeton.edu'], fail_silently=False)
         toReturn = ipn.views.ipn(request)
         payment_was_successful.connect(confirm_payment)
         return toReturn
     except Exception as e:
-        send_mail('my_ipn', str(e), 'from@example.com', ['mfrankli@princeton.edu'], fail_silently=False)
+        send_mail('my_ipn', str(e), 'from@example.com', ['asuczews@princeton.edu'], fail_silently=False)
         return HttpResponse('OKAY')
 
 def confirm_payment(sender, **kwargs):
     # make Order, put in db
     # look for invoice_id
     try:
-        send_mail('confirm_payment', str(sender), 'from@example.com', ['mfrankli@princeton.edu'], fail_silently=False)
+        send_mail('confirm_payment', str(sender), 'from@example.com', ['asuczews@princeton.edu'], fail_silently=False)
         unpaid_order = UnpaidOrder.objects.get(invoice_id=sender.invoice)
         dropoff_pickup_time = unpaid_order.dropoff_pickup_time
         dropoff_pickup_time.n_boxes_bought += unpaid_order.n_boxes_bought
@@ -246,12 +247,12 @@ def confirm_payment(sender, **kwargs):
                       signature=unpaid_order.signature)
         order.save()        
     except Exception as e:
-        send_mail('confirm_payment', 'something went wrong sending: ' + str(e), 'from@example.com', ['mfrankli@princeton.edu'], fail_silently=False)
+        send_mail('confirm_payment', 'something went wrong sending: ' + str(e), 'from@example.com', ['asuczews@princeton.edu'], fail_silently=False)
 
 payment_was_successful.connect(confirm_payment)
 
 def handle_flagged(sender, **kwargs):
     send_mail('Subject here', 'Here is the message. (Flagged!)', 'from@example.com',
-              ['mfrankli@princeton.edu'], fail_silently=False)
+              ['asuczews@princeton.edu'], fail_silently=False)
 
 payment_was_flagged.connect(handle_flagged)
