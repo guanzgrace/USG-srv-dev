@@ -18,23 +18,24 @@ def courses(request):
 	
 @login_required
 def subscribe(request):
+	classNumber = request.GET['classNumber']
+	theclass = Class.objects.get(number=classNumber)
 	try:
-		classNumber = request.GET['classNumber']
-		
 		# Subscribe email
 		email = request.user.username + "@princeton.edu"
 		log.log("subscribeEmail %s %s" % (classNumber, email))
-		theclass = Class.objects.get(number=classNumber)
 		subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
 		subscription.save()
 		subscription.sendConfirmation()
 		
 		# Subscribe text, if appropriate
-		log.log("subscribeText %s %s" % (classNumber, phoneNumber))
-		theclass = Class.objects.get(number=classNumber)
-		subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
-		subscription.save()
-		subscription.sendConfirmation()
+		if 'phoneNumber' in request.GET:
+			phoneNumber = request.GET['phoneNumber']
+			log.log("subscribeText %s %s" % (classNumber, phoneNumber))
+			theclass = Class.objects.get(number=classNumber)
+			subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
+			subscription.save()
+			subscription.sendConfirmation()
 
 		return HttpResponse("+<b>Success!</b> You will soon receive an email verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
