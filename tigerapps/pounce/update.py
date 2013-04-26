@@ -1,6 +1,9 @@
-import princetonpounce.settings
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = '/srv/tigerapps/settings.py'
+
+from django.conf import settings
 from django.core.management import setup_environ
-setup_environ(princetonpounce.settings)
+setup_environ(settings)
 
 from pounce.models import Course, Class, Subscription, Entry, CoursesList
 import pounce.log as log

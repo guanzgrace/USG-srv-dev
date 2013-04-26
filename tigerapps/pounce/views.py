@@ -37,7 +37,7 @@ def subscribe(request):
 			subscription.save()
 			subscription.sendConfirmation()
 
-		return HttpResponse("+<b>Success!</b> You will soon receive an email verifying your subscription for <strong>%s</strong>." % str(theclass))
+		return HttpResponse("+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
 		log.log("subscribe ERROR")
 		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>." % str(theclass))
