@@ -1,7 +1,6 @@
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = '/srv/tigerapps/settings.py'
-
-from django.conf import settings
+import sys,os
+sys.path.insert(0,os.path.abspath("/srv/tigerapps"))
+import settings
 from django.core.management import setup_environ
 setup_environ(settings)
 
@@ -11,11 +10,13 @@ from django.core.mail import EmailMessage
 import urllib2
 from bs4 import BeautifulSoup
 
+
+TERM = '1132' # CHANGE WITH THE SEMESTER
+
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
 		
-	term = '1132' # CHANGE WITH THE SEMESTER
- 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, term)
+ 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, TERM)
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
 	
@@ -52,7 +53,7 @@ def updateCourse(course):
 				
 def scrape():	
 	# Gets the main page of all classes
-	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term=1134"
+	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term={}".format(TERM)
 # 	url = 'http://princetonpounce.com/static/course_offerings_test.html'
 
 	html = urllib2.urlopen(url).read()
