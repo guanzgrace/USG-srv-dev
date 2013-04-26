@@ -26,7 +26,7 @@ def subscribe(request):
 		log.log("subscribeEmail %s %s" % (classNumber, email))
 		subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
 		subscription.save()
-		a = subscription.sendConfirmation()
+		subscription.sendConfirmation()
 		
 		# Subscribe text, if appropriate
 		if 'phoneNumber' in request.REQUEST:
@@ -37,7 +37,7 @@ def subscribe(request):
 			subscription.save()
 			subscription.sendConfirmation()
 
-		return HttpResponse(a)#"+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
+		return "+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
 	except:
 		log.log("subscribe ERROR")
 		return HttpResponse(traceback.format_exc())
