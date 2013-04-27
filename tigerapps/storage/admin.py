@@ -3,10 +3,10 @@ from django.contrib import admin
 
 class PostAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['title', 'content', 'visible']})
+        (None, {'fields': ['title', 'content', 'visible','posted']})
     ]
-    list_display = ('title',)
-    search_fields = ['title', 'content']
+    list_display = ('title','posted')
+    search_fields = ['title', 'content','posted']
 
 class TimeAdmin(admin.ModelAdmin):
     list_display = ('slot_id', 'n_boxes_total', 'n_boxes_bought',
