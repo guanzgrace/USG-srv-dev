@@ -1,18 +1,22 @@
-import princetonpounce.settings
+import sys,os
+sys.path.insert(0,os.path.abspath("/srv/tigerapps"))
+import settings
 from django.core.management import setup_environ
-setup_environ(princetonpounce.settings)
+setup_environ(settings)
 
 from pounce.models import Course, Class, Subscription, Entry, CoursesList
 import pounce.log as log
 from django.core.mail import EmailMessage
 import urllib2
 from bs4 import BeautifulSoup
+import twitter
+
+TERM = '1142' # CHANGE WITH THE SEMESTER
 
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
-		
- 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term=1134".format(course.number)
-# 	url = "http://princetonpounce.com/course-offerings/course_details.xml?courseid={}&term=1134".format(course.number)
+			
+ 	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, TERM)
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
 	
@@ -36,6 +40,8 @@ def updateCourse(course):
 			
 			isClosed = fields[6].get_text().strip() == "Closed"
 			if not isClosed:
+				freeSpots = theclass.max - theclass.enroll
+ 				twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
 				log.log("Class %s is now open!" % str(classNumber))
 				for subscription in Subscription.objects.filter(theclass=theclass, active=True):
 					log.log("Sending subscription %s." % str(subscription))
@@ -49,8 +55,7 @@ def updateCourse(course):
 				
 def scrape():	
 	# Gets the main page of all classes
-	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term=1134"
-# 	url = 'http://princetonpounce.com/static/course_offerings_test.html'
+	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term={}".format(TERM)
 
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
@@ -66,8 +71,8 @@ def scrape():
 			courseNumber = fields[1].a['href'][28:34]
 			section = fields[4].get_text().strip()
 			enroll = int(fields[8].get_text().strip())
-			closed = fields[10].get_text().strip() == "Closed"
-			
+			closed = fields[10].get_text().strip() == "Closed" # or Closed Closed? 
+						
 			entry, created = Entry.objects.get_or_create(courseNumber=courseNumber, section=section)
  			if created or enroll != entry.totalEnroll or closed != entry.totalClosed:
 				entry.totalEnroll = enroll

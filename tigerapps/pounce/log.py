@@ -1,7 +1,7 @@
 from datetime import datetime
 
 def log(line):
-	filename = '/home/jmcohen/webapps/princetonpounce/log.txt'
+	filename = '/srv/tigerapps/logs/pounce_logs/log.txt'
 	file = open(filename, 'a')
 	time = str(datetime.now())
 	message = time + ':  ' + line + '\n'
