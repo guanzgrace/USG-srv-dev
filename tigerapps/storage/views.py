@@ -125,7 +125,7 @@ def register_complete(request):
 @login_required
 def order(request):
     try:
-        order = Order.objects.get(user=request.user)
+        order = Order.objects.filter(user=request.user, year=2013)[0]
     except:
         return render_to_response('storage/order.html',
                                   {},
