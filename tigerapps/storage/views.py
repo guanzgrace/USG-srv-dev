@@ -40,7 +40,7 @@ def home(request):
 @login_required
 def register(request):
     #XXX: close registration
-    #return HttpResponseRedirect('/register/closed/')
+    return HttpResponseRedirect('/register/closed/')
 
     #Make sure user didn't already register
     try:    
