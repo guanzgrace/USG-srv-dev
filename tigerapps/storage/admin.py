@@ -26,10 +26,10 @@ class OrderAdmin(admin.ModelAdmin):
     fieldsets = [(None, {'fields': ['user', 'cell_number', 'dropoff_pickup_time',
                                     'proxy_name', 'proxy_email',
                                     'n_boxes_bought', 'invoice_id', 'signature',
-                                    'bool_picked_empty', 'n_boxes_dropped', 'n_boxes_picked', 'year', 'timestamp']})]
+                                    'bool_picked_empty', 'n_boxes_dropped', 'n_boxes_picked', 'year']})]
     list_display = ('user', 'cell_number', 'n_boxes_bought',
                     'proxy_name', 'proxy_email', 'dropoff_pickup_time',
-                    'bool_picked_empty', 'n_boxes_dropped', 'n_boxes_picked', 'timestamp')
+                    'bool_picked_empty', 'n_boxes_dropped', 'n_boxes_picked')
     search_fields = ['user__username', 'proxy_name', 'proxy_email', 'dropoff_pickup_time', 'year']
     
 
