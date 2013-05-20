@@ -1,60 +1,80 @@
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render
-import log
-import json
+from django.http import HttpResponse
+from django.shortcuts import render_to_response, redirect
+from django.db.models import Q
+from swap.models import *
+from django.core.mail import send_mail
 import urllib2
-import traceback
-from django.contrib.auth.decorators import login_required
+import json
+from process import process
 
-@login_required
 def index(request):
- 	return render(request, 'pounce/index.html')
-	
-@login_required
-def courses(request):
-	# coursesJson = CoursesList.objects.all()[0].json
-	# return HttpResponse(coursesJson)
-	return HttpResponse("")
-	
-@login_required
-def subscribe(request):
-	# classNumber = request.REQUEST['classNumber']
-	# theclass = Class.objects.get(number=classNumber)
-	# try:
-	# 	# Subscribe email
-	# 	email = request.user.username + "@princeton.edu"
-	# 	log.log("subscribeEmail %s %s" % (classNumber, email))
-	# 	subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
-	# 	subscription.save()
-	# 	subscription.sendConfirmation()
-		
-	# 	# Subscribe text, if appropriate
-	# 	if 'phoneNumber' in request.REQUEST:
-	# 		phoneNumber = request.REQUEST['phoneNumber']
-	# 		log.log("subscribeText %s %s" % (classNumber, phoneNumber))
-	# 		theclass = Class.objects.get(number=classNumber)
-	# 		subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
-	# 		subscription.save()
-	# 		subscription.sendConfirmation()
-	# 	return HttpResponse("+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
-	# except:
-	# 	log.log("subscribe ERROR")
-	# 	return HttpResponse(traceback.format_exc())
-	return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong></strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>.")
-		
-def reactivate(request, id):
-	subscription = Subscription.objects.get(pk=id)
-	subscription.active = True
-	subscription.save()
-	return HttpResponse("You are re-subscribed.")
-	
+	return render_to_response("index.html")
 
-# 
-# def coursedetails(request):
-# 	courseid = request.GET['courseid']
-# 	html = urllib2.urlopen('https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=%s&term=1134' % courseid).read()
-# 	if courseid == '002071':
-# 		return HttpResponse(html.replace('Closed', ''))
-# 	else:
-# 		return HttpResponse(html)
-# 	
+def mustOverwrite(request):
+	netid = request.GET['user']
+	haveSectionNumber = request.GET['have']
+
+	user, userCreated = User.objects.get_or_create(netid=netid)
+	haveSection = Section.objects.get(number=haveSectionNumber)
+
+	if SwapRequest.objects.filter(user=user, have=haveSection).count():
+		return HttpResponse("true")
+	return HttpResponse("false")
+
+def swapRequest(request):
+	netid = request.GET['user']
+	haveSectionNumber = request.GET['have']
+	wantSectionNumbers = request.GET['want'].split(',')
+	
+	user, userCreated = User.objects.get_or_create(netid=netid)
+	user.save()
+	haveSection = Section.objects.get(number=haveSectionNumber)
+
+	if SwapRequest.objects.filter(user=user, have=haveSection).count():
+		SwapRequest.objects.filter(user=user, have=haveSection).delete()
+
+	for wantSectionNumber in wantSectionNumbers:
+		wantSection = Section.objects.get(number=wantSectionNumber)
+		swap, swapCreated = SwapRequest.objects.get_or_create(user=user, have=haveSection, want=wantSection)
+		swap.save()
+		results = process(swap)
+		if results:
+			return render_to_response("results.html", {'results' : results})
+	return render_to_response("wait.html")
+
+def confirmOverwrite(request):
+	netid = request.GET['user']
+	haveSectionNumber = request.GET['have']
+	wantSectionNumbers = request.GET['want'].split(',')
+	return render_to_response("overwrite.html")
+
+def manage(request):
+	swaps = SwapRequest.objects.all()
+	return render_to_response("manage.html", {'swaps' : swaps})
+
+def remove(request, pk):
+	swap = SwapRequest.objects.get(pk = pk)
+	swap.delete()
+	return redirect('/manage')
+
+def courses(request):
+# 	courseDicts = []
+# 	for course in Course.objects.all().order_by('code'):
+# 		sectionDicts = []
+# 		sections = Section.objects.filter(course=course).filter(Q(name__startswith="P") | Q(name__startswith="B") | Q(name__startswith="C")).filter(isClosed=True).order_by('name')
+# 		
+# 		if len(sections) < 2:
+# 			continue
+# 		if len(sections.filter(name__startswith='C')) < 2 and len(sections.filter(name__startswith='P')) < 2 and len(sections.filter(name__startswith='B')) < 2:
+# 			continue
+# 		
+# 		for section in sections:
+# 			name = section.name + " (" + section.days + " " + section.time + ")"
+# 			sectionDict = {'number' : section.number, 'name' : name}
+# 			sectionDicts.append(sectionDict)
+# 		code = course.code.split('/')[0].strip() # for demo purposes, keep only the first code synonym
+# 		courseDict = {'code' : code, 'number' : course.number, 'sections' : sectionDicts}
+# 		courseDicts.append(courseDict)
+# 	coursesJson = json.dumps(courseDicts)
+# 	return HttpResponse(coursesJson)
+ 	return render_to_response("courses.json")

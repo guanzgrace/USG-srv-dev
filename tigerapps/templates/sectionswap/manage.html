@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<div style="width: 150px; margin-left: auto; margin-right: auto;">
+
+		<a href="/">Back</a>
+		<h6>Your swaps</h6>
+		<ul>
+		{% for swap in swaps %}
+			<li>{{swap.user}}: {{swap.have}} -> {{swap.want}} <a href="/remove/{{swap.pk}}">[x]</a></li>
+		{% endfor %}
+		</ul>
+	</div>
+
+{% endblock %}

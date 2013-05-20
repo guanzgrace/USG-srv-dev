@@ -1,0 +1,35 @@
+body {
+    font-family: Helvetica;
+    background-color: #424242;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+#container {
+    width: 650px; 
+    border-radius: 20px;
+    height: auto;
+    background-color: white;
+    opacity: 0.9;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    border: black 0px solid;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 1);
+    -webkit-box-shadow: 0 0 10px rgba(255, 255, 255, 1); 
+    -moz-box-shadow: 0 0 10px rgba(255, 255, 255, 1); 
+}
+
+#logo {
+    margin-left: 125px;
+    margin-right: 125px;
+    margin-top: 15px;
+    width: 400px;
+}
+
+#randbg {
+    position: fixed;
+    top: 0px;
+    z-index: -1;
+    display: none;
+}

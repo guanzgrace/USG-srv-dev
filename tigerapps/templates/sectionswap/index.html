@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+	{% block javascript %}
+		<link href="static/select2/select2.css" rel="stylesheet"/>
+		<script src="static/select2/select2.js"></script>
+	{% endblock %}
+	{% block style %}
+		<style type="text/css">
+
+			#options-div {
+				width: 600px;
+				margin-left: auto;
+				margin-right: auto;
+				clear: left;
+			}
+
+			#submit-div {
+				width: 100px;
+				margin-left: auto;
+				margin-right: auto;
+				padding-bottom: 20px;
+				padding-top: 20px;
+				clear: left;
+			}
+		
+		</style>
+	{% endblock %}
+	{% block content %}
+			<div style="width: 150px; margin-left: auto; margin-right: auto;">
+				<select style="width: 100%;" id="section-select">
+					<option>Choose a course:</option>
+				</select>
+			</div>
+			<div id="options-div">
+				<div id="have-div" style="float: left; margin-right: 10px;">
+					<h4 id="have-label" class="hide">I have...</h4>
+					<div id="have-options">
+					</div>
+				</div>
+				<div id="want-div" style="float: right; margin-left: 10px;">
+					<h4 id="want-label" class="hide">I want...</h4>
+					<div id="want-options">
+					</div>
+				</div>
+			</div>
+			<div id="submit-div">
+				<button id="submit" class="btn btn-primary btn-success hide">Submit</button>
+			</div>
+		</div>
+
+	<!-- Overwrite confirm modal -->
+	<div id="confirm-overwrite-modal" class="modal hide fade" tabindex="-1" role="dialog">
+		<div class="modal-header">
+			<h3>Overwrite your swap?</h3>
+		</div>
+		<div class="modal-body">
+			<form class="form">
+				<p>You've already signed up for swap(s) for this course.  Do you want to overwrite them?</p>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn" data-dismiss="modal">No</a>
+			<a id="confirm-overwrite-button" class="btn btn-warning">Yes</a>
+		</div>
+	</div>
+
+		<script src="static/sectionswap.js"></script>	
+	{% endblock %}
