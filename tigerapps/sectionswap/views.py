@@ -13,40 +13,41 @@ def index(request):
 	
 @login_required
 def courses(request):
-	coursesJson = CoursesList.objects.all()[0].json
-	return HttpResponse(coursesJson)
+	# coursesJson = CoursesList.objects.all()[0].json
+	# return HttpResponse(coursesJson)
+	return HttpResponse("")
 	
 @login_required
 def subscribe(request):
-	classNumber = request.REQUEST['classNumber']
-	theclass = Class.objects.get(number=classNumber)
-	try:
-		# Subscribe email
-		email = request.user.username + "@princeton.edu"
-		log.log("subscribeEmail %s %s" % (classNumber, email))
-		subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
-		subscription.save()
-		subscription.sendConfirmation()
+	# classNumber = request.REQUEST['classNumber']
+	# theclass = Class.objects.get(number=classNumber)
+	# try:
+	# 	# Subscribe email
+	# 	email = request.user.username + "@princeton.edu"
+	# 	log.log("subscribeEmail %s %s" % (classNumber, email))
+	# 	subscription = Subscription(address = email, theclass = theclass, type = "EMAIL")
+	# 	subscription.save()
+	# 	subscription.sendConfirmation()
 		
-		# Subscribe text, if appropriate
-		if 'phoneNumber' in request.REQUEST:
-			phoneNumber = request.REQUEST['phoneNumber']
-			log.log("subscribeText %s %s" % (classNumber, phoneNumber))
-			theclass = Class.objects.get(number=classNumber)
-			subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
-			subscription.save()
-			subscription.sendConfirmation()
-		return HttpResponse("+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
-	except:
-		log.log("subscribe ERROR")
-		return HttpResponse(traceback.format_exc())
-		return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong>%s</strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>." % str(theclass))
+	# 	# Subscribe text, if appropriate
+	# 	if 'phoneNumber' in request.REQUEST:
+	# 		phoneNumber = request.REQUEST['phoneNumber']
+	# 		log.log("subscribeText %s %s" % (classNumber, phoneNumber))
+	# 		theclass = Class.objects.get(number=classNumber)
+	# 		subscription = Subscription(address = phoneNumber, theclass = theclass, type = "TEXT")
+	# 		subscription.save()
+	# 		subscription.sendConfirmation()
+	# 	return HttpResponse("+<b>Success!</b> You will soon receive an email and/or text verifying your subscription for <strong>%s</strong>." % str(theclass))
+	# except:
+	# 	log.log("subscribe ERROR")
+	# 	return HttpResponse(traceback.format_exc())
+	return HttpResponse("-<b>Something went wrong.</b> You are not subscribed for <strong></strong>. If this problem persists, please <a href='mailto:jmcohen@princeton.edu'>contact the developers</a>.")
 		
 def reactivate(request, id):
 	subscription = Subscription.objects.get(pk=id)
 	subscription.active = True
 	subscription.save()
-	return HttpResponse("You are re-subscribed for %s." % str(subscription.theclass))
+	return HttpResponse("You are re-subscribed.")
 	
 
 # 
