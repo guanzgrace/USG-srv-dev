@@ -13,6 +13,23 @@ import twitter
 
 TERM = '1142' # CHANGE WITH THE SEMESTER
 
+# Check for duplicates.  For some reason, this is necessary.
+def clean():
+	def contains(list, entry):
+	for e in list:
+		if entry.courseNumber == e.courseNumber and entry.section == e.section:
+			return True
+	return False
+
+	entries = Entry.objects.all()
+	past = []
+	for entry in entries:
+		if contains(past, entry):
+			print "Deleting", entry.courseNumber, entry.section
+			entry.delete()
+		else:
+			past.append(entry)
+
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
 			
@@ -57,6 +74,8 @@ def updateCourse(course):
 			theclass.save()
 				
 def scrape():	
+	clean()
+
 	# Gets the main page of all classes
 	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term={}".format(TERM)
 
