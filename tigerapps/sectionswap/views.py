@@ -77,4 +77,4 @@ def courses(request):
 # 		courseDicts.append(courseDict)
 # 	coursesJson = json.dumps(courseDicts)
 # 	return HttpResponse(coursesJson)
- 	return render_to_response("static/sectionswap/courses.json")
+ 	return render_to_response("sectionswap/courses.json")
