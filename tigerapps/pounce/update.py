@@ -16,10 +16,10 @@ TERM = '1142' # CHANGE WITH THE SEMESTER
 # Check for duplicates.  For some reason, this is necessary.
 def clean():
 	def contains(list, entry):
-	for e in list:
-		if entry.courseNumber == e.courseNumber and entry.section == e.section:
-			return True
-	return False
+		for e in list:
+			if entry.courseNumber == e.courseNumber and entry.section == e.section:
+				return True
+		return False
 
 	entries = Entry.objects.all()
 	past = []
