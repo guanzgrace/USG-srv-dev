@@ -5,15 +5,15 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'^$', 'swap.views.index'),
-	url(r'^courses$', 'swap.views.courses'),
-	url(r'^swaprequest$', 'swap.views.swapRequest'),
-    url(r'^manage$', 'swap.views.manage'),
-    url(r'^mustOverwrite$', 'swap.views.mustOverwrite'),
-    url(r'^remove/(\d+)$', 'swap.views.remove'),
+	url(r'^$', 'views.index'),
+	url(r'^courses$', 'views.courses'),
+	url(r'^swaprequest$', 'views.swapRequest'),
+    url(r'^manage$', 'views.manage'),
+    url(r'^mustOverwrite$', 'views.mustOverwrite'),
+    url(r'^remove/(\d+)$', 'views.remove'),
 
     # Examples:
-    # url(r'^$', 'sectionswap.views.home', name='home'),
+    # url(r'^$', 'sectionviews.home', name='home'),
     # url(r'^sectionswap/', include('sectionswap.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
