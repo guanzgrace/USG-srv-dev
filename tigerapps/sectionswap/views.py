@@ -8,7 +8,7 @@ import json
 from process import process
 
 def index(request):
-	return render_to_response("index.html")
+	return render_to_response("sectionswap/index.html")
 
 def mustOverwrite(request):
 	netid = request.GET['user']
@@ -40,17 +40,17 @@ def swapRequest(request):
 		results = process(swap)
 		if results:
 			return render_to_response("results.html", {'results' : results})
-	return render_to_response("wait.html")
+	return render_to_response("sectionswap/wait.html")
 
 def confirmOverwrite(request):
 	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
 	wantSectionNumbers = request.GET['want'].split(',')
-	return render_to_response("overwrite.html")
+	return render_to_response("sectionswap/overwrite.html")
 
 def manage(request):
 	swaps = SwapRequest.objects.all()
-	return render_to_response("manage.html", {'swaps' : swaps})
+	return render_to_response("sectionswap/manage.html", {'swaps' : swaps})
 
 def remove(request, pk):
 	swap = SwapRequest.objects.get(pk = pk)
@@ -77,4 +77,4 @@ def courses(request):
 # 		courseDicts.append(courseDict)
 # 	coursesJson = json.dumps(courseDicts)
 # 	return HttpResponse(coursesJson)
- 	return render_to_response("courses.json")
+ 	return render_to_response("sectionswap/courses.json")
