@@ -1,4 +1,4 @@
-from swap.models import SwapRequest
+from models import SwapRequest
 from django.core.mail import EmailMessage
 
 # Don't let a user submit identical have/want request

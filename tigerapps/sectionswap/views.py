@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.db.models import Q
-from swap.models import *
+from models import *
 from django.core.mail import send_mail
 import urllib2
 import json
