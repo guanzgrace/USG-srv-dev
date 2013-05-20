@@ -43,6 +43,8 @@ def updateCourse(course):
 				freeSpots = theclass.max - theclass.enroll
 				try:
  					twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
+ 				except Exception:
+ 					pass
 				log.log("Class %s is now open!" % str(classNumber))
 				for subscription in Subscription.objects.filter(theclass=theclass, active=True):
 					log.log("Sending subscription %s." % str(subscription))
@@ -86,6 +88,8 @@ def scrape():
 					course.title = fields[2].text.strip()
 					course.save()
 	 				updateCourse(course)
+	 		except Exception:
+	 			pass
  	
  	list = CoursesList.objects.all()[0]
  	list.cache()
