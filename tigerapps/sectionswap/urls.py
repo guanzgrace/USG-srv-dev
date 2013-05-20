@@ -1,17 +1,16 @@
 from django.conf.urls.defaults import *
-import views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'^$', 'views.index'),
-	url(r'^courses$', 'views.courses'),
+	url(r'^$', 'sectionswap.views.index'),
+	url(r'^courses$', 'sectionswap.views.courses'),
 	url(r'^swaprequest$', 'views.swapRequest'),
-    url(r'^manage$', 'views.manage'),
-    url(r'^mustOverwrite$', 'views.mustOverwrite'),
-    url(r'^remove/(\d+)$', 'views.remove'),
+    url(r'^manage$', 'sectionswap.views.manage'),
+    url(r'^mustOverwrite$', 'sectionswapviews.mustOverwrite'),
+    url(r'^remove/(\d+)$', 'sectionswap.views.remove'),
 
     # Examples:
     # url(r'^$', 'sectionviews.home', name='home'),
