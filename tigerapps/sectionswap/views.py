@@ -1,6 +1,5 @@
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
-from models import Course, Class, Subscription, CoursesList
 import log
 import json
 import urllib2
