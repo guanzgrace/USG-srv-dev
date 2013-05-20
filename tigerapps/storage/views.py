@@ -85,6 +85,13 @@ def register(request):
                     (0, ' ', ' '),
                     (0, 'Proxy name:', unpaid_order.proxy_name),
                     (0, 'Proxy email:', unpaid_order.proxy_email))
+
+        # Considers boxes bought before paypal goes through.
+        # NEED SCRIPT TO MAKE SURE THAT THIS ORDER WENT THROUGH
+        dropoff_pickup_time = unpaid_order.dropoff_pickup_time
+        dropoff_pickup_time.n_boxes_bought += unpaid_order.n_boxes_bought
+        dropoff_pickup_time.save()
+ 
         pp_details = {
             'business': 'agencies@princeton.edu',
             #'business': 'it@princetonusg.com',
@@ -125,7 +132,7 @@ def register_complete(request):
 @login_required
 def order(request):
     try:
-        order = Order.objects.get(user=request.user)
+        order = Order.objects.filter(user=request.user, year=2013)[0]
     except:
         return render_to_response('storage/order.html',
                                   {},
@@ -234,9 +241,12 @@ def confirm_payment(sender, **kwargs):
     try:
         send_mail('confirm_payment', str(sender), 'from@example.com', ['asuczews@princeton.edu'], fail_silently=False)
         unpaid_order = UnpaidOrder.objects.get(invoice_id=sender.invoice)
+        '''
+        # THIS IS NOW DONE ABOVE
         dropoff_pickup_time = unpaid_order.dropoff_pickup_time
         dropoff_pickup_time.n_boxes_bought += unpaid_order.n_boxes_bought
         dropoff_pickup_time.save()
+        '''
         order = Order(user=unpaid_order.user,
                       cell_number=unpaid_order.cell_number,
                       dropoff_pickup_time=unpaid_order.dropoff_pickup_time,
