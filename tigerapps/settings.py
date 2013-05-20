@@ -185,6 +185,7 @@ INSTALLED_APPS = (
     'writetime',
     'rooms',
     'pom',
+    'sectionswap',
     'storage',
     'suggestions',
 # These apps were never launched and there are no plans to launch them
