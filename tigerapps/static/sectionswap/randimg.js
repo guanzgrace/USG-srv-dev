@@ -13,7 +13,7 @@
 	defaults: {
 	    
 	    //you can change these defaults to your own preferences.
-	    path: '/static/bg/', //change this to the path of your images
+	    path: '/static/sectionswap/bg/', //change this to the path of your images
 	    myImages: ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg'] //put image names in this bracket. ex: 'harold.jpg', 'maude.jpg', 'etc'
 	    
 	}
