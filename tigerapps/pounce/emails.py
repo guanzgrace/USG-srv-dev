@@ -14,7 +14,7 @@ def sendEmail(to, subject, body):
 
 	FROM = 'Princeton Pounce<princetonpounce@gmail.com>'
 
-	message = """\From: %s\nTo: %s\nSubject: %s\n\n%s""" % (FROM, to, subject, body)
+	message = """\From: Princeton Pounce\nTo: %s\nSubject: %s\n\n%s""" % (FROM, to, subject, body)
 
 	try:
 		server = smtplib.SMTP('smtp.gmail.com:587')  
