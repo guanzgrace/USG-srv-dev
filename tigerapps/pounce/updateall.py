@@ -15,3 +15,6 @@ clean()
 
 for course in Course.objects.all():
 	updateCourse(course)
+
+list = CoursesList.objects.all()[0]
+list.cache()
