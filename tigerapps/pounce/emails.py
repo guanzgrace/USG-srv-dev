@@ -20,7 +20,7 @@ def sendEmail(to, subject, body):
 		server = smtplib.SMTP('smtp.gmail.com:587')  
 		server.starttls()  
 		server.login('princetonpounce',password)  
-		server.sendmail(FROM, to, body)  
+		server.sendmail(FROM, to, message)  
 		server.quit()  
 	except:
 		print "ERROR IN SENDING MAIL"
