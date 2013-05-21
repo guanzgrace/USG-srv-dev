@@ -6,29 +6,13 @@ setup_environ(settings)
 
 from pounce.models import Course, Class, Subscription, Entry, CoursesList
 import pounce.log as log
-from django.core.mail import EmailMessage
 import urllib2
 from bs4 import BeautifulSoup
 import twitter
 
-TERM = '1142' # CHANGE WITH THE SEMESTER
+# TODO: change the cron script!!!!!
 
-# Check for duplicates.  For some reason, this is necessary.
-def clean():
-	def contains(list, entry):
-		for e in list:
-			if entry.courseNumber == e.courseNumber and entry.section == e.section:
-				return True
-		return False
-
-	entries = Entry.objects.all()
-	past = []
-	for entry in entries:
-		if contains(past, entry):
-			print "Deleting", entry.courseNumber, entry.section
-			entry.delete()
-		else:
-			past.append(entry)
+TERM = '1142'
 
 def updateCourse(course):
 	log.log("Updating %s" % str(course))
@@ -72,50 +56,21 @@ def updateCourse(course):
 			theclass.isClosed = isClosed
 			
 			theclass.save()
-				
-def scrape():	
-	clean()
 
-	# Gets the main page of all classes
-	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?term={}".format(TERM)
+# Check for duplicates.  For some reason, this is necessary.
+def clean():
+	def contains(list, entry):
+		for e in list:
+			if entry.courseNumber == e.courseNumber and entry.section == e.section:
+				return True
+		return False
 
-	html = urllib2.urlopen(url).read()
-	soup = BeautifulSoup(html)
+	entries = Entry.objects.all()
+	past = []
+	for entry in entries:
+		if contains(past, entry):
+			print "Deleting", entry.courseNumber, entry.section
+			entry.delete()
+		else:
+			past.append(entry)
 
-	# Iterates through all courses
-	rows = soup.find_all('tr')[1:]
-	for row in rows:
-			try:
-				fields = row.find_all('td')
-
-				if (fields[10].get_text().strip() == "Cancelled"):
-					continue
-
-				courseNumber = fields[1].a['href'][28:34]
-				section = fields[4].get_text().strip()
-				enroll = int(fields[8].get_text().strip())
-				closed = fields[10].get_text().strip() == "Closed" # or Closed Closed? 
-							
-				entry, created = Entry.objects.get_or_create(courseNumber=courseNumber, section=section)
-	 			if created or enroll != entry.totalEnroll or closed != entry.totalClosed:
-					entry.totalEnroll = enroll
-					entry.totalClosed = closed
-					entry.save()
-
-					course, created = Course.objects.get_or_create(number=courseNumber)
-					course.code = ' / '.join([code.strip().replace("  ", " ") for code in fields[1].text.split('\n \n')])
-					course.title = fields[2].text.strip()
-					course.save()
-	 				updateCourse(course)
-	 		except Exception:
-	 			pass
- 	
- 	list = CoursesList.objects.all()[0]
- 	list.cache()
- 	
-log.log('Running update.py')
- 
-if (len(CoursesList.objects.all()) == 0):
-	CoursesList().save()
-
-scrape()
