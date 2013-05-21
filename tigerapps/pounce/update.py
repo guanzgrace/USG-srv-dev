@@ -10,8 +10,6 @@ import urllib2
 from bs4 import BeautifulSoup
 import twitter
 
-# TODO: change the cron script!!!!!
-
 TERM = '1142'
 
 def updateCourse(course):

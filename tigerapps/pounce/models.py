@@ -75,9 +75,9 @@ You've subscribed to %s via PrincetonPounce!  We'll send you an email if seats i
 		if self.type == EMAIL:
 			subject = 'Open Spot in %s' % str(self.theclass)
 			body = """
-			<p>A spot has opened up in <a href="https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=%s&term=1134">%s</a>!</p>
-			<p><b>If the class fills up before you can make it to SCORE, you'll have to resubscribe for notifications <a href="http://princetonpounce.com/reactivate/%s">here</a>.<b></p>
-			""" % (str(self.theclass.course.number), str(self.theclass), str(self.pk))
+			A spot has opened up in %s (https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=%s&term=1134").
+			If the class fills up before you can make it to SCORE, you'll have to resubscribe for notifications here:\n <http://princetonpounce.com/reactivate/%s.
+			""" % (str(self.theclass), str(self.theclass.course.number), str(self.pk))
   			return emails.sendMail(self.address, subject, body)
 
 		elif self.type == TEXT:
