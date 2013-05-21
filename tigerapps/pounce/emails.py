@@ -3,7 +3,7 @@ import urllib
 import smtplib  
 
 def sendMail(to, subject, body):
-	passwordFile = open('EMAIL_PASSWORD')
+	passwordFile = open('/srv/tigerapps/pounce/EMAIL_PASSWORD')
 	password = passwordFile.read().strip()
 	passwordFile.close()
 
