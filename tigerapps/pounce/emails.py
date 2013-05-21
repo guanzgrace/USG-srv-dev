@@ -12,15 +12,15 @@ def sendEmail(to, subject, body):
 	password = passwordFile.read().strip()
 	passwordFile.close()
 
-	FROM = 'Princeton Pounce<princetonpounce@gmail.com>'
+	sender = 'Princeton Pounce<princetonpounce@gmail.com>'
 
-	message = """\From: Princeton Pounce\nTo: %s\nSubject: %s\n\n%s""" % (to, subject, body)
+	message = """From: %s\nTo: %s\nSubject: %s\n\n%s""" % (sender, to, subject, body)
 
 	try:
 		server = smtplib.SMTP('smtp.gmail.com:587')  
 		server.starttls()  
 		server.login('princetonpounce',password)  
-		server.sendmail(FROM, to, message)  
+		server.sendmail(sender, to, message)  
 		server.quit()  
 	except:
 		print "ERROR IN SENDING MAIL"
