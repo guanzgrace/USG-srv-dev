@@ -74,7 +74,7 @@ You've subscribed to %s via PrincetonPounce!  We'll send you an email if seats i
 	def sendNotification(self):
 		if self.type == EMAIL:
 			subject = 'Open Spot in %s' % str(self.theclass)
-			body = """A spot has opened up in %s. If the class fills up before you can make it to SCORE, you'll have to resubscribe for notifications here:\n <http://princetonpounce.com/reactivate/%s.""" % (str(self.theclass), str(self.pk))
+			body = """A spot has opened up in %s. If the class fills up before you can make it to SCORE, you'll have to resubscribe for notifications here:\n http://princetonpounce.com/reactivate/%s.""" % (str(self.theclass), str(self.pk))
   			return emails.sendMail(self.address, subject, body)
 
 		elif self.type == TEXT:
