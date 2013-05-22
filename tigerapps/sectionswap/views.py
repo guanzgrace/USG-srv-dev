@@ -45,6 +45,7 @@ def swapRequest(request):
 def confirmOverwrite(request):
 	haveSectionNumber = request.GET['have']
 	wantSectionNumbers = request.GET['want'].split(',')
+	# TODO: something here
 	return render_to_response("sectionswap/overwrite.html")
 
 @login_required
@@ -55,7 +56,7 @@ def manage(request):
 @login_required
 def remove(request, pk):
 	swap = SwapRequest.objects.get(pk = pk)
-	if swap.user = request.user:
+	if swap.user == request.user:
 		swap.delete()
 		return redirect('/manage')
 	else:
