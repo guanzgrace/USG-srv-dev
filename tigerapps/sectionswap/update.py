@@ -1,17 +1,16 @@
-import sectionswap.settings
+import sys,os
+sys.path.insert(0,os.path.abspath("/srv/tigerapps"))
+import settings
 from django.core.management import setup_environ
-setup_environ(sectionswap.settings)
+setup_environ(settings)
 
-from swap.models import Course, Section, Entry
-# import pounce.log as log
+from sectionswap.models import Course
 import urllib2
 from bs4 import BeautifulSoup
 
 TERM = '1142'
 
-def updateCourse(course):
-# 	log.log("Updating %s" % str(course))
-		
+def updateCourse(course):		
  	url = "https://registrar.princeton.edu/course-offerings/course_details.xml?courseid={}&term={}".format(course.number, TERM)
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
@@ -38,11 +37,6 @@ def updateCourse(course):
 			isClosed = fields[6].get_text().strip() == "Closed"
 			if not isClosed:
 				print "Section %s is now open!" % str(classNumber)
-# 				for subscription in Subscription.objects.filter(section=section, active=True):
-# 					log.log("Sending subscription %s." % str(subscription))
-# 					subscription.sendNotification()
-# 					subscription.active = False
-# 					subscription.save()
 					
 			section.isClosed = isClosed
 			
