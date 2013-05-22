@@ -7,9 +7,11 @@ import urllib2
 import json
 from process import process
 
+@login_required
 def index(request):
 	return render_to_response("sectionswap/index.html")
 
+@login_required
 def mustOverwrite(request):
 	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
@@ -21,6 +23,7 @@ def mustOverwrite(request):
 		return HttpResponse("true")
 	return HttpResponse("false")
 
+@login_required
 def swapRequest(request):
 	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
@@ -42,21 +45,25 @@ def swapRequest(request):
 			return render_to_response("results.html", {'results' : results})
 	return render_to_response("sectionswap/wait.html")
 
+@login_required
 def confirmOverwrite(request):
 	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
 	wantSectionNumbers = request.GET['want'].split(',')
 	return render_to_response("sectionswap/overwrite.html")
 
+@login_required
 def manage(request):
 	swaps = SwapRequest.objects.all()
 	return render_to_response("sectionswap/manage.html", {'swaps' : swaps})
 
+@login_required
 def remove(request, pk):
 	swap = SwapRequest.objects.get(pk = pk)
 	swap.delete()
 	return redirect('/manage')
 
+@login_required
 def courses(request):
 	# if len(Cache.objects.all()) == 0:
 	# 	courseDicts = []
