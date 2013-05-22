@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 	url(r'^courses$', 'sectionswap.views.courses'),
 	url(r'^swaprequest$', 'views.swapRequest'),
     url(r'^manage$', 'sectionswap.views.manage'),
-    url(r'^mustOverwrite$', 'sectionswapviews.mustOverwrite'),
+    url(r'^mustOverwrite$', 'sectionswap.views.mustOverwrite'),
     url(r'^remove/(\d+)$', 'sectionswap.views.remove'),
 
     # Examples:
