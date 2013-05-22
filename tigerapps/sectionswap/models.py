@@ -22,6 +22,9 @@ class Course(models.Model):
     
     def short_name(self):
         return self.code
+
+class Cache(models.Model):
+    json = models.CharField(max_length=10000)
     
 class Section(models.Model):
     number = models.CharField(max_length=30, primary_key=True)
