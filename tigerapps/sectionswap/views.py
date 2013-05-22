@@ -14,32 +14,27 @@ def index(request):
 
 @login_required
 def mustOverwrite(request):
-	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
 
-	user, userCreated = User.objects.get_or_create(netid=netid)
 	haveSection = Section.objects.get(number=haveSectionNumber)
 
-	if SwapRequest.objects.filter(user=user, have=haveSection).count():
+	if SwapRequest.objects.filter(user=request.user, have=haveSection).count():
 		return HttpResponse("true")
 	return HttpResponse("false")
 
 @login_required
 def swapRequest(request):
-	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
 	wantSectionNumbers = request.GET['want'].split(',')
 	
-	user, userCreated = User.objects.get_or_create(netid=netid)
-	user.save()
 	haveSection = Section.objects.get(number=haveSectionNumber)
 
-	if SwapRequest.objects.filter(user=user, have=haveSection).count():
-		SwapRequest.objects.filter(user=user, have=haveSection).delete()
+	if SwapRequest.objects.filter(user=request.user, have=haveSection).count():
+		SwapRequest.objects.filter(user=request.user, have=haveSection).delete()
 
 	for wantSectionNumber in wantSectionNumbers:
 		wantSection = Section.objects.get(number=wantSectionNumber)
-		swap, swapCreated = SwapRequest.objects.get_or_create(user=user, have=haveSection, want=wantSection)
+		swap, swapCreated = SwapRequest.objects.get_or_create(user=request.user, have=haveSection, want=wantSection)
 		swap.save()
 		results = process(swap)
 		if results:
@@ -48,7 +43,6 @@ def swapRequest(request):
 
 @login_required
 def confirmOverwrite(request):
-	netid = request.GET['user']
 	haveSectionNumber = request.GET['have']
 	wantSectionNumbers = request.GET['want'].split(',')
 	return render_to_response("sectionswap/overwrite.html")
@@ -61,8 +55,11 @@ def manage(request):
 @login_required
 def remove(request, pk):
 	swap = SwapRequest.objects.get(pk = pk)
-	swap.delete()
-	return redirect('/manage')
+	if swap.user = request.user:
+		swap.delete()
+		return redirect('/manage')
+	else:
+		return HttpResponse(status=403)
 
 @login_required
 def courses(request):
