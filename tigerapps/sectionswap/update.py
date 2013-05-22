@@ -4,7 +4,7 @@ import settings
 from django.core.management import setup_environ
 setup_environ(settings)
 
-from sectionswap.models import Course
+from sectionswap.models import Course, Section, Entry
 import urllib2
 from bs4 import BeautifulSoup
 
