@@ -78,6 +78,8 @@ def courses(request):
 			courseDicts.append(courseDict)
 		coursesJson = json.dumps(courseDicts)
 
+		return HttpResponse(coursesJson)
+
 		cache = Cache()
 		cache.json = coursesJson
 		cache.save()
