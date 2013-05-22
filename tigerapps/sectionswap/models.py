@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import User
 
 class Course(models.Model):
     code = models.CharField(max_length=50)
@@ -55,6 +56,20 @@ class Entry(models.Model):
     section = models.CharField(max_length=30)
     totalEnroll = models.IntegerField(default=0)
     totalClosed = models.BooleanField(default=False)	
+    
+class User(models.Model):
+    netid = models.CharField(max_length=8)
+    pwd   = models.CharField(max_length=32)
+    # swaprequest_set (ForeignKey)
+    
+    def __eq__(self, other):
+        return self.netid == other.netid
+    
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __unicode__(self):
+        return self.netid
 
 class SwapRequest(models.Model):
     user = models.ForeignKey(User)
