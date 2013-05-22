@@ -80,9 +80,7 @@ def courses(request):
 
 		return HttpResponse(coursesJson)
 
-		cache = Cache()
-		cache.json = coursesJson
-		cache.save()
-
+		Cache(json = coursesJson).save()
+		
 	cache = Cache.objects.all()[0]
 	return HttpResponse(cache.json)
