@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 import urllib2
 import json
 from process import process
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
