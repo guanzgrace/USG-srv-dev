@@ -85,13 +85,6 @@ class SwapRequest(models.Model):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __hash__(self):
-        result = 17
-        result = 31 * result + hash(self.user.netid)
-        result = 31 * result + hash(self.have.name)
-        result = 31 * result + hash(self.want.name)
-        return result
-
     def __unicode__(self):
         return unicode(self.user) + ": " + str(self.have) + " -> " + str(self.want) 
     
