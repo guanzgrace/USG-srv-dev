@@ -18,7 +18,7 @@ def process(input_req):
 
 def delete_all(input_req):
     for req in input_req.have.had_by_set.all():
-        if req.user == input_req.user:
+        if req.netid == input_req.netid:
             req.delete()
 
 def email(req, req_strs):
