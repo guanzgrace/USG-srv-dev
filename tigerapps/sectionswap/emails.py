@@ -1,7 +1,24 @@
-import urllib2
-import urllib
+import smtplib
+import sys
 
-def sendMail(to, subject, body):
-	params = {'to' : to, 'subject' : subject, 'body' : body}
-	url = "http://princetonpounce.com/email?" + urllib.urlencode(params)
-	return urllib2.urlopen(url).read()
+# Note: to get this to work, I had to generate an "application-specific" password from Gmail.
+
+def sendEmail(to, subject, body):
+	username = "princetonsectionswap"
+	password = "ufytzbdhqwyimiif"
+
+	sender = 'Section Swap<princetonsectionswap@gmail.com>'
+
+	message = """From: %s\nTo: %s\nSubject: %s\n\n%s""" % (sender, to, subject, body)
+
+	try:
+		server = smtplib.SMTP('smtp.gmail.com:587')  
+		server.starttls()  
+		server.login(username,password)  
+		server.sendmail(sender, to, message)  
+		server.quit()  
+	except:
+		print "Unexpected error:", sys.exc_info()[0]
+		return 0
+
+	return 1
