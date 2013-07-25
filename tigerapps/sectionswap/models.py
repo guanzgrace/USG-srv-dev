@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 class Course(models.Model):
     code = models.CharField(max_length=50)
@@ -59,7 +58,7 @@ class Entry(models.Model):
 
 
 class SwapRequest(models.Model):
-    user = models.ForeignKey(User)
+    netid = models.CharField(max_length=30)
     have = models.ForeignKey(Section, related_name='had_by_set')
     want = models.ForeignKey(Section, related_name='wanted_by_set')
     date = models.DateTimeField(auto_now=True)
