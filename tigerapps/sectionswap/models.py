@@ -77,7 +77,7 @@ class SwapRequest(models.Model):
 
     def __eq__(self, other):
         return type(self) == type(other) \
-            and self.user == other.user \
+            and self.netid == other.netid \
             and self.have == other.have \
             and self.want == other.want
 
@@ -85,7 +85,7 @@ class SwapRequest(models.Model):
         return not self.__eq__(other)
 
     def __unicode__(self):
-        return unicode(self.user) + ": " + str(self.have) + " -> " + str(self.want) 
+        return unicode(self.netid) + ": " + str(self.have) + " -> " + str(self.want) 
     
     def find_cycle(self, visited_list=None, visited_set=None):
         if visited_list == None:
