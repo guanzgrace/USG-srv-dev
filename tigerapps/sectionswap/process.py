@@ -32,5 +32,5 @@ def email(req, req_strs):
     	""" % (str(req.netid), str(req.have.course), str(req.have.name), str(req.want.name), "</p><p>".join(req_strs))
 
     subject = 'Successful swap into ' + str(req.want), 
-    to = req.user.netid + '@princeton.edu'
+    to = req.netid + '@princeton.edu'
     sendEmail(to, subject, body)
