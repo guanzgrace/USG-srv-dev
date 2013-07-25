@@ -44,7 +44,7 @@ def updateCourse(course):
 				
 def scrape():	
 	# Gets the main page of all classes
-	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?submit=Search&term=1142"
+	url = "https://registrar.princeton.edu/course-offerings/search_results.xml?submit=Search&term=" + TERM
 	
 	html = urllib2.urlopen(url).read()
 	soup = BeautifulSoup(html)
