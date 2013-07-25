@@ -18,7 +18,7 @@ def mustOverwrite(request):
 
 	haveSection = Section.objects.get(number=haveSectionNumber)
 
-	if SwapRequest.objects.filter(user=request.user, have=haveSection).count():
+	if SwapRequest.objects.filter(netid=request.user.username, have=haveSection).count():
 		return HttpResponse("true")
 	return HttpResponse("false")
 
@@ -29,14 +29,12 @@ def swapRequest(request):
 	
 	haveSection = Section.objects.get(number=haveSectionNumber)
 
-	return HttpResponse("user: " + request.user.username)
-
-	if SwapRequest.objects.filter(user=request.user, have=haveSection).count():
-		SwapRequest.objects.filter(user=request.user, have=haveSection).delete()
+	if SwapRequest.objects.filter(netid=request.user.username, have=haveSection).count():
+		SwapRequest.objects.filter(netid=request.user.username, have=haveSection).delete()
 
 	for wantSectionNumber in wantSectionNumbers:
 		wantSection = Section.objects.get(number=wantSectionNumber)
-		swap, swapCreated = SwapRequest.objects.get_or_create(user=request.user, have=haveSection, want=wantSection)
+		swap, swapCreated = SwapRequest.objects.get_or_create(netid=request.user.username, have=haveSection, want=wantSection)
 		swap.save()
 		results = process(swap)
 		if results:
@@ -58,7 +56,7 @@ def manage(request):
 @login_required
 def remove(request, pk):
 	swap = SwapRequest.objects.get(pk = pk)
-	if swap.user == request.user:
+	if swap.netid == request.user.username:
 		swap.delete()
 		return redirect('/manage')
 	else:
