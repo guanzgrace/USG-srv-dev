@@ -29,6 +29,8 @@ def swapRequest(request):
 	
 	haveSection = Section.objects.get(number=haveSectionNumber)
 
+	return "user: " + request.user.username
+
 	if SwapRequest.objects.filter(user=request.user, have=haveSection).count():
 		SwapRequest.objects.filter(user=request.user, have=haveSection).delete()
 
