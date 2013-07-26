@@ -22,11 +22,11 @@ def delete_all(input_req):
             req.delete()
 
 def email(req, cycle):
-    req_strs = ['<p><b>%s</b> will swap from %s into %s.</p>' % (swap.netid, swap.have.name, swap.want.name) for swap in cycle]
+    req_strs = ''.join(['<p><b>%s</b> will swap from %s into %s.</p>' % (swap.netid, swap.have.name, swap.want.name) for swap in cycle])
     body = """
     	<p>Hey there, %s!</p>
     	<p>We've identified a potential swap for <b>%s</b> from <b>%s</b> into <b>%s</b>.</p>
-    	<p>You'll swap with the following people:</p>
+    	<p>Here's how it'll go down:</p>
     	%s
     	<p>Cheers!</p>
     	<p>The Section Swap Team</p>
