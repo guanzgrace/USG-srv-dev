@@ -2,15 +2,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import sys
+from EMAIL_SETTINGS import username, password, sender
 
 # Note: to get this to work, I had to generate an "application-specific" password from Gmail.
 
 def sendEmail(to, subject, body):
-	username = "princetonsectionswap"
-	password = "ufytzbdhqwyimiif"
-
-	sender = 'Section Swap<princetonsectionswap@gmail.com>'
-
 	message = """From: %s\nTo: %s\nSubject: %s\n\n%s""" % (sender, to, subject, body)
 
 	try:
