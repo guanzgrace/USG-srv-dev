@@ -22,6 +22,9 @@ class Course(models.Model):
     
     def short_name(self):
         return self.code
+
+class Cache(models.Model):
+    json = models.CharField(max_length=10000)
     
 class Section(models.Model):
     number = models.CharField(max_length=30, primary_key=True)
@@ -52,23 +55,10 @@ class Entry(models.Model):
     section = models.CharField(max_length=30)
     totalEnroll = models.IntegerField(default=0)
     totalClosed = models.BooleanField(default=False)	
-    
-class User(models.Model):
-    netid = models.CharField(max_length=8)
-    pwd   = models.CharField(max_length=32)
-    # swaprequest_set (ForeignKey)
-    
-    def __eq__(self, other):
-        return self.netid == other.netid
-    
-    def __ne__(self, other):
-        return not self.__eq__(other)
-    
-    def __unicode__(self):
-        return self.netid
+
 
 class SwapRequest(models.Model):
-    user = models.ForeignKey(User)
+    netid = models.CharField(max_length=30)
     have = models.ForeignKey(Section, related_name='had_by_set')
     want = models.ForeignKey(Section, related_name='wanted_by_set')
     date = models.DateTimeField(auto_now=True)
@@ -87,22 +77,15 @@ class SwapRequest(models.Model):
 
     def __eq__(self, other):
         return type(self) == type(other) \
-            and self.user == other.user \
+            and self.netid == other.netid \
             and self.have == other.have \
             and self.want == other.want
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __hash__(self):
-        result = 17
-        result = 31 * result + hash(self.user.netid)
-        result = 31 * result + hash(self.have.name)
-        result = 31 * result + hash(self.want.name)
-        return result
-
     def __unicode__(self):
-        return unicode(self.user) + ": " + str(self.have) + " -> " + str(self.want) 
+        return unicode(self.netid) + ": " + str(self.have) + " -> " + str(self.want) 
     
     def find_cycle(self, visited_list=None, visited_set=None):
         if visited_list == None:
