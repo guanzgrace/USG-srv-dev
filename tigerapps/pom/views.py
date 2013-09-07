@@ -12,6 +12,7 @@ from pom.bldg_info import *
 from pom.campus_map_codes import campus_codes
 from pom.campus_map_bldgs_info import campus_info
 from pom.scrape import menus, printers, laundry
+import settings
 
 
 
@@ -241,10 +242,42 @@ def filter_events(request, bldg_code=None):
     except Exception, e:
         return HttpResponseServerError('Bad GET request: '+ str(e))
 
+    from sanitizer.templatetags.sanitizer import escape_html
     for event in events:
-        desc = event.event_cluster.cluster_description
-        event.short_desc = desc[:100]
-        event.long_desc = desc[100:]
+        desc = escape_html(event.event_cluster.cluster_description,
+            allowed_tags=settings.SANITIZER_ALLOWED_TAGS,
+            allowed_attributes=settings.SANITIZER_ALLOWED_ATTRIBUTES)
+        # TODO: this way of splitting the description is vulnerable to bad HTML tags 
+        # We don't want to cut open a tag in the middle, or to cut open a link tag
+        # in the middle.  XXX I don't think the check for cutting open a link tag
+        # in the middle works right.
+        split = 100
+        opened = 0
+        opened_a = False
+        for i, c in enumerate(desc[:split]):
+            if c == '<':
+                opened += 1
+                if not opened_a:
+                    opened_a = (desc[i:i+2].lower() == '<a')
+                else:
+                    opened_a = (desc[i:i+3].lower() != '</a')
+            elif c == '>':
+                opened -= 1
+        if opened == 1:
+            for c in desc[split:]:
+                split += 1
+                if c == '>':
+                    break
+        if opened_a:
+            for c in desc[split:]:
+                split += 1
+                if c == '<':
+                    opened_a = (desc[i:i+3].lower() != '</a')
+                elif c == '>':
+                    if not opened_a:
+                        break
+        event.short_desc = desc[:split]
+        event.long_desc = desc[split:]
         if (not bldg_code) and event.event_location in BLDG_INFO:
             event.event_location_name = BLDG_INFO[event.event_location][0]
         if event.event_location_details.isdigit():

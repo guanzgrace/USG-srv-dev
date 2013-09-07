@@ -1,5 +1,5 @@
 {% extends "cal/base.html" %}
-{% load value_from_settings%}{% load humanize %}
+{% load value_from_settings%}{% load humanize %}{% load sanitizer %}
 {% block title %}{{event.event_cluster.cluster_title}}{% endblock %}
 
 {% block headerscript %}
@@ -192,8 +192,10 @@ Shadowbox.init();
 {% endif %}
 <h3>Description</h3>
 
-<p class="descr_text">{{event.event_cluster.cluster_description|linebreaksbr}}</p>
-{% if event.event_subdescription %}<p class="descr_text">{{event.event_subdescription|linebreaksbr}}</p>{% endif %}
+{% autoescape off %}
+<p class="descr_text">{{event.event_cluster.cluster_description|escape_html|linebreaksbr}}</p>
+{% if event.event_subdescription %}<p class="descr_text">{{event.event_subdescription|escape_html|linebreaksbr}}</p>{% endif %}
+{% endautoescape %}
 </div>
 <a name="who"></a>
 <h3 name="who">Who's Coming</h3>
