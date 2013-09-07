@@ -22,11 +22,13 @@ from cal.models import CalUser, Event, EventCategory, EventCluster
 def invert_bldg_info():
     from pom.bldg_info import BLDG_INFO
     locations = {}
+    alt_locations = set()
     for bldg_code, (name, alt_names, show) in BLDG_INFO.iteritems():
-        locations[name.lower()] = bldg_code
+        locations[name] = bldg_code
         for alt_name in alt_names:
-            locations[alt_name.lower()] = bldg_code
-    return locations
+            locations[alt_name] = bldg_code
+            alt_locations.add(alt_name)
+    return locations, alt_locations
 
 
 def tag_names_to_tags(tag_names):
@@ -82,7 +84,7 @@ class Page(object):
         self.user = user
         self.cluster_tags = tag_names_to_tags(tags)
         self.kwargs = kwargs
-        self.locations = invert_bldg_info()
+        self.locations, self.alt_locations = invert_bldg_info()
 
 
     @classmethod
@@ -117,12 +119,17 @@ class Page(object):
                 bs_title = bs_event.find(attrs={'class':self.kwargs['cluster_title']}).find('a')
                 cluster_title = bs_title.string
 
-                cluster_description = strip_tags(unicode(bs_event.find('p')), ['a'])
-                # TODO
+                tmp_description = bs_event.find('p')
+                if tmp_description:
+                    cluster_description = strip_tags(unicode(bs_event.find('p')), ['a'])
+                else:
+                    cluster_description = ""
                 if 'url' in self.kwargs:
-                    cluster_url = self.kwargs['url'] + bs_title['href']
-                    cluster_description += "<p>Path to Princeton link: <a href='%s'>%s</a>" % (
-                        cluster_url, cluster_url)
+                    cluster_url = "http://path.princeton.edu" + bs_title['href']
+                    cluster_description += ("<p>Note: This event was automatically added from"
+                        " <a href='http://path.princeton.edu'>Path to Princeton</a>, and may not"
+                        " be fully accurate.  Click <a href='%s'>here</a> for the original event.</p>"
+                        % (cluster_url,))
 
                 # TODO
                 tmp_starttime = bs_event.find(attrs={'class':"date-display-start"})
@@ -143,11 +150,14 @@ class Page(object):
                 if tmp_location:
                     event_location_objs = tmp_location.find(attrs={'class':'field-content'}).findAll('li')
                     if len(event_location_objs) == 1:
-                        event_location_str = event_location_objs[0].text.lower()
+                        event_location_str = event_location_objs[0].text
                         success = False
                         if event_location_str in self.locations:
                             event_location = self.locations[event_location_str]
-                            event_location_details = ""
+                            if event_location_str in self.alt_locations:
+                                event_location_details = event_location_str
+                            else:
+                                event_location_details = ""
                         else:
                             # Try various methods..
                             for c in [", ", " - "]:
@@ -179,7 +189,7 @@ class Page(object):
                                         event_location_details = event_location_str
                     else:
                         event_location = ""
-                        event_location_details = ";".join([
+                        event_location_details = "; ".join([
                             elo.text for elo in event_location_objs])
                 else:
                     event_location = ""
@@ -229,6 +239,6 @@ def main(base_url, param=None, param_vals=None):
             container = 'view-p2p-orientation-events',
             event = 'views-row',
             cluster_title = 'field-content orientation-title',
-            event_location = 'views-field views-field-field-orientation-location views-field-field-orientation-location',
+            event_location = 'views-field views-field-field-orientation-location',
         )
         page.handle()

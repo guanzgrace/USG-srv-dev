@@ -8,8 +8,9 @@
 # Info :  all of our database models
 ################################################################
 
-from django.db import models
+import re
 from datetime import datetime, date, timedelta
+from django.db import models
 from stdimage import StdImageField
 from globalsettings import SITE_ADMINS, dtdeleteflag, our_site
 from pom.bldg_info import BLDG_CODE

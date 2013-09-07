@@ -251,6 +251,7 @@ def filter_events(request, bldg_code=None):
         # We don't want to cut open a tag in the middle, or to cut open a link tag
         # in the middle.  XXX I don't think the check for cutting open a link tag
         # in the middle works right.
+        # TODO: this also doesn't deal with opened i's, b's, etc..
         split = 100
         opened = 0
         opened_a = False

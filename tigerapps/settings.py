@@ -35,7 +35,7 @@ LOGIN_URL = '/login/'
 PAYPAL_RECEIVER_EMAIL = 'agencies@princeton.edu'
 #PAYPAL_RECEIVER_EMAIL = 'it@princetonusg.com'
 #For sanitizer
-SANITIZER_ALLOWED_TAGS = ('b', 'i', 'u', 'p', 'a', 'span', 'br',)
+SANITIZER_ALLOWED_TAGS = ('b', 'i', 'u', 'p', 'a', 'span', 'br', 'ul', 'li', 'ol')
 SANITIZER_ALLOWED_ATTRIBUTES = ('href',)
 
 
