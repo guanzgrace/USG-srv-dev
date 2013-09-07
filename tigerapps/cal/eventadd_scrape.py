@@ -1,5 +1,15 @@
+"""
+This was used to scrape the path to princeton site in fall 2013.
+
+The ultimate goal was to use this experience to learn how to
+devise a general algorithm for scraping events from sites.
+
+Unfortunately, given the complexity of this one assignment alone,
+such a general algorithm seems way too hard...
+"""
+
 from BeautifulSoup import BeautifulSoup, NavigableString
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import re
 import requests
@@ -50,6 +60,19 @@ def strip_tags(html, keep_tags):
     return unicode(tag)
 
 
+def parse_time(unparsed_day, unparsed_time):
+    """Parse unparsed_time on path to princeton website."""
+    if len(unparsed_time.split(":")[0]) == 1:
+        unparsed_time = '0' + unparsed_time
+    if unparsed_time.endswith('a.m.'):
+        unparsed_time.replace('a.m.', 'AM')
+    else:
+        unparsed_time.replace('p.m.', 'PM')
+    return datetime.strptime(
+        "%s %s" % (unparsed_day, unparsed_time),
+        "%B%d%Y %I:%M %p")
+
+
 
 
 class Page(object):
@@ -73,114 +96,119 @@ class Page(object):
     def handle(self):
         bs = BeautifulSoup(self.content)
         if 'container' in self.kwargs:
-            bs = bs.find("div", self.kwargs['container'])
+            # TODO
+            bs = bs.find("div", self.kwargs['container']).find("div", "view-content")
 
-        # TODO
-        tmp_day = bs.find(attrs={'class':"view-content"}
-            ).find("h3").find("div")['class']
+        ele = bs.find('h3')
+        tmp_day = ele.find('div')['class']
         tmp_day += str(datetime.today().year)
 
-        # Get all div's with a certain class.
-        bs_events = bs.findAll("div", self.kwargs['event'])
-        for bs_event in bs_events:
+        while ele.nextSibling:
+            ele = ele.nextSibling
+            if type(ele) == NavigableString:
+                continue
+            elif ele.name == 'h3':
+                tmp_day = ele.find('div')['class']
+                tmp_day += str(datetime.today().year)
+            elif ele.name == 'div':
+                # Get all div's with a certain class.
+                bs_event = ele
 
-            bs_title = bs_event.find(attrs={'class':self.kwargs['cluster_title']}).find('a')
-            cluster_title = bs_title.string
+                bs_title = bs_event.find(attrs={'class':self.kwargs['cluster_title']}).find('a')
+                cluster_title = bs_title.string
 
-            cluster_description = strip_tags(unicode(bs_event.find('p')), ['a'])
-            # TODO
-            if 'url' in self.kwargs:
-                cluster_url = self.kwargs['url'] + bs_title['href']
-                cluster_description += "<p>Path to Princeton link: <a href='%s'>%s</a>" % (
-                    cluster_url, cluster_url)
+                cluster_description = strip_tags(unicode(bs_event.find('p')), ['a'])
+                # TODO
+                if 'url' in self.kwargs:
+                    cluster_url = self.kwargs['url'] + bs_title['href']
+                    cluster_description += "<p>Path to Princeton link: <a href='%s'>%s</a>" % (
+                        cluster_url, cluster_url)
 
-            # TODO
-            tmp_starttime = bs_event.find(attrs={'class':"date-display-start"}
-                ).text
-            if len(tmp_starttime.split(":")[0]) == 1:
-                tmp_starttime = '0' + tmp_starttime
-            if tmp_starttime.endswith('a.m.'):
-                tmp_starttime.replace('a.m.', 'AM')
-            else:
-                tmp_starttime.replace('p.m.', 'PM')
-            tmp_endtime = bs_event.find(attrs={'class':"date-display-end"}
-                ).text
-            if len(tmp_endtime.split(":")[0]) == 1:
-                tmp_endtime = '0' + tmp_endtime
-            if tmp_endtime.endswith('a.m.'):
-                tmp_endtime.replace('a.m.', 'AM')
-            else:
-                tmp_endtime.replace('p.m.', 'PM')
-            event_date_time_start = datetime.strptime(
-                "%s %s" % (tmp_day, tmp_starttime),
-                "%B%d%Y %I:%M %p")
-            event_date_time_end = datetime.strptime(
-                "%s %s" % (tmp_day, tmp_endtime),
-                "%B%d%Y %I:%M %p")
-
-            # TODO
-            event_location_objs = bs_event.find(attrs={'class':self.kwargs['event_location']}
-                ).find(attrs={'class':'field-content'}).findAll('li')
-            if len(event_location_objs) == 1:
-                event_location_str = event_location_objs[0].text.lower()
-                success = False
-                if event_location_str in self.locations:
-                    event_location = self.locations[event_location_str]
-                    event_location_details = ""
+                # TODO
+                tmp_starttime = bs_event.find(attrs={'class':"date-display-start"})
+                if tmp_starttime:
+                    tmp_starttime = tmp_starttime.text
+                    event_date_time_start = parse_time(tmp_day, tmp_starttime)
+                    tmp_endtime = bs_event.find(attrs={'class':"date-display-end"}
+                        ).text
+                    event_date_time_end = parse_time(tmp_day, tmp_endtime)
                 else:
-                    # Try various methods..
-                    for c in [", ", " - "]:
-                        if c in event_location_str:
-                            for i, els in enumerate(event_location_str.split(c)):
+                    tmp_starttime = bs_event.find(attrs={'class':"date-display-single"}
+                        ).text
+                    event_date_time_start = parse_time(tmp_day, tmp_starttime)
+                    event_date_time_end = event_date_time_start + timedelta(hours=1)
+
+                # TODO
+                tmp_location = bs_event.find(attrs={'class':self.kwargs['event_location']})
+                if tmp_location:
+                    event_location_objs = tmp_location.find(attrs={'class':'field-content'}).findAll('li')
+                    if len(event_location_objs) == 1:
+                        event_location_str = event_location_objs[0].text.lower()
+                        success = False
+                        if event_location_str in self.locations:
+                            event_location = self.locations[event_location_str]
+                            event_location_details = ""
+                        else:
+                            # Try various methods..
+                            for c in [", ", " - "]:
+                                if c in event_location_str:
+                                    parts = event_location_str.split(c)
+                                    for i, els in enumerate(parts):
+                                        if els in self.locations:
+                                            event_location = self.locations[els]
+                                            parts.pop(i)
+                                            event_location_details = c.join(parts)
+                                            success = True
+                                if success:
+                                    break
+                            if not success:
+                                parts = event_location_str.split()
+                                els = " ".join(parts[:-1])
                                 if els in self.locations:
                                     event_location = self.locations[els]
-                                    event_location_str.pop(i)
-                                    event_location_details = c.join(event_location_str)
+                                    event_location_details = parts[-1]
                                     success = True
-                        if success:
-                            break
-                    if not success:
-                        parts = event_location_str.split()
-                        els = " ".join(parts[:-1])
-                        if els in self.locations:
-                            event_location = self.locations[els]
-                            event_location_details = parts[-1]
-                            success = True
-                        if not success:
-                            els = " ".join(parts[1:])
-                            if els in self.locations:
-                                event_location = self.locations[els]
-                                event_location_details = parts[0]
-                                success = True
-                            if not success:
-                                event_location = ""
-                                event_location_details = event_location_str
-            else:
-                event_location = ""
-                event_location_details = ";".join(event_location_objs)
+                                if not success:
+                                    els = " ".join(parts[1:])
+                                    if els in self.locations:
+                                        event_location = self.locations[els]
+                                        event_location_details = parts[0]
+                                        success = True
+                                    if not success:
+                                        event_location = ""
+                                        event_location_details = event_location_str
+                    else:
+                        event_location = ""
+                        event_location_details = ";".join([
+                            elo.text for elo in event_location_objs])
+                else:
+                    event_location = ""
+                    event_location_details = ""
 
-            event_cluster = EventCluster(
-                cluster_title = cluster_title,
-                cluster_description = cluster_description,
-                cluster_user_created = self.user,
-            )
-            event_cluster.save()
-            for cluster_tag in self.cluster_tags:
-                event_cluster.cluster_tags.add(cluster_tag)
-            event_cluster.save()
-            event = Event(
-                event_cluster=event_cluster,
-                event_date_time_start=event_date_time_start,
-                event_date_time_end=event_date_time_end,
-                event_location=event_location,
-                event_location_details=event_location_details,
-                event_user_last_modified=self.user,
-                event_attendee_count=0,
-            )
-            event.save()
+                event_cluster = EventCluster(
+                    cluster_title = cluster_title,
+                    cluster_description = cluster_description,
+                    cluster_user_created = self.user,
+                )
+                event_cluster.save()
+                for cluster_tag in self.cluster_tags:
+                    event_cluster.cluster_tags.add(cluster_tag)
+                event_cluster.save()
+                event = Event(
+                    event_cluster=event_cluster,
+                    event_date_time_start=event_date_time_start,
+                    event_date_time_end=event_date_time_end,
+                    event_location=event_location,
+                    event_location_details=event_location_details,
+                    event_user_last_modified=self.user,
+                    event_attendee_count=0,
+                )
+                event.save()
 
-            print("Added event '%s' (%s - %s)" % (
-                cluster_title, event_date_time_start, event_date_time_end))
+                print (u"Added event '%s' (%s - %s)" % (
+                    cluster_title,
+                    event_date_time_start,
+                    event_date_time_end)).encode('ascii', 'ignore')
 
 
 
