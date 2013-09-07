@@ -62,7 +62,7 @@ body {
 #desc {
     position:fixed;
     top:90px;
-    bottom:110px;
+    bottom:130px;
     left:50%;
     width:36%;
     max-width:480px;
@@ -81,7 +81,7 @@ body {
 #desc-inside {
     position:fixed;
     top:110px;
-    bottom:130px;
+    bottom:150px;
     left:50%;
     width:30%;
     max-width:420px;

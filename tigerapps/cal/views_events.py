@@ -472,8 +472,11 @@ def events_add(request):
             new_cluster.cluster_user_created = user
             new_cluster.save()
             clusterForm.save_m2m()
+            # TODO: use eventsadd_scrape.tag_names_to_tags
             for tag_name in tags_in:
                 tag_name = re.sub("^\W", "", tag_name)
+                if not tag_name:
+                    continue
                 try:
                     tag = EventCategory.objects.get(category_name__iexact=tag_name)
                 except EventCategory.DoesNotExist:
