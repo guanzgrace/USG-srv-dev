@@ -70,7 +70,7 @@ def parse_time(unparsed_day, unparsed_time):
         unparsed_time.replace('p.m.', 'PM')
     return datetime.strptime(
         "%s %s" % (unparsed_day, unparsed_time),
-        "%B%d%Y %I:%M %p")
+        "%B %d%Y %I:%M %p")
 
 
 
@@ -100,7 +100,7 @@ class Page(object):
             bs = bs.find("div", self.kwargs['container']).find("div", "view-content")
 
         ele = bs.find('h3')
-        tmp_day = ele.find('div')['class']
+        tmp_day = ele.text.split(',')[-1].strip()
         tmp_day += str(datetime.today().year)
 
         while ele.nextSibling:
@@ -108,7 +108,7 @@ class Page(object):
             if type(ele) == NavigableString:
                 continue
             elif ele.name == 'h3':
-                tmp_day = ele.find('div')['class']
+                tmp_day = ele.text.split(',')[-1].strip()
                 tmp_day += str(datetime.today().year)
             elif ele.name == 'div':
                 # Get all div's with a certain class.
