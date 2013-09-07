@@ -224,7 +224,7 @@ class Page(object):
 
 
 def main(base_url, param=None, param_vals=None):
-    user = CalUser.objects.get(user_netid='joshchen')
+    user = CalUser.objects.get(user_netid='usg')
     if param:
         urls = []
         for param_val in param_vals:
