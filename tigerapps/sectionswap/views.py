@@ -51,6 +51,7 @@ def confirmOverwrite(request):
 @login_required
 def manage(request):
 	swaps = SwapRequest.objects.all()
+	# todo: filter by user
 	return render_to_response("sectionswap/manage.html", {'swaps' : swaps})
 
 @login_required
