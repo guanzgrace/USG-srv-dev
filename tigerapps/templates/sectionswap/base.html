@@ -22,11 +22,9 @@
 			<div class="row-fluid">
 				<div class="span4 offset4">
 					<ul class="nav nav-pills">
-						<li class="active">
-							<a href="#">Swap</a>
-						</li>
-						<li><a href="#">Manage</a></li>
-						<li><a href="#">Help</a></li>
+						<li class="{{'active' if active_page == 'swap'}}"><a href="/">Swap</a></li>
+						<li class="{{'active' if active_page == 'manage'}}"><a href="/manage">Manage</a></li>
+						<li class="{{'active' if active_page == 'help'}}"><a href="/help">Help</a></li>
 					</ul>
 				</div>
 			</div>
