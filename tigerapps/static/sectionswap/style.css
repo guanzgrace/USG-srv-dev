@@ -34,6 +34,10 @@ body {
     display: none;
 }
 
+.nav-pills > .active > a, .nav-pills > .active > a:hover {
+    background-color: rgb(200, 80, 20);
+}
+
 #table-manage {
     margin: 0 auto;
     margin-bottom: 30px;
