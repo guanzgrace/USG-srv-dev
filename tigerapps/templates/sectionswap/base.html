@@ -18,13 +18,17 @@
 		<img id="randbg" src="" alt="" />
 		<div id="container">
 			<img id="logo" src="static/sectionswap/logo.png"/>
-			<ul class="nav nav-pills">
-				<li class="active">
-					<a href="#">Swap</a>
-				</li>
-				<li><a href="#">Manage</a></li>
-				<li><a href="#">Help</a></li>
-			</ul>
+
+			<div class="row-fluid">
+				<ul class="nav nav-pills">
+					<li class="active">
+						<a href="#">Swap</a>
+					</li>
+					<li><a href="#">Manage</a></li>
+					<li><a href="#">Help</a></li>
+				</ul>
+			</div>
+			
 			{% block content %}
 			{% endblock %}
 		</div>
