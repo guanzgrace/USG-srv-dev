@@ -36,10 +36,10 @@ body {
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
     background-color: rgb(200, 80, 20);
-    color: #ccc;
+    color: #FFF;
 }
 
-.nav-pills > a {
+.nav-pills > li > a {
     color: rgb(200, 80, 20);
 }
 
