@@ -21,7 +21,7 @@
       {% endfor %}
       <a {% ifequal user_data event.event_cluster.cluster_user_created %}class="event-owner"{% endifequal %}href="/events/{{event.event_id}}">{{event}}</a>
       {% if event.event_cluster.cluster_image %}<a rel="shadowbox[Gallery]" href="{{event.event_cluster.cluster_image.url}}" title="{{ event.displayname }}"><img src="/static/cal/img/design/icon-clip.png" /></a>{% endif %}
-      <span class="event-subtext">{{event.get_event_location_display}} {{event.event_location_details}} {% if not event.get_event_location_display %}{% if not event.event_location_details %}No location provided {% endif %}{% endif %}{% ifnotequal event.event_attendee_count 0 %}| {{event.getAttendeeCount}} attendee{{event.getAttendeeCount|pluralize}}{% endifnotequal %}</span>
+      <span class="event-subtext">{{event.get_event_location_display}}{% if event.event_location_details %}{% if event.get_event_location_display %}, {% endif %}{{event.event_location_details}}{% else %}{% if not event.get_event_location_display %}No location provided {% endif %}{% endif %}{% ifnotequal event.event_attendee_count 0 %}| {{event.getAttendeeCount}} attendee{{event.getAttendeeCount|pluralize}}{% endifnotequal %}</span>
     </div>
   </li>{% endfor %}{% else %}
   <li class="evlist-none evlist-none-desc">There are no events to display.</li>

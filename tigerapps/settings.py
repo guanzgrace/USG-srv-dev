@@ -34,7 +34,9 @@ LOGIN_URL = '/login/'
 #For paypal
 PAYPAL_RECEIVER_EMAIL = 'agencies@princeton.edu'
 #PAYPAL_RECEIVER_EMAIL = 'it@princetonusg.com'
-
+#For sanitizer
+SANITIZER_ALLOWED_TAGS = ('b', 'i', 'u', 'p', 'a', 'span', 'br', 'ul', 'li', 'ol')
+SANITIZER_ALLOWED_ATTRIBUTES = ('href',)
 
 
 #TODO: make DEBUG False on prod site when confident
@@ -169,6 +171,7 @@ INSTALLED_APPS = (
     'utils',
     'adminsortable',
     'south',
+    'sanitizer',
 
 # These apps are launched or in the process of being launched
 # This means that they ARE sync'd with South

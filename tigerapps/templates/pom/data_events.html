@@ -1,4 +1,4 @@
-{% load value_from_settings %}
+{% load value_from_settings %}{% load sanitizer %}
 <div>
 	<h3 class="info-title">Events {% if all_events %}across campus{%else%}at {{bldg_name}}{% endif %}</h3>
 </div>
@@ -31,6 +31,7 @@
 		</div>
 	</div>
 
+    {% autoescape off %}
 	{%if events|length > 3%}
 		<div class="info-event-description">
 			{{event.short_desc}}{%if event.long_desc%}<span class="info-event-dots">...</span><span class="info-event-long" style="display:inline;">{{event.long_desc}}</span>{%endif%}
@@ -40,6 +41,7 @@
 			{{event.short_desc}}{{event.long_desc}}
 		</div>
 	{%endif%}
+    {% endautoescape %}
 </div>
 {% endfor %}
 <br/>
