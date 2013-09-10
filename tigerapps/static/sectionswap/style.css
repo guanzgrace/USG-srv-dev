@@ -33,3 +33,8 @@ body {
     z-index: -1;
     display: none;
 }
+
+#table-manage {
+    margin: 0 auto;
+    width: 90%;
+}
