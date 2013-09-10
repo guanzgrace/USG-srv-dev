@@ -38,6 +38,10 @@ body {
     background-color: rgb(200, 80, 20);
 }
 
+.nav-pills > .active > a {
+    color: rgb(200, 80, 20);
+}
+
 #table-manage {
     margin: 0 auto;
     margin-bottom: 30px;
