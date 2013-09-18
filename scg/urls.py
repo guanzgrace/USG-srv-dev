@@ -5,6 +5,13 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'.*', 'views.goodbye'),
+)
+
+"""
+urlpatterns = patterns('',
+    (r'^$', 'views.index'),
+
     (r'^$', 'views.index'),
     (r'^courses/', include('apps.courses.urls')),
     (r'^reviews/', include('apps.reviews.urls')),
@@ -28,5 +35,5 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
     #(r'^admin/(.*)', admin.site.root),
-
 )
+"""
