@@ -102,3 +102,10 @@ def index(request):
                               context_instance=RequestContext(request))
 
 
+@login_required
+def goodbye(request):
+    return render_to_response('goodbye.html',
+                              {},
+                              context_instance=RequestContext(request))
+
+
