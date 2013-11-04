@@ -1,8 +1,7 @@
 import smtplib
+from credentials import gmail_user, gmail_pwd
 
 def sendMail(to, subject, body):
-	gmail_user = 'princetonwritetime@gmail.com'
-	gmail_pwd = 'dondero217'
 	fromEmail = "Write Time<princetonwritetime@gmail.com>" 
 	smtpserver = smtplib.SMTP("smtp.gmail.com",587)
 	smtpserver.ehlo()
