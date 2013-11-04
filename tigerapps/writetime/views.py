@@ -29,9 +29,10 @@ def submitOffer(request):
 	timeString = request.REQUEST['time']
 	(year, month, day) = dateString.split('_')
 	time = datetime.datetime(int(year), int(month), int(day), int(timeString))
-	appointment = Appointment(name=name, netid=netid, time=time)
-	appointment.save()
-	sendConfirmEmail(appointment)
+	if name and netid and time:
+		appointment = Appointment(name=name, netid=netid, time=time)
+		appointment.save()
+		sendConfirmEmail(appointment)
 	return redirect("/")
 
 @login_required
