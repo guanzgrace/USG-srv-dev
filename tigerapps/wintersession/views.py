@@ -1,0 +1,188 @@
+#from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+#from django.template import RequestContext, loader
+from django.shortcuts import render#, redirect
+from wintersession.models import Course, Student, Registration, Instructor
+from django_tables2   import RequestConfig
+from wintersession.tables  import CourseTable#, AttendanceTable#, StudentTable,
+from wintersession.time import decode
+from django.core.urlresolvers import reverse
+from wintersession.forms import AttendanceForm
+from django.forms.models import modelformset_factory#, modelform_factory
+
+def home(request):
+    return render(request, 'wintersession/home.html', {})
+
+def teach(request):
+    return render(request, 'wintersession/teach.html', {})
+
+def about(request):
+    return render(request, 'wintersession/about.html', {})
+
+def enroll(request):
+    table = CourseTable(Course.objects.filter(cancelled=False))
+    RequestConfig(request).configure(table)
+    return render(request, 'wintersession/enroll.html', {'table': table})
+
+def student(request, error_message=None):
+    user_name = request.user 
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('enroll:enroll')) # Really needs to send to CAS
+    if Student.objects.filter(netID=user_name).count() != 1:
+        student = Student(netID=user_name) # need to include other fields, too!
+        student.save()
+    student = Student.objects.get(netID=user_name)
+    my_registrations = student.registration_set.all()
+    my_courses = student.course_set.all()
+    table = CourseTable(my_courses)
+    RequestConfig(request).configure(table)
+    # Only active courses
+    active_courses = Course.objects.filter(cancelled=False)
+    c_ids = [o.courseID for o in active_courses if not o.is_full()] # can remove
+    # Only non-full active courses
+    avail_courses = active_courses.filter(courseID__in=c_ids)       # can remove
+    context = {
+        'user_name' : user_name,
+        'my_registrations' : my_registrations,
+        'active_courses' : avail_courses, # or active_courses
+        'error_message' : error_message,
+        'table' : table,
+    }
+    return render(request, 'wintersession/student.html', context)
+
+def courses(request):
+    courses = Course.objects.filter(cancelled=False).exclude(courseID__regex=r'^.*\.[^a].*$')
+    course_count = courses.count()
+#     cl = []
+#     prev_c = Course(title=None)
+#     for c in courses:
+#         if c.title != prev_c.title:
+#             cl.append(c)
+#         prev_c = c
+    context = {
+        'courses' : courses,
+        'num_c' : course_count,
+    }
+    return render(request, 'wintersession/courses.html', context)
+
+def instructor(request):
+    user_name = request.user
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('enroll:enroll')) # Really needs to send to CAS
+    if Instructor.objects.filter(netID=user_name).count() != 1:
+        err_msg = "You're not an instructor."
+#         return HttpResponseRedirect(reverse('wintersession:student', args=(err_msg,)))
+        return student(request, err_msg)
+#         return redirect('wintersession:student', error_message=err_msg)
+    selected_instructor = Instructor.objects.get(netID=user_name)
+    my_courses = selected_instructor.course_set.all()
+    course_table = CourseTable(my_courses)
+    RequestConfig(request).configure(course_table)
+#     registration_tables = {}
+    attendance_formsets = {}
+#     for course in my_courses:
+#         student_table = StudentTable(course.students.all())
+#         RequestConfig(request).configure(student_table)
+#         student_tables[course.title] = student_table
+    
+    for mc in my_courses:
+        registrations = Registration.objects.filter(course=mc).order_by('student__last_name')
+        students = Student.objects.filter(registration__course=mc).order_by('last_name')
+#         registration_table = AttendanceTable(registrations) 
+#         RequestConfig(request).configure(registration_table)
+#         registration_tables[mc.title] = registration_table
+        AttendanceFormSet = modelformset_factory(Registration, form=AttendanceForm, extra=0)
+        attendance_formset = AttendanceFormSet(queryset=registrations)
+        attendance_formsets[mc.title] = (attendance_formset, zip(students, attendance_formset.forms))
+    
+    context = {
+        'user_name' : user_name,
+#         'my_courses' : my_courses,
+        'course_table' : course_table,
+#         'registration_tables' : registration_tables,
+        'attendance_formsets' : attendance_formsets,
+    }
+    
+    if request.method == 'POST':
+        attendance_formset = AttendanceFormSet(request.POST, request.FILES)
+        if attendance_formset.is_valid():
+            attendance_formset.save()
+            # ugly hack to get forms to refresh
+            request.method = 'GET'
+            return instructor(request)
+        else:
+            raise RuntimeError("Formset was not valid")   
+    
+    return render(request, 'wintersession/instructor.html', context)
+
+# def attendance(request):
+#     formset = modelformset_factory(Registration, form=AttendanceForm, extra=0)(request.POST)
+#     formset.save()
+
+def drop(request):
+    try:
+        selected_course = Course.objects.get(courseID=request.POST['course'])
+    except (KeyError, Course.DoesNotExist):
+        error_message = "That course does not exist."
+        return student(request, error_message)
+    else:
+        selected_student = Student.objects.get(netID=request.user)
+        #for item in selected_course.blocks:
+        #    selected_student.blocks.remove(item)
+        #selected_student.save()
+        Registration.objects.filter(student=selected_student,course=selected_course).delete()
+        error_message = selected_course.title+" successfully dropped."
+        return student(request, error_message)
+
+def add(request):
+    try:
+        selected_course = Course.objects.get(courseID=request.POST['course'])
+    except (KeyError, Course.DoesNotExist):
+        error_message = "That course does not exist."
+        return student(request, error_message)
+    else:
+        selected_student = Student.objects.get(netID=request.user)
+        ss_courses = selected_student.course_set.all()
+        # Can't enroll in a class we're already in
+        if selected_course in ss_courses:
+            error_message = "Already enrolled in "+selected_course.title
+            return student(request, error_message)
+        # Can't enroll in a full class
+        if selected_course.is_full():
+            error_message = selected_course.title+" is at maximum capacity."
+            return student(request, error_message)
+        # Can't enroll in a cancelled class
+        if selected_course.cancelled:
+            error_message = selected_course.title+" is cancelled."
+            return student(request, error_message)
+        # Can't enroll in two section of same class
+        if selected_course.other_section.count() != 0:
+            other_sections = selected_course.other_section.all()
+            my_courses = selected_student.course_set.all()
+            for course in my_courses:
+                for section in other_sections:
+                    if course.courseID == section.courseID:
+                        error_message = "You are already in "+section.courseID+", which is an alternative section of "+course.title
+                        return student(request, error_message)
+        # Can't enroll in a class with time conflicts
+        ssb = selected_student.blocks()
+        overlap = False
+        for blk in selected_course.blocks:
+            if blk in ssb:
+                overlap = True
+                break
+        if overlap:
+            for course in selected_student.course_set.all():
+                for blk in course.blocks:
+                    if blk in selected_course.blocks:
+                        error_message = selected_course.title \
+                        +" conflicts with "+course.title+" at " \
+                        +decode(blk)
+                        return student(request, error_message)
+        # If we've made it to here, we can enroll
+        #for item in selected_course.blocks:
+        #    selected_student.blocks.append(item)
+        #selected_student.save()
+        Registration(student=selected_student, course=selected_course).save()
+        error_message = selected_course.title+" successfully added."
+        return student(request, error_message)

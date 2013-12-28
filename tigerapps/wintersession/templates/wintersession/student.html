@@ -1,0 +1,70 @@
+{% extends "wintersession/base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block head %}
+<title>Enroll - Wintersession 2014</title>
+{% endblock %}
+
+{% block menu %}
+	<li id='pg721251121132996039'><a href='{% url 'wintersession:home' %}'>Home</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
+	<li id='active'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
+	<li id='pg276867464249989051'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
+	<li id='pg373026107483497366'><a href='{% url 'wintersession:about' %}'>About</a></li>
+{% endblock %}
+
+{% block content %}
+<p> Welcome to your student detail page, <strong> {{ user_name }} </strong>. </p>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<h1> My Courses </h1>
+
+{% if my_registrations %}
+	{% render_table table %}
+{% else %}
+    <p>Not enrolled in any courses.</p>
+{% endif %}
+
+<h1> Add course </h1>
+
+{% if active_courses %}
+<form action="{% url 'wintersession:add' %}" method="post">
+{% csrf_token %}
+<select name="course">
+{% for course in active_courses %}
+    <option value="{{ course.courseID }}" />
+    {{ course.title  }}
+    </option>
+{% endfor %}
+</select><br />
+<input type="submit" value="Add" />
+</form>
+
+{% else %}
+<p>There are no courses available for enrollment.</p>
+{% endif %}
+
+<h1> Drop course </h1>
+
+{% if my_registrations %}
+<form action="{% url 'wintersession:drop' %}" method="post">
+{% csrf_token %}
+<select name="course">
+{% for registration in my_registrations %}
+	<option value="{{ registration.course.courseID }}" >
+	{{ registration.course.title }}
+	</option>
+{% endfor %}
+</select></br>
+<input type="submit" value="Drop" />
+</form>
+
+{% else %}
+<p>Not enrolled in any courses.</p>
+{% endif %}
+
+<br />
+<br />
+
+{% endblock %}

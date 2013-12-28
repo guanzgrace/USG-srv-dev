@@ -1,0 +1,62 @@
+{% extends "wintersession/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+<title>About - Wintersession 2014</title>
+{% endblock %}
+
+{% block menu %}
+	<li id='pg276867464249989051'><a href='{% url 'wintersession:home' %}'>Home</a></li>
+	<li id='pg721251121132996039'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
+	<li id='active'><a href='{% url 'wintersession:about' %}'>About</a></li>
+{% endblock %}
+
+{% block banner %}
+				What is Wintersession?
+{% endblock %}
+
+
+{% block content %}
+
+<hr>
+                <img style="height:50px;" src="{% static 'wintersession/files/logo.png' %}"/>
+<h1>What is Wintersession?</h1>
+<div class="paragraph" style="text-align:left;font-size:20px;">
+
+Wintersession is a week-long program organized by USG to provide undergraduates with activities for
+personal enrichment and community-building beyond what is offered during the
+school year. Wintersession 2014 will take place during Intersession break, January 27-31, 2014.&nbsp;<br /><span></span><br /><span></span>
+
+The program is designed to help students take advantage of their (rare) free time on campus during the gap in the academic year, encouraging and enabling students to pursue
+formal and informal learning, academic and otherwise, and be part of a stronger
+community on campus during the break. <br /><span></span><br /><span></span>
+
+&nbsp;The motivation comes from similar programs offered at other
+universities such as MIT's IAP (Independent Activities Period), Harvard
+Wintersession, and Dartmouth&rsquo;s Winter Term, which provide students the
+opportunity to explore interests ranging from dance to public speaking.&nbsp;<br /><br />
+
+e're looking forward to putting a Princeton spin on it and having you involved!<br /><br />
+
+Brought to you by U-Councilors Laura Du, Elan Kugelmass, Katherine Clifton, Azza Cohen, and
+Mallory Banks, Freshmen Council members CJ Harris and Andrew Sun, and USG members Adam Suczewski, 
+Wesley Cao, Carla Javier and Shawon Jackson, with thanks to sponsors from ODUS and the 
+Office of Campus Life.</div>
+            <hr>
+
+<div>
+    <h1>Contact Us!</h1>
+    <h2 style="text-align:center;font-size:20px">Questions or suggestions? Get in touch with the USG Wintersession team at
+    <script>
+        document.write(
+        " <a href='mai" + "lto:" + "wintersession@" + "princetonusg.com'>"
+            + "wintersession@" + "princetonusg.com"
+        + "</a>");
+    </script>
+    </h2>
+
+</div>
+
+{% endblock %}

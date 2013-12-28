@@ -1,0 +1,156 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html>
+<head>
+
+{% block head %}
+<title>Enroll - Wintersession 2014</title>
+{% endblock %}
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'wintersession/sites.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'wintersession/facybox.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'wintersession/files/logo_16.png' %}">
+	<link rel="image_src" href="{% static 'wintersession/files/theme/default-bg.jpg' %}" />
+	<link rel='stylesheet' type='text/css' href='{% static 'wintersession/files/main_style.css' %}' title='wsite-theme-css' />
+	<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,300italic,200,200italic,700,400italic,700italic' rel='stylesheet' type='text/css' />
+<style type='text/css'>
+.wsite-elements.wsite-not-footer div.paragraph, .wsite-elements.wsite-not-footer p, .wsite-elements.wsite-not-footer .product-block .product-title, .wsite-elements.wsite-not-footer .product-description, .wsite-elements.wsite-not-footer .wsite-form-field label, .wsite-elements.wsite-not-footer .wsite-form-field label, #wsite-content div.paragraph, #wsite-content p, #wsite-content .product-block .product-title, #wsite-content .product-description, #wsite-content .wsite-form-field label, #wsite-content .wsite-form-field label, .blog-sidebar div.paragraph, .blog-sidebar p, .blog-sidebar .wsite-form-field label, .blog-sidebar .wsite-form-field label {}
+#wsite-content div.paragraph, #wsite-content p, #wsite-content .product-block .product-title, #wsite-content .product-description, #wsite-content .wsite-form-field label, #wsite-content .wsite-form-field label, .blog-sidebar div.paragraph, .blog-sidebar p, .blog-sidebar .wsite-form-field label, .blog-sidebar .wsite-form-field label {}
+.wsite-elements.wsite-footer div.paragraph, .wsite-elements.wsite-footer p, .wsite-elements.wsite-footer .product-block .product-title, .wsite-elements.wsite-footer .product-description, .wsite-elements.wsite-footer .wsite-form-field label, .wsite-elements.wsite-footer .wsite-form-field label{}
+.wsite-elements.wsite-not-footer h2, .wsite-elements.wsite-not-footer .product-long .product-title, .wsite-elements.wsite-not-footer .product-large .product-title, .wsite-elements.wsite-not-footer .product-small .product-title, #wsite-content h2, #wsite-content .product-long .product-title, #wsite-content .product-large .product-title, #wsite-content .product-small .product-title, .blog-sidebar h2 {}
+#wsite-content h2, #wsite-content .product-long .product-title, #wsite-content .product-large .product-title, #wsite-content .product-small .product-title, .blog-sidebar h2 {}
+.wsite-elements.wsite-footer h2, .wsite-elements.wsite-footer .product-long .product-title, .wsite-elements.wsite-footer .product-large .product-title, .wsite-elements.wsite-footer .product-small .product-title{}
+#wsite-title {}
+.wsite-menu-default a {}
+.wsite-menu a {}
+.wsite-elements .wsite-image div, .wsite-elements .wsite-caption {}
+.wsite-elements .galleryCaptionInnerText {}
+.fancybox-title {}
+.wsite-elements .wslide-caption {}
+.wsite-phone {}
+#bannerright h2 .wsite-text {}
+#bannerright p .wsite-text {}
+.wsite-button-inner {}
+#content blockquote {}
+.wsite-footer blockquote {}
+.blog-header h2 a {}
+h2.wsite-product-title {}
+.wsite-product .wsite-product-price a {}
+</style>
+
+<script><!--
+var STATIC_BASE = '';
+var STYLE_PREFIX = 'wsite';
+//-->
+</script>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+<script src='{% static 'wintersession/js/main.js' %}'></script>
+</head>
+<body class='tall-header-page  wsite-theme-dark wsite-page-enroll'>
+<div id="nav-wrap">
+        <div class="container">
+            <table id="header">
+                <tr>
+                    <td>
+                        <a href="/">
+                            <img style="height:50px;margin-right:15px;" src="{% static 'wintersession/files/logo.png' %}"/>
+                        </a>
+                    </td>
+ 
+                    <td id="logo"><span class='wsite-logo'><a href='/'>
+                    <span id="wsite-title">Wintersession 2014</span></a></span></td>
+					<td><ul class='wsite-menu-default'>
+					{% block menu %}
+					<li id='pg721251121132996039'><a href='{% url 'wintersession:home' %}'>Home</a></li>
+					<li id='pg263206575262786359'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
+					<li id='pg263206575262786358'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
+					<li id='pg276867464249989051'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
+					<li id='pg373026107483497366'><a href='{% url 'wintersession:about' %}'>About</a></li>
+					{% endblock %}
+					</ul></td>
+                </tr>
+            </table>
+        </div><!-- end container -->
+    </div><!-- end nav-wrap -->
+    
+    {% block whole %}
+	
+    <div id="banner-wrap" class="wsite-background">
+		<div class="container">
+			<div id="banner">
+				<h2><span class='wsite-text'>
+				{% block banner %}
+				What do you want to discover?
+				{% endblock %}
+				</span></h2>
+				<p></p>
+			</div>
+		</div>
+    </div><!-- end banner-wrap -->
+
+    <div id="main-wrap">
+      <div class="container">
+
+
+<div id='wsite-content' style="text-align:center;" class='wsite-elements wsite-not-footer'>
+
+{% block content %}
+{% endblock content %}
+
+                <img style="height:100px;" src="{% static 'wintersession/files/logo.png' %}"/>
+<br>
+<span style="color:black !important;">Brought to you by the USG</span>
+                </div>
+
+        </div><!-- end container -->
+
+    </div><!-- end main-wrap -->
+
+    <div id="footer-wrap">
+        <div style="min-height:0px;" class="container">
+<span style="font-size:12px;">Design adapted from a Weebly site. Powered by Django.</span>
+<script type='text/javascript'>
+<!--
+
+if (document.cookie.match(/(^|;)\s*is_mobile=1/)) {
+	var windowHref = window.location.href || '';
+	if (windowHref.indexOf('?') > -1) {
+		windowHref += '&';
+	} else {
+		windowHref += '?';
+	}
+	document.write(
+		"&nbsp;&nbsp;&nbsp;&nbsp;" +
+		"<a class='wsite-view-link-mobile' href='" + windowHref + "view=mobile'>Mobile Site</a>"
+	);
+}
+
+//-->
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-35235592-1']);
+  _gaq.push(['_setDomainName', 'tigerapps.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+        </div><!-- end container -->
+    </div><!-- end footer-wrap -->
+
+{% endblock whole %}
+
+</body>
+</html>

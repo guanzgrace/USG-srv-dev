@@ -198,4 +198,8 @@ INSTALLED_APPS = (
     'my',
     'myapps',
     'groups',
+
+# Apps now being integrated
+    'wintersession',
+
 )
