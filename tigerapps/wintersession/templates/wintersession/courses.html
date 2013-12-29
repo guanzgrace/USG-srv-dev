@@ -40,10 +40,15 @@
 		</h2><h4>
 		Instructors:
 			{{course.get_instructors}}
-		</h4><p>
-		{{course.description}} 
-		</p><h4>
-		{{course.schedule}}
+		</h4>
+		{{course.description|linebreaks}} 
+		<h4>
+		{{course.schedule}}<!--
+	 -->{% if course.other_section %}<!--
+		 -->{% for os in course.other_section.all %}<!-- 
+			 -->, {{os.schedule}}<!--
+		 -->{% endfor %}
+		{% endif %}
 		</h4></div></td></tr>
         
     {% endfor %}

@@ -15,6 +15,7 @@ admin.site.register(Student, StudentAdmin)
 
 class CourseInstructorInline(admin.TabularInline):
     model = Course.instructors.through #@UndefinedVariable
+    extra = 2
 
 class InstructorAdmin(admin.ModelAdmin):
     inlines = [CourseInstructorInline]
@@ -27,7 +28,7 @@ admin.site.register(Instructor, InstructorAdmin)
 class OtherSectionInline(admin.TabularInline):
     model = Course.other_section.through #@UndefinedVariable
     fk_name = 'from_course'
-    extra = 1
+    extra = 2
     verbose_name = "Other section of the same course"
     verbose_name_plural = "Other sections of the same course"
     

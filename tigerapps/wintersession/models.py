@@ -30,7 +30,7 @@ class ListField(models.TextField):
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    netID = models.CharField(max_length=8)
+    netID = models.CharField(max_length=8, unique=True)
 #     blocks = ListField('Busy blocks',blank=True)
 
     def blocks(self):
@@ -46,7 +46,7 @@ class Student(models.Model):
 class Instructor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    netID = models.CharField(max_length=8)
+    netID = models.CharField(max_length=8, unique=True)
     faculty = models.BooleanField(default=False)
 
     def __unicode__(self):  # Python 3: def __str__(self):
@@ -65,9 +65,9 @@ class Instructor(models.Model):
         return self.first_name+" "+self.last_name
 
 class Course(models.Model):
-    courseID = models.CharField(max_length=20)
+    courseID = models.CharField(max_length=20, unique=True)
     title = models.CharField(max_length=75,default='Title needed')
-    description = models.CharField(max_length=1000)
+    description = models.TextField(max_length=1000)
     other_section = models.ManyToManyField('self', blank=True)
     min_enroll = models.IntegerField(default=0)
     max_enroll = models.IntegerField(default=200)

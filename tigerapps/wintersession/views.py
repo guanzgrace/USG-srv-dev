@@ -27,7 +27,7 @@ def enroll(request):
 def student(request, error_message=None):
     user_name = request.user 
     if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('enroll:enroll')) # Really needs to send to CAS
+        return HttpResponseRedirect(reverse('wintersession:enroll')) # Really needs to send to CAS
     if Student.objects.filter(netID=user_name).count() != 1:
         student = Student(netID=user_name) # need to include other fields, too!
         student.save()
@@ -68,7 +68,7 @@ def courses(request):
 def instructor(request):
     user_name = request.user
     if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('enroll:enroll')) # Really needs to send to CAS
+        return HttpResponseRedirect(reverse('wintersession:enroll')) # Really needs to send to CAS
     if Instructor.objects.filter(netID=user_name).count() != 1:
         err_msg = "You're not an instructor."
 #         return HttpResponseRedirect(reverse('wintersession:student', args=(err_msg,)))
