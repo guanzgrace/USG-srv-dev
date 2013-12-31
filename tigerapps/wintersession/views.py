@@ -1,14 +1,16 @@
 #from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-#from django.template import RequestContext, loader
-from django.shortcuts import render#, redirect
+from django.template import RequestContext, loader
+from django.shortcuts import render, render_to_response#, redirect
 from wintersession.models import Course, Student, Registration, Instructor
-from django_tables2   import RequestConfig
-from wintersession.tables  import CourseTable#, AttendanceTable#, StudentTable,
+from django_tables2 import RequestConfig
+from wintersession.tables import CourseTable#, AttendanceTable#, StudentTable,
 from wintersession.time import decode
 from django.core.urlresolvers import reverse
 from wintersession.forms import AttendanceForm
 from django.forms.models import modelformset_factory#, modelform_factory
+from django_cas.decorators import login_required
+from utils.dsml import gdi
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
@@ -20,18 +22,23 @@ def about(request):
     return render(request, 'wintersession/about.html', {})
 
 def enroll(request):
-    table = CourseTable(Course.objects.filter(cancelled=False))
+    courses = Course.objects.filter(cancelled=False)
+    table = CourseTable(courses)
     RequestConfig(request).configure(table)
     return render(request, 'wintersession/enroll.html', {'table': table})
 
+@login_required
 def student(request, error_message=None):
-    user_name = request.user 
+    user_name = request.user
     if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('wintersession:enroll')) # Really needs to send to CAS
+        return HttpResponseRedirect(reverse('login')) # Send to CAS
     if Student.objects.filter(netID=user_name).count() != 1:
-        student = Student(netID=user_name) # need to include other fields, too!
+        info = gdi(user_name) # get personal info from LDAP
+        student = Student(netID=user_name, first_name=info.get('givenName'),
+                    last_name=info.get('sn')) # need to include other fields, too!
         student.save()
     student = Student.objects.get(netID=user_name)
+    identity = (student.netID, student.first_name, student.last_name)
     my_registrations = student.registration_set.all()
     my_courses = student.course_set.all()
     table = CourseTable(my_courses)
@@ -42,7 +49,7 @@ def student(request, error_message=None):
     # Only non-full active courses
     avail_courses = active_courses.filter(courseID__in=c_ids)       # can remove
     context = {
-        'user_name' : user_name,
+        'identity' : identity,
         'my_registrations' : my_registrations,
         'active_courses' : avail_courses, # or active_courses
         'error_message' : error_message,
@@ -65,16 +72,18 @@ def courses(request):
     }
     return render(request, 'wintersession/courses.html', context)
 
+@login_required
 def instructor(request):
     user_name = request.user
     if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('wintersession:enroll')) # Really needs to send to CAS
+        return HttpResponseRedirect(reverse('login')) # Really needs to send to CAS
     if Instructor.objects.filter(netID=user_name).count() != 1:
         err_msg = "You're not an instructor."
 #         return HttpResponseRedirect(reverse('wintersession:student', args=(err_msg,)))
         return student(request, err_msg)
 #         return redirect('wintersession:student', error_message=err_msg)
     selected_instructor = Instructor.objects.get(netID=user_name)
+    identity = (selected_instructor.netID, selected_instructor.first_name, selected_instructor.last_name)
     my_courses = selected_instructor.course_set.all()
     course_table = CourseTable(my_courses)
     RequestConfig(request).configure(course_table)
@@ -96,7 +105,7 @@ def instructor(request):
         attendance_formsets[mc.title] = (attendance_formset, zip(students, attendance_formset.forms))
     
     context = {
-        'user_name' : user_name,
+        'identity' : identity,
 #         'my_courses' : my_courses,
         'course_table' : course_table,
 #         'registration_tables' : registration_tables,
@@ -119,6 +128,7 @@ def instructor(request):
 #     formset = modelformset_factory(Registration, form=AttendanceForm, extra=0)(request.POST)
 #     formset.save()
 
+@login_required
 def drop(request):
     try:
         selected_course = Course.objects.get(courseID=request.POST['course'])
@@ -134,6 +144,7 @@ def drop(request):
         error_message = selected_course.title+" successfully dropped."
         return student(request, error_message)
 
+@login_required
 def add(request):
     try:
         selected_course = Course.objects.get(courseID=request.POST['course'])

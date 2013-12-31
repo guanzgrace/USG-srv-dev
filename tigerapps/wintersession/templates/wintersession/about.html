@@ -1,16 +1,18 @@
 {% extends "wintersession/base.html" %}
-{% load staticfiles %}
+{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
 
 {% block head %}
 <title>About - Wintersession 2014</title>
 {% endblock %}
 
 {% block menu %}
-	<li id='pg276867464249989051'><a href='{% url 'wintersession:home' %}'>Home</a></li>
-	<li id='pg721251121132996039'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
-	<li id='pg263206575262786359'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
-	<li id='pg263206575262786359'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
-	<li id='active'><a href='{% url 'wintersession:about' %}'>About</a></li>
+	<li id='pg276867464249989051'><a href='{% url 'home' %}'>Home</a></li>
+	<li id='pg721251121132996039'><a href='{% url 'courses' %}'>Courses</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'enroll' %}'>Enroll</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'teach' %}'>Teach</a></li>
+	<li id='active'><a href='{% url 'about' %}'>About</a></li>
 {% endblock %}
 
 {% block banner %}
@@ -21,7 +23,7 @@
 {% block content %}
 
 <hr>
-                <img style="height:50px;" src="{% static 'wintersession/files/logo.png' %}"/>
+                <img style="height:50px;" src="{{ STATIC_PREFIX }}wintersession/files/logo.png"/>
 <h1>What is Wintersession?</h1>
 <div class="paragraph" style="text-align:left;font-size:20px;">
 
@@ -38,7 +40,7 @@ universities such as MIT's IAP (Independent Activities Period), Harvard
 Wintersession, and Dartmouth&rsquo;s Winter Term, which provide students the
 opportunity to explore interests ranging from dance to public speaking.&nbsp;<br /><br />
 
-e're looking forward to putting a Princeton spin on it and having you involved!<br /><br />
+We're looking forward to putting a Princeton spin on it and having you involved!<br /><br />
 
 Brought to you by U-Councilors Laura Du, Elan Kugelmass, Katherine Clifton, Azza Cohen, and
 Mallory Banks, Freshmen Council members CJ Harris and Andrew Sun, and USG members Adam Suczewski, 

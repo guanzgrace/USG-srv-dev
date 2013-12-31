@@ -1,5 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls.defaults import patterns, url, include
+from django.contrib import admin
 from wintersession import views
+
+admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^enroll/$', views.enroll, name='enroll'),
@@ -13,7 +16,10 @@ urlpatterns = patterns('',
     url(r'^about/$', views.about, name='about'),
     url(r'^$', views.home, name='home'),
     
+    url(r'^admin/?$', 'django_cas.views.login', kwargs={'next_page': '/djadmin/'}),
+    (r'^djadmin/', include(admin.site.urls)),
+    
     # login/logout
-    #(r'^login/?$', 'django_cas.views.login'),
-    #(r'^logout/?$', 'django_cas.views.logout'),
+    url(r'^login/?$', 'django_cas.views.login', name='login'),
+    url(r'^logout/?$', 'django_cas.views.logout', name='logout'),
 )

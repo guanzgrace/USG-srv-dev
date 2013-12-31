@@ -1,4 +1,6 @@
-{% load staticfiles %}
+{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
 
 <!doctype html>
 <html>
@@ -9,11 +11,11 @@
 {% endblock %}
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'wintersession/sites.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'wintersession/facybox.css' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static 'wintersession/files/logo_16.png' %}">
-	<link rel="image_src" href="{% static 'wintersession/files/theme/default-bg.jpg' %}" />
-	<link rel='stylesheet' type='text/css' href='{% static 'wintersession/files/main_style.css' %}' title='wsite-theme-css' />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}wintersession/sites.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}wintersession/facybox.css" />
+    <link rel="shortcut icon" type="image/png" href="{{ STATIC_PREFIX }}wintersession/files/logo_16.png">
+	<link rel="image_src" href="{{ STATIC_PREFIX }}wintersession/files/theme/default-bg.jpg" />
+	<link rel='stylesheet' type='text/css' href='{{ STATIC_PREFIX }}wintersession/files/main_style.css' title='wsite-theme-css' />
 	<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,300italic,200,200italic,700,400italic,700italic' rel='stylesheet' type='text/css' />
 <style type='text/css'>
@@ -47,7 +49,7 @@ var STYLE_PREFIX = 'wsite';
 //-->
 </script>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
-<script src='{% static 'wintersession/js/main.js' %}'></script>
+<script src='{{ STATIC_PREFIX }}wintersession/js/main.js'></script>
 </head>
 <body class='tall-header-page  wsite-theme-dark wsite-page-enroll'>
 
@@ -58,7 +60,7 @@ var STYLE_PREFIX = 'wsite';
   addthis.layers({
     'theme' : 'transparent',
     'share' : {
-      'position' : 'left',
+      'position' : 'right',
       'numPreferredServices' : 5
     }   
   });
@@ -71,7 +73,7 @@ var STYLE_PREFIX = 'wsite';
                 <tr>
                     <td>
                         <a href="/">
-                            <img style="height:50px;margin-right:15px;" src="{% static 'wintersession/files/logo.png' %}"/>
+                            <img style="height:50px;margin-right:15px;" src="{{ STATIC_PREFIX }}wintersession/files/logo.png"/>
                         </a>
                     </td>
  
@@ -79,11 +81,11 @@ var STYLE_PREFIX = 'wsite';
                     <span id="wsite-title">Wintersession 2014</span></a></span></td>
 					<td><ul class='wsite-menu-default'>
 					{% block menu %}
-					<li id='pg721251121132996039'><a href='{% url 'wintersession:home' %}'>Home</a></li>
-					<li id='pg263206575262786359'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
-					<li id='pg263206575262786358'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
-					<li id='pg276867464249989051'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
-					<li id='pg373026107483497366'><a href='{% url 'wintersession:about' %}'>About</a></li>
+					<li id='pg721251121132996039'><a href='{% url 'home' %}'>Home</a></li>
+					<li id='pg263206575262786359'><a href='{% url 'courses' %}'>Courses</a></li>
+					<li id='pg263206575262786358'><a href='{% url 'enroll' %}'>Enroll</a></li>
+					<li id='pg276867464249989051'><a href='{% url 'teach' %}'>Teach</a></li>
+					<li id='pg373026107483497366'><a href='{% url 'about' %}'>About</a></li>
 					{% endblock %}
 					</ul></td>
                 </tr>
@@ -115,7 +117,7 @@ var STYLE_PREFIX = 'wsite';
 {% block content %}
 {% endblock content %}
 
-                <img style="height:100px;" src="{% static 'wintersession/files/logo.png' %}"/>
+                <img style="height:100px;" src="{{ STATIC_PREFIX }}wintersession/files/logo.png"/>
 <br>
 <span style="color:black !important;">Brought to you by the USG</span>
                 </div>

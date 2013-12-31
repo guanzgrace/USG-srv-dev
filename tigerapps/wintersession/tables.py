@@ -8,7 +8,7 @@ class CourseTable(tables.Table):
     class Meta:
         model = Course
         attrs = {"class": "paleblue"}
-        fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors', 'room')
+        fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors', 'room',)
         
 class StudentTable(tables.Table):
     class Meta:

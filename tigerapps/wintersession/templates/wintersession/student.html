@@ -1,20 +1,26 @@
 {% extends "wintersession/base.html" %}
 {% load render_table from django_tables2 %}
+{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
 
 {% block head %}
 <title>Enroll - Wintersession 2014</title>
 {% endblock %}
 
 {% block menu %}
-	<li id='pg721251121132996039'><a href='{% url 'wintersession:home' %}'>Home</a></li>
-	<li id='pg263206575262786359'><a href='{% url 'wintersession:courses' %}'>Courses</a></li>
-	<li id='active'><a href='{% url 'wintersession:enroll' %}'>Enroll</a></li>
-	<li id='pg276867464249989051'><a href='{% url 'wintersession:teach' %}'>Teach</a></li>
-	<li id='pg373026107483497366'><a href='{% url 'wintersession:about' %}'>About</a></li>
+	<li id='pg721251121132996039'><a href='{% url 'home' %}'>Home</a></li>
+	<li id='pg263206575262786359'><a href='{% url 'courses' %}'>Courses</a></li>
+	<li id='active'><a href='{% url 'enroll' %}'>Enroll</a></li>
+	<li id='pg276867464249989051'><a href='{% url 'teach' %}'>Teach</a></li>
+	<li id='pg373026107483497366'><a href='{% url 'about' %}'>About</a></li>
 {% endblock %}
 
 {% block content %}
-<p> Welcome to your student detail page, <strong> {{ user_name }} </strong>. </p>
+<p>
+ Welcome to your student detail page, <strong> {{ identity.1 }} {{identity.2}} </strong>. 
+(<a href='{%url 'logout' %}'>Not {{ identity.0 }}?</a>)
+</p>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -29,7 +35,7 @@
 <h1> Add course </h1>
 
 {% if active_courses %}
-<form action="{% url 'wintersession:add' %}" method="post">
+<form action="{% url 'add' %}" method="post">
 {% csrf_token %}
 <select name="course">
 {% for course in active_courses %}
@@ -48,7 +54,7 @@
 <h1> Drop course </h1>
 
 {% if my_registrations %}
-<form action="{% url 'wintersession:drop' %}" method="post">
+<form action="{% url 'drop' %}" method="post">
 {% csrf_token %}
 <select name="course">
 {% for registration in my_registrations %}
