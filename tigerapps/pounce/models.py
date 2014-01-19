@@ -100,8 +100,9 @@ class CoursesList(models.Model):
 		courses = []
 		for course in Course.objects.all().order_by('code'):
 			courseDict = {'courseTitle' : course.title, 'courseId' : course.code, 'courseNumber' : course.number, 'classes' : []}
+			pcelink = course.code.split('/')[0].replace(" ", "")
 			for theclass in Class.objects.filter(course=course).order_by('title'):
-				courseDict['classes'].append({'classTitle' : theclass.title, 'classNumber' : theclass.number, 'classTime' : theclass.time, 'classDays' : theclass.days, 'enroll' : theclass.enroll, 'max' : theclass.max, 'isClosed' : theclass.isClosed})
+				courseDict['classes'].append({'classTitle' : theclass.title, 'classNumber' : theclass.number, 'classTime' : theclass.time, 'classDays' : theclass.days, 'enroll' : theclass.enroll, 'max' : theclass.max, 'isClosed' : theclass.isClosed, 'pceLink' : pcelink})
 			courses.append(courseDict)
 		self.json = json.dumps(courses)
 		self.save()
