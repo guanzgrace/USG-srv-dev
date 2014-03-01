@@ -6,26 +6,27 @@
 {% block title %}Manage Event{% endblock %}
 
 {% block headercss %}
+<link href="/static/cal/css/jquery-ui-timepicker-addon.min.css" type="text/css"/>
 {% endblock %}
 
 {% block headerscript %}
-   <script type="text/javascript" src="/admin/jsi18n/"></script>
-   <script type="text/javascript" src="/static/cal/js/core.js"></script>
-   <script type="text/javascript" src="/static/cal/js/admin/RelatedObjectLookups.js"></script>
-	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/ui.all.css" rel="stylesheet" type="text/css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="/static/cal/js/jquery.ui.datetimepicker.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(function() {
-           $('#id_event_date_rsvp_deadline').datepicker({ dateFormat: 'mm/dd/yy' });
-           $('#id_event_date_time_start').datetimepicker();
-           $('#id_event_date_time_end').datetimepicker();
-        });
-    </script>  
+<script type="text/javascript" src="/static/cal/js/core.js"></script>
+<script type="text/javascript" src="/static/cal/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/cal/js/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
+<script type="text/javascript" src="/static/shared/js/textext.js"></script>
+<script type="text/javascript" src="/static/cal/js/cal-tags.js"></script>
 
+<script type="text/javascript">
+$(function() {
+    $('#id_event_date_time_start').datetimepicker({timeFormat: "hh:mmtt"});
+    $('#id_event_date_time_end').datetimepicker({timeFormat: "hh:mmtt"});
+    $('#id_event_date_rsvp_deadline').datepicker();
+    prepareTags();
+});
+</script>  
 
-
-   {{ eventForm.media }}
+{{ eventForm.media }}
 {% endblock %}
 
 {% block content %}
@@ -40,24 +41,33 @@ There was an error with the submission.<br /><br />
 <table class="formTable">
 
       {% for field in clusterForm %}
-         <tr>
+        <tr>
             <th class="tableLabel">{{ field.label_tag }}: 
             {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-            <td>{% if field.errors %}
-               <ul class="errorlist">
-               {% for error in field.errors %}
-               <li>{{ error }}</li>
-               {% endfor %}
-               </ul>
-               {% endif %}
-               {{ field }}
-               {% if field.help_text %}
-               <br />
-               {{ field.help_text }}
-               {% endif %}</td>
+
+            <td>
+            {% if field.errors %}
+              <ul class="errorlist">
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if field.name == "cluster_tags" %}
+              <!-- TODO: need to add field.value to populate field with existing list of tags -->
+              <textarea id="id_cluster_tags_ui" name="cluster_tags" rows="1"></textarea>
+            {% else %}
+              {{ field }}
+            {% endif %}
+
+            {% if field.help_text %}
+              <br />
+              {{ field.help_text }}
+            {% endif %}
+            </td>
          </tr>
       {% endfor %}
-
 
       {% for field in eventForm %}
          <tr>

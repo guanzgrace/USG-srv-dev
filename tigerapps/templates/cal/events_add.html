@@ -6,7 +6,6 @@
 {% block title %}Add Event{% endblock %}
 
 {% block headercss %}
-
 <style type="text/css">
     .add-row {
         padding-left:18px;
@@ -18,118 +17,110 @@
         background:url(/static/cal/css/img/delete.png) no-repeat left center;
     }
 </style>
+<link href="/static/cal/css/jquery-ui-timepicker-addon.min.css" type="text/css"/>
 {% endblock %}
 
 {% block headerscript %}
-   <script type="text/javascript" src="/static/cal/js/core.js"></script>
-   <script type="text/javascript" src="/static/cal/js/admin/RelatedObjectLookups.js"></script>
-
-   <script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
-   <script type="text/javascript" src="/static/cal/js/datetimepicker_css.js"></script>
-   
-   <script type="text/javascript" src="/static/shared/js/textext.js"></script>
+<script type="text/javascript" src="/static/cal/js/core.js"></script>
+<script type="text/javascript" src="/static/cal/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/cal/js/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/static/cal/js/jquery.formset.js"></script>
+<script type="text/javascript" src="/static/shared/js/textext.js"></script>
+<script type="text/javascript" src="/static/cal/js/cal-tags.js"></script>
    
 <script type="text/javascript">
-  $(function() {
+/* Enable CSS calendar for events */
+cssCalAdded = {};
+function addCssCal() {
+    startfield = $("input[name*='event_date_time_start']");
+    startfield.each(function(i, field) {
+        if (!(field.id in cssCalAdded)) {
+            cssCalAdded[field.id] = true;
+            $(field).datetimepicker({timeFormat: "hh:mmtt"});
+        }
+    });
+    endfield = $("input[name*='event_date_time_end']");
+    endfield.each(function(i, field) {
+        if (!(field.id in cssCalAdded)) {
+            cssCalAdded[field.id] = true;
+            $(field).datetimepicker({timeFormat: "hh:mmtt"});
+        }
+    });
+    rsvpfield = $("input[name*='event_date_rsvp_deadline']");
+    rsvpfield.each(function(i, field) {
+        if (!(field.id in cssCalAdded)) {
+            cssCalAdded[field.id] = true;
+            $(field).datepicker();
+        }
+    });
+}
+ 
+/* Add/remove related events functionality */
+$(function() {
     $('.evForm').formset({
       prefix: '{{ formset.prefix }}',
       added: function() {
-         first = $("input[name*='event_subtitle']:first");
-         last = $("input[name*='event_subtitle']:last");
-         last.val(first.val());
-         
-         first = $("textarea[name*='event_subdescription']:first");
-         last = $("textarea[name*='event_subdescription']:last");
-         last.val(first.val());
-         
-         first = $("input[name*='event_date_time_start']:first");
-         last = $("input[name*='event_date_time_start']:last");
-         last.val(first.val());
-         
-         first = $("input[name*='event_date_time_end']:first");
-         last = $("input[name*='event_date_time_end']:last");
-         last.val(first.val());
-         
-         first = $("select[name*='event_location']:first");
-         last = $("select[name*='event_location']:last");
-         last.val(first.val());
-         
-         first = $("input[name*='event_location_details']:first");
-         last = $("input[name*='event_location_details']:last");
-         last.val(first.val());
-         
-         first = $("input[name*='event_date_rsvp_deadline']:first");
-         last = $("input[name*='event_date_rsvp_deadline']:last");
-         last.val(first.val());
-         
-         first = $("input[name*='event_max_attendance']:first");
-         last = $("input[name*='event_max_attendance']:last");
-         last.val(first.val());
-         
-         $('#id_form-0-event_subtitle').show();
-         $("label[for='id_form-0-event_subtitle']").parent().show();
-         $('#id_form-0-event_subdescription').show();
-         $("label[for='id_form-0-event_subdescription']").parent().show();
+        first = $("input[name*='event_subtitle']:first");
+        last = $("input[name*='event_subtitle']:last");
+        last.val(first.val());
 
-         
+        first = $("textarea[name*='event_subdescription']:first");
+        last = $("textarea[name*='event_subdescription']:last");
+        last.val(first.val());
+
+        first = $("input[name*='event_date_time_start']:first");
+        last = $("input[name*='event_date_time_start']:last");
+        last.val(first.val());
+
+        first = $("input[name*='event_date_time_end']:first");
+        last = $("input[name*='event_date_time_end']:last");
+        last.val(first.val());
+
+        first = $("select[name*='event_location']:first");
+        last = $("select[name*='event_location']:last");
+        last.val(first.val());
+
+        first = $("input[name*='event_location_details']:first");
+        last = $("input[name*='event_location_details']:last");
+        last.val(first.val());
+
+        first = $("input[name*='event_date_rsvp_deadline']:first");
+        last = $("input[name*='event_date_rsvp_deadline']:last");
+        last.val(first.val());
+
+        first = $("input[name*='event_max_attendance']:first");
+        last = $("input[name*='event_max_attendance']:last");
+        last.val(first.val());
+
+        $('#id_form-0-event_subtitle').show();
+        $("label[for='id_form-0-event_subtitle']").parent().show();
+        $('#id_form-0-event_subdescription').show();
+        $("label[for='id_form-0-event_subdescription']").parent().show();
+        addCssCal();
       }
-    })
+    });
 });
 
-function clearTag() {
-         var tag_element = $('#id_cluster_tags_ui');
-         tag_element.val(tag_element.val().replace(/\W/g, ''));
-}
+$(function(){
+    addCssCal();
+    /* Let message board checkboxes be checked by default. */
+    /* 3/1/2014 TODO: JS doesn't seem like the easiest way to do this? */
+    $("input[name*='cluster_board_enabled']").attr('checked', 'checked');
+    $("input[name*='cluster_notify_boardpost']").attr('checked', 'checked');
 
-function submitTag() {
-        $('#id_cluster_tags_ui').textext()[0].tags().addTags([ $.trim($('#id_cluster_tags_ui').val().replace(/\W/g, '')) ]);
-        $('#id_cluster_tags_ui').val('');
-}
-    
-$(document).ready(function(){
-   $('.evForm').find('.delete-row').remove();
-   startfield = $("input[name*='event_date_time_start']");
-   startfield.after("<a href=\"javascript:NewCssCal('" + startfield.attr('id') + "', 'MMddyyyy', 'Arrow', 'true', '12', 'true')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
-   endfield = $("input[name*='event_date_time_end']");
-   endfield.after("<a href=\"javascript:NewCssCal('" + endfield.attr('id') + "', 'MMddyyyy', 'Arrow', 'true', '12', 'true')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
-   rsvpfield = $("input[name*='event_date_rsvp_deadline']");
-   rsvpfield.after("<a href=\"javascript:NewCssCal('" + rsvpfield.attr('id') + "', 'MMddyyyy', 'Arrow')\"><img src=\"/static/cal/css/img/cal.gif\"></a>");
-   
-   {% if clusterForm %}
-   $('#id_form-0-event_subtitle').hide();
-   $("label[for='id_form-0-event_subtitle']").parent().hide();
-   $('#id_form-0-event_subdescription').hide();
-   $("label[for='id_form-0-event_subdescription']").parent().hide();
-   {% endif %}
-   
-   $("input[name*='cluster_board_enabled']").attr('checked', 'checked');
-   $("input[name*='cluster_notify_boardpost']").attr('checked', 'checked');
-   
-   $('#id_cluster_tags_ui').css('width', '240px');
-   $('#id_cluster_tags_ui').textext({
-        plugins : 'tags prompt focus autocomplete ajax arrow',
-        prompt : 'Choose or add your own...',
-        ajax : {
-          url : '/ajax/alltags/',
-          dataType : 'json',
-          cacheResults : true
-        }
-    });
-
-   
-    $("#id_cluster_tags_ui").keyup(function () {
-      if ((event.which == 32 || event.which == 44) && $.trim($('#id_cluster_tags_ui').val().replace(/\W/g, '')) != "") {
-        submitTag();
-      }
-       clearTag();
-    });
-
-    $("#id_cluster_tags_ui").focusout( function () {
-        setTimeout("submitTag()", 250);
-    });
-
+    /* Show/hide additional related events? */
+    $('.evForm').find('.delete-row').remove();
+    {% if clusterForm %}
+    $('#id_form-0-event_subtitle').hide();
+    $("label[for='id_form-0-event_subtitle']").parent().hide();
+    $('#id_form-0-event_subdescription').hide();
+    $("label[for='id_form-0-event_subdescription']").parent().hide();
+    {% endif %}
 });
 
+$(function(){
+    prepareTags();
+}
 </script>
 
 {{ formset.media }} 
@@ -158,52 +149,50 @@ There was an error with the submission.<br />
 
 <form id="eventForm" action="" method="POST" enctype="multipart/form-data" >
 
-   {% if clusterForm %}
-   <table class="formTable">
+    {% if clusterForm %}
+    <table class="formTable">
       <tbody>
 
       {% for field in clusterForm %}
-         <tr>
+          <tr>
             <th class="tableLabel">{{ field.label_tag }}: 
             {% if field.field.required %}<br /><span class="required">Required<br />&nbsp;</span>{% endif %} </th>
-            <td>
 
+            <td>
             {% if field.errors %}
-               <ul class="errorlist">
-               {% for error in field.errors %}
-               <li>{{ error }}</li>
-               {% endfor %}
-               </ul>
+              <ul class="errorlist">
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              </ul>
             {% endif %}
  
-               {% if field.name == "cluster_tags" %}
-                 <textarea id="id_cluster_tags_ui" name="cluster_tags" rows="1"></textarea> 
-               {% else %}
-               {{ field }}
-               {% endif %}
+            {% if field.name == "cluster_tags" %}
+              <textarea id="id_cluster_tags_ui" name="cluster_tags" rows="1"></textarea> 
+            {% else %}
+             {{ field }}
+            {% endif %}
 
-                 
-
-               {% if field.help_text %}
-               <br />
-               {{ field.help_text }}
-               {% endif %}</td>
-         </tr>
+            {% if field.help_text %}
+              <br />
+              {{ field.help_text }}
+            {% endif %}
+            </td>
+          </tr>
       {% endfor %}
-	 
-	 {% comment %} ADDED for Student Groups {% endcomment %}
-	 {% if group_mships %}
-      <tr> 
-        <th class="tableLabel"><label for="id_post_groups">Post event on Princeton Student Groups</label>: 
-        </th> 
-        <td> 
-          <select name="post_groups" id="id_post_groups" />
-	  <option value="" selected="selected">---------</option>
-	  {% for m in group_mships %}
-	  <option value="{{m.group.id}}">{{m.group.name}}</option>
-	  {% endfor %}
-        </select>
-        </td> 
+
+      {% comment %} ADDED for Student Groups {% endcomment %}
+      {% if group_mships %}
+        <tr> 
+          <th class="tableLabel"><label for="id_post_groups">Post event on Princeton Student Groups</label>:</th> 
+          <td> 
+            <select name="post_groups" id="id_post_groups" />
+              <option value="" selected="selected">---------</option>
+              {% for m in group_mships %}
+              <option value="{{m.group.id}}">{{m.group.name}}</option>
+              {% endfor %}
+            </select>
+          </td> 
         </tr>
       {% else %}{% if group %}
         <tr> 
@@ -215,9 +204,8 @@ There was an error with the submission.<br />
               <option value="{{group.id}}">{{group.name}}</option>
             </select>
           </td> 
-          </tr>
-	  {% endif %}
-     {% endif %}
+        </tr>
+	  {% endif %}{% endif %}
 
       </tbody>
    </table>

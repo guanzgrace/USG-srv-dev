@@ -514,7 +514,7 @@ def events_add(request):
     try:
         most_recent_submission = Event.objects.filter(event_cluster__cluster_user_created=user).latest('event_cluster__cluster_date_time_created')
         if datetime.now() - most_recent_submission.event_cluster.cluster_date_time_created <= timedelta(minutes=240):
-             Msg('You just submitted \'<a href="/events/%s">%s</a>\'. Are you adding another date/time for this event or another in this series?<br />Consider adding a <a href="/events/add/%s">related event here</a> instead of a brand new one below.' % (most_recent_submission.pk,most_recent_submission.displayname(),most_recent_submission.pk),2).push(request)
+             Msg('You just submitted \'<a href="/events/%s">%s</a>\'. Are you adding another date/time for that event?<br />Consider adding a <a href="/events/add/%s">related event here</a> instead of a brand new one below.' % (most_recent_submission.pk,most_recent_submission.displayname(),most_recent_submission.pk),2).push(request)
     except:
         pass
 
