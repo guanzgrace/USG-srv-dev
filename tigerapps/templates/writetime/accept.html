@@ -1,18 +1,13 @@
 {% extends "writetime/base.html" %}
 {% block content %}
 	<div style="width: 400px; margin-left: auto; margin-right: auto;">
-		<p style="margin: 15px; 0">By clicking the "Accept" button below, you, <b>{{user.username}}</b>, agree to attend the writing seminar appointment <b>{{appointment.time|date:"l, F j" }}</b> at <b>{{appointment.time|date:"g:i a"}}</b> You will receive a reminder email in a few moments.</p>
+		<p style="margin: 15px; 0">By clicking the "Accept" button below, you, <b>{{user.username}}</b>, agree to attend the writing seminar appointment <b>{{appointment.time|date:"l, F j" }}</b> at <b>{{appointment.time|date:"g:i a"}}</b> You will receive a confirmation email in a few moments.</p>
 		<form class="form" action="/submitAccept/{{appointment.pk}}">
 			<table>
 				<tr>
 					<td style="width: 50px; text-align: right;"></td>
 					<td style="width: 20px;"></td>
 					<td style="width: 200px;"></td>
-				</tr>
-				<tr>
-					<td style="text-align: right;">NetID</td>		
-					<td></td>
-					<td>{{user}}</td>
 				</tr>
 				<tr>
 					<td style="text-align: right;">Name</td>

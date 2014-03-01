@@ -198,4 +198,15 @@ INSTALLED_APPS = (
     'my',
     'myapps',
     'groups',
+
+# In development
+    'wintersession',
+    'django_tables2',
+
+)
+
+# Context processor for django_tables2 (wintersession)
+import django.conf.global_settings as DEFAULT_SETTINGS
+TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + (
+    'django.core.context_processors.request',
 )
