@@ -31,7 +31,7 @@ class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     netID = models.CharField(max_length=8, unique=True)
-#     blocks = ListField('Busy blocks',blank=True)
+    agenda_visibility = models.BooleanField(default=False)
 
     def blocks(self):
         blks = []
@@ -39,6 +39,24 @@ class Student(models.Model):
             for blk in course.blocks:
                 blks.append(blk)
         return blks
+    
+    def isScheduleConsistent(self):
+        blks = self.blocks()
+        return len(blks) == len(set(blks))
+
+    def whyScheduleInconsistent(self):
+    # Returns a tuple of conflicting courses, if any
+    # Does not identify more than one conflict at a time
+        if self.isScheduleConsistent():
+            return
+        for course1 in self.course_set.all():
+            for course2 in self.course_set.all():
+                if course1 == course2:
+                    break
+                for block2 in course2.blocks:
+                    if block2 in course1.blocks:
+                        return (course1, course2)
+        raise RuntimeException('Should have found conflicting courses.')
 
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.netID
@@ -68,7 +86,7 @@ class Course(models.Model):
     courseID = models.CharField(max_length=20, unique=True)
     title = models.CharField(max_length=75,default='Title needed')
     description = models.TextField(max_length=1000)
-    other_section = models.ManyToManyField('self', blank=True)
+    other_section = models.ManyToManyField('self', blank=True, symmetrical=True)
     min_enroll = models.IntegerField(default=0)
     max_enroll = models.IntegerField(default=200)
     cancelled = models.BooleanField(default=False)

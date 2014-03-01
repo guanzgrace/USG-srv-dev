@@ -17,6 +17,32 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="button-wrap"><div style="text-align:center;"><div style="height: 0px; overflow: hidden;"></div>
+
+    <!--div style="color:black;">REGISTRATION OPENING SOON</div-->
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'courses' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Course descriptions
+    </span>
+</a>
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'enroll' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Enrollment home page
+    </span>
+</a>
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'instructor' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Instructor portal<br>
+    </span>
+</a>
+
+<div style="height: 0px; overflow: hidden;"></div></div></div>
+
+<br />
+<hr />
+
+
 <p>
  Welcome to your student detail page, <strong> {{ identity.1 }} {{identity.2}} </strong>. 
 (<a href='{%url 'logout' %}'>Not {{ identity.0 }}?</a>)
@@ -25,6 +51,8 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <h1> My Courses </h1>
+
+<p> <a href="{% url 'agenda' %}"> See as daily agenda </a> </p>
 
 {% if my_registrations %}
 	{% render_table table %}
@@ -40,7 +68,7 @@
 <select name="course">
 {% for course in active_courses %}
     <option value="{{ course.courseID }}" />
-    {{ course.title  }}
+    {{ course.title  }} ({{ course.schedule }})
     </option>
 {% endfor %}
 </select><br />

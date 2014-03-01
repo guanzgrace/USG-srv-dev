@@ -18,6 +18,30 @@
 
 {% block content %}
 
+<div class="button-wrap"><div style="text-align:center;"><div style="height: 0px; overflow: hidden;"></div>
+
+    <!--div style="color:black;">REGISTRATION OPENING SOON</div-->
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'courses' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Course descriptions
+    </span>
+</a>
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'enroll' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Enrollment home page
+    </span>
+</a>
+<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'student' %}">
+    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
+    Student schedule + add/drop<br>
+    </span>
+</a>
+
+<div style="height: 0px; overflow: hidden;"></div></div></div>
+
+<br />
+<hr />
+
 <p>Welcome to your instructor detail page, <strong> {{ identity.1 }} {{identity.2}} </strong>. 
 (<a href='{%url 'logout' %}'>Not {{ identity.0 }}?</a>)
 </p>
@@ -40,7 +64,7 @@
 {% endcomment %}
 
 {% for course, formset in attendance_formsets.items %}
-<h3> {{course}} </h3>
+<h3> {{formset.2}}: {{course}} </h3>
 <br />
 <div class="table-container">
 <form action="{% url 'instructor' %}" method="post">{% csrf_token %}

@@ -1,16 +1,22 @@
 #from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import RequestContext, loader
-from django.shortcuts import render, render_to_response#, redirect
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from wintersession.models import Course, Student, Registration, Instructor
 from django_tables2 import RequestConfig
-from wintersession.tables import CourseTable#, AttendanceTable#, StudentTable,
-from wintersession.time import decode
+from wintersession.tables import LtdCourseTable, CourseTable#, AttendanceTable#, StudentTable,
+from wintersession.time import decode, decode_time
 from django.core.urlresolvers import reverse
-from wintersession.forms import AttendanceForm
-from django.forms.models import modelformset_factory#, modelform_factory
+from wintersession.forms import AttendanceForm, AgendaPrivacyForm, FriendAgendaForm
+from django.forms.models import modelformset_factory, modelform_factory
 from django_cas.decorators import login_required
 from utils.dsml import gdi
+import datetime
+import collections
+
+# Wintersession registration start
+REGSTART = datetime.date(2014, 01, 9)
+REGEND = datetime.date(2014,01,22)
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
@@ -23,7 +29,7 @@ def about(request):
 
 def enroll(request):
     courses = Course.objects.filter(cancelled=False)
-    table = CourseTable(courses)
+    table = LtdCourseTable(courses)
     RequestConfig(request).configure(table)
     return render(request, 'wintersession/enroll.html', {'table': table})
 
@@ -34,9 +40,12 @@ def student(request, error_message=None):
         return HttpResponseRedirect(reverse('login')) # Send to CAS
     if Student.objects.filter(netID=user_name).count() != 1:
         info = gdi(user_name) # get personal info from LDAP
-        student = Student(netID=user_name, first_name=info.get('givenName'),
+        s = Student(netID=user_name, first_name=info.get('givenName'),
                     last_name=info.get('sn')) # need to include other fields, too!
-        student.save()
+        s.save()
+        # Add the special event
+        c = Course.objects.get(courseID='S1499')
+        Registration(course=c, student=s).save()
     student = Student.objects.get(netID=user_name)
     identity = (student.netID, student.first_name, student.last_name)
     my_registrations = student.registration_set.all()
@@ -102,7 +111,7 @@ def instructor(request):
 #         registration_tables[mc.title] = registration_table
         AttendanceFormSet = modelformset_factory(Registration, form=AttendanceForm, extra=0)
         attendance_formset = AttendanceFormSet(queryset=registrations)
-        attendance_formsets[mc.title] = (attendance_formset, zip(students, attendance_formset.forms))
+        attendance_formsets[mc.courseID] = (attendance_formset, zip(students, attendance_formset.forms), mc.title)
     
     context = {
         'identity' : identity,
@@ -136,6 +145,10 @@ def drop(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
+        today = datetime.date.today()
+        if not (REGSTART <= today <= REGEND):
+            error_message = "It is not time to enroll."
+            return student(request, error_message)
         selected_student = Student.objects.get(netID=request.user)
         #for item in selected_course.blocks:
         #    selected_student.blocks.remove(item)
@@ -152,6 +165,10 @@ def add(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
+        today = datetime.date.today()
+        if not (REGSTART <= today <= REGEND):
+            error_message = "It is not time to enroll."
+            return student(request, error_message)
         selected_student = Student.objects.get(netID=request.user)
         ss_courses = selected_student.course_set.all()
         # Can't enroll in a class we're already in
@@ -197,3 +214,112 @@ def add(request):
         Registration(student=selected_student, course=selected_course).save()
         error_message = selected_course.title+" successfully added."
         return student(request, error_message)
+    
+@login_required
+def my_agenda(request):
+    return redirect('agenda', student_id=request.user)
+
+@login_required
+def agenda(request, student_id):
+    selected_student = get_object_or_404(Student, netID=student_id)
+    selected_identity = (selected_student.netID, selected_student.first_name, selected_student.last_name)
+    user_student = Student.objects.get(netID=request.user)
+    user_identity = (user_student.netID, user_student.first_name, user_student.last_name, user_student.pk)
+    # Is the user looking at his own agenda?
+    own_agenda = (selected_student == user_student)
+    ss_courses = selected_student.course_set.all()
+#    ss_blocks = selected_student.blocks().sort()
+    agend = {}
+    for i in range(1,6):
+        agend[i] = {}
+    # We're going to make a dict with five entries. Values will be dicts for
+    # each day of the week. the subdicts will map start timecodes to tuples
+    # with format (Course, start time, end time)
+    # for each course the student is taking
+    for c in ss_courses:
+        prev_blk = 0
+        first_blk = c.blocks[0]
+        # and for each block in that course
+        for blk in c.blocks:
+            # see if the block is beginning of the session
+            # if not, go to the next block
+            if blk == prev_blk + 5:
+                prev_blk = blk 
+                continue
+            # but if so, record the previous session
+            dow = int(str(first_blk)[0])
+            start_time = decode_time(first_blk % 1000)
+            end_time = decode_time((prev_blk+5) % 1000)
+            info = (c, start_time, end_time)
+            agend[dow][first_blk] = info
+            # and start a new one
+            first_blk = blk 
+            prev_blk = blk
+        else: # Handle the last session
+            dow = int(str(first_blk)[0])
+            start_time = decode_time(first_blk % 1000)
+            end_time = decode_time((prev_blk+5) % 1000)
+            info = (c, start_time, end_time)
+            agend[dow][first_blk] = info
+            
+    # now order all of the dictionaries
+    for i in range(1,6):
+        od = collections.OrderedDict(sorted(agend[i].items()))
+        agend[i] = od
+        
+    dow = {}
+    dow[1] = "Monday"
+    dow[2] = "Tuesday"
+    dow[3] = "Wednesday"
+    dow[4] = "Thursday"
+    dow[5] = "Friday"
+    
+    # Prepare the privacy option form if user is looking at own agenda
+    if own_agenda:
+        privacy_form = AgendaPrivacyForm(instance=user_student)
+        agenda_visibility = True
+    else:
+        privacy_form = None
+        agenda_visibility = selected_student.agenda_visibility
+
+    # Preare the search for friend form
+    friend_form = FriendAgendaForm()
+    
+    context = {
+               'agenda' : agend,
+               'dow' : dow,
+               'own_agenda' : own_agenda,
+               'user_identity' : user_identity,
+               'selected_identity' : selected_identity,
+               'privacy_form' : privacy_form,
+               'agenda_visibility' : agenda_visibility,
+               'friend_form' : friend_form,
+               }
+    
+    if request.method == 'POST' and own_agenda:
+        privacy_form = AgendaPrivacyForm(request.POST)
+        if privacy_form.is_valid():
+            a_v = privacy_form.cleaned_data['agenda_visibility']
+            user_student.agenda_visibility = a_v
+            user_student.save()
+            # ugly hack to get forms to refresh
+            request.method = 'GET'
+            return agenda(request, user_student.netID)
+        else:
+            raise RuntimeError("Form was not valid") 
+    
+    return render(request, 'wintersession/agenda.html', context)
+
+@login_required
+def friend_agenda(request):
+    if request.method == 'POST':
+        form = FriendAgendaForm(request.POST)
+        if form.is_valid():
+            return redirect('agenda',student_id=form.cleaned_data['friend_netID'])
+        else:
+            return redirect('agenda',student_id=request.user)
+    else:
+        return redirect('agenda',student_id=request.user)
+
+def events(request):
+    return render(request, 'wintersession/events.html', {})

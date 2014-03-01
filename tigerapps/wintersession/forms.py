@@ -1,5 +1,5 @@
-from django.forms import ModelForm#, Select
-from wintersession.models import Registration
+from django.forms import ModelForm, Form, CharField
+from wintersession.models import Registration, Student
 
 class AttendanceForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -18,3 +18,14 @@ class AttendanceForm(ModelForm):
 #             'student': Select(attrs={'disabled':'true', 'readonly':'readonly'}),
 #         }
         
+class AgendaPrivacyForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AgendaPrivacyForm, self).__init__(*args, **kwargs)
+        self.fields['agenda_visibility'].label = 'Make my agenda visible to all logged-in users'
+         
+    class Meta:
+        model = Student
+        fields = ['agenda_visibility',]
+
+class FriendAgendaForm(Form):
+    friend_netID = CharField(max_length=8)

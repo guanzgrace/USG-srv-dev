@@ -40,7 +40,7 @@ class BlocksModelForm( forms.ModelForm ):
         model = Course
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('courseID','title','schedule','current_enroll',
+    list_display = ('courseID','title','schedule','room','current_enroll',
                     'max_enroll', 'meets_min_requirements','cancelled')
     exclude = ('instructors', 'other_section',)
 #    list_filter = ['meets_min_requirements','cancelled']

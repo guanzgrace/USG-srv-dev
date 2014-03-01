@@ -19,7 +19,7 @@ def decode(timecode):
     elif dowc == 5:
         dow = "Friday"
     
-    if str(time)[-1] == 5:
+    if str(time)[-1] == '5':
         half = ":30"
     else:
         half = ""
@@ -35,3 +35,21 @@ def decode(timecode):
         merid = "a"
         
     return dow+" "+str(hour)+half+merid
+
+def decode_time(time):
+    if str(time)[-1] == '5':
+        half = ":30"
+    else:
+        half = ""
+    
+    if time / 10 > 12:
+        hour = time / 10 - 12
+        merid = "p"
+    elif time / 10 == 12:
+        hour = 12
+        merid = 'p'
+    else:
+        hour = time / 10
+        merid = "a"
+        
+    return str(hour)+half+merid

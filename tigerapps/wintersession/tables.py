@@ -9,6 +9,18 @@ class CourseTable(tables.Table):
         model = Course
         attrs = {"class": "paleblue"}
         fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors', 'room',)
+        order_by = ('courseID')
+        
+class LtdCourseTable(tables.Table):
+    get_instructors = tables.Column(verbose_name="Instructors", orderable=False)
+    current_enroll = tables.Column(orderable=False)
+    max_enroll = tables.Column(orderable=False)
+    class Meta:
+        model = Course
+        attrs = {"class": "paleblue"}
+        fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors',)
+        order_by = ('courseID')
+
         
 class StudentTable(tables.Table):
     class Meta:
