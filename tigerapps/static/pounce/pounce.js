@@ -38,7 +38,7 @@ var viewCourseDetail = function(course){
 	$("#course-detail").show();
 	$("#course-detail-id").text(course.courseId);
 	$("#course-detail-title").text(course.courseTitle);
-        $("#course-pce-link").attr('href', course.pceLink);
+    // $("#course-pce-link").attr('href', course.pceLink);
 	$.each(course.classes, function(index, theClass){
 		var classRow = $("<tr>");
 		if (theClass.isClosed){
