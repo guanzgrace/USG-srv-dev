@@ -14,7 +14,10 @@ log.log('Running updateall.py')
 clean()
 
 for course in Course.objects.all():
-	updateCourse(course)
+    try:
+	   updateCourse(course)
+    except Exception:
+        print "Error updating course %s" % course.title
 
 list = CoursesList.objects.all()[0]
 list.cache()
