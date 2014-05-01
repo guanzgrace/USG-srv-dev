@@ -1,8 +1,14 @@
-import urllib2
-import urllib
-
+import os
+import smtplib
+from email.mime.text import MIMEText
+from EMAIL_SETTINGS import user, password 
 def sendMail(to, subject, body):
-	params = {'to' : to, 'subject' : subject, 'body' : body}
-	url = "http://jeremycohensoftware.com/email?" + urllib.urlencode(params)
-	return urllib2.urlopen(url).read()
-    
+    smtp = smtplib.SMTP_SSL("smtp.princeton.edu")
+    smtp.login(user, password)
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = "Princeton Pounce"
+    msg['To'] = to
+    response = smtp.sendmail(user + "@princeton.edu", [to], msg.as_string())
+    smtp.quit() 
+    return response
