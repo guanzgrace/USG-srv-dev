@@ -4,8 +4,8 @@ import os, sys, socket
 try:
     import local_settings
 except ImportError, exp:
-    print "Error: Couldn't import local_settings; missing passwords and other local data"
-    import local_settings_blank
+    sys.stderr.write("Warning: Couldn't import local_settings; missing passwords and other local data.  Using local_settings_blank instead.")
+    import local_settings_blank as local_settings
 
 
 
