@@ -8,6 +8,7 @@
 # Info :  a few settings, with added individual ones
 ################################################################
 
+import sys
 from django.conf import settings
 from datetime import datetime
 #once again, the really important ones are one step deeper
@@ -16,7 +17,9 @@ from datetime import datetime
 try:
     from cal import local_settings
 except ImportError, exp:
-    print "Error: Couldn't import local_settings; missing passwords and other local data"
+    sys.stderr.write("Warning: Couldn't import local_settings; missing passwords and other local data.  Using local_settings_blank instead.")
+    from cal import local_settings_blank as local_settings
+
 
 site_root = settings.CURRENT_DIR
 our_site = 'http://%scal.tigerapps.org/' % settings.CURRENT_HOST_PREFIX

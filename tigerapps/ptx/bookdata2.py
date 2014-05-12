@@ -2,6 +2,7 @@ import base64
 import hashlib
 import hmac
 import os
+import sys
 import time
 import urllib
 
@@ -18,7 +19,9 @@ from ptx.labyrinth import labyrinthprice
 try:
     from ptx.local_settings import *
 except ImportError, exp:
-    print "Couldn't import local_settings: Passwords may be missing"
+    sys.stderr.write("Warning: Couldn't import local_settings; missing passwords and other local data.  Using local_settings_blank instead.")
+    from ptx.local_settings_blank import *
+
 
 #ACCESS_KEY = HIDDEN; see imports
 #SECRET_KEY = HIDDEN; see imports
