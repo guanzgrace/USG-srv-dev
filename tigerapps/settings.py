@@ -5,6 +5,7 @@ try:
     import local_settings
 except ImportError, exp:
     print "Error: Couldn't import local_settings; missing passwords and other local data"
+    import local_settings_blank
 
 
 
