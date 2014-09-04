@@ -41,7 +41,9 @@ def updateCourse(course):
 			if not isClosed:
 				freeSpots = theclass.max - theclass.enroll
 				try:
- 					twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
+					# don't tweet "P99"
+					if theclass.title != "P99":
+						twitter.tweet("%s has %d open spot(s)." % (str(theclass), freeSpots))
  				except Exception:
  					pass
 				log.log("Class %s is now open!" % str(classNumber))
