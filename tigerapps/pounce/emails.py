@@ -1,9 +1,13 @@
-#import os
-#import smtplib
-#from email.mime.text import MIMEText
-#from EMAIL_SETTINGS import user, password 
+import os
+import smtplib
+from email.mime.text import MIMEText
+from EMAIL_SETTINGS import user, password 
+
+# This will not work on the development server
+# but it does work in production
+# because EMAIL_SETTINGS does exist on the server
+
 def sendMail(to, subject, body):
-    raise Exception("Jeremy Cohen, you suck.  This doesn't work.")
     smtp = smtplib.SMTP_SSL("smtp.princeton.edu")
     smtp.login(user, password)
     msg = MIMEText(body)
