@@ -17,5 +17,5 @@ INSTRUCTIONS FOR UPDATING POUNCE FOR A NEW SEMESTER
 
 5) Make sure that everything (esp. emails) works 
 
-5) Reenable the checker processes
+6) Reenable the checker processes
    - un-comment in the two lines in crontab -e
