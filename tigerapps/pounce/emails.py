@@ -8,12 +8,12 @@ from EMAIL_SETTINGS import user, password
 # because EMAIL_SETTINGS does exist on the server
 
 def sendMail(to, subject, body):
-    smtp = smtplib.SMTP_SSL("smtp.princeton.edu")
+    smtp = smtplib.SMTP_SSL("smtp.sendgrid.net")
     smtp.login(user, password)
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = "Princeton Pounce"
     msg['To'] = to
-    response = smtp.sendmail(user + "@princeton.edu", [to], msg.as_string())
+    response = smtp.sendmail("jmcohen@princeton.edu", [to], msg.as_string())
     smtp.quit() 
     return response

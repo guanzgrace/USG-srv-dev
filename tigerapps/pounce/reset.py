@@ -1,5 +1,8 @@
 # Resets Pounce for a new semester.
 
+# HEY: YOU MUST ALSO KILL -9 THE CURRENTLY RUNNING
+# UPDATE PROCESSES!
+
 import sys,os
 sys.path.insert(0,os.path.abspath("/srv/tigerapps"))
 import settings
