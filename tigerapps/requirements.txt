@@ -1,0 +1,7 @@
+Django==1.4.16
+mysql-python==1.2.5
+python-memcached==1.53
+django-paypal==0.1.5
+django-sanitizer==0.4.1
+python-dateutil==2.3
+twilio==3.6.13
