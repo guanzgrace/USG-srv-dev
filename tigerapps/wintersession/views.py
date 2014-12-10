@@ -15,8 +15,8 @@ import datetime
 import collections
 
 # Wintersession registration start
-REGSTART = datetime.date(2014, 01, 9)
-REGEND = datetime.date(2014,01,22)
+REGSTART = datetime.date(2015, 01, 8)
+REGEND = datetime.date(2015,01,21)
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
