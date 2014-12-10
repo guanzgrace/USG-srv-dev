@@ -84,7 +84,7 @@ class Instructor(models.Model):
 
 class Course(models.Model):
     courseID = models.CharField(max_length=20, unique=True)
-    title = models.CharField(max_length=75,default='Title needed')
+    title = models.CharField(max_length=150,default='Title needed')
     description = models.TextField(max_length=1000)
     other_section = models.ManyToManyField('self', blank=True, symmetrical=True)
     min_enroll = models.IntegerField(default=0)
