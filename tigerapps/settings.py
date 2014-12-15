@@ -203,7 +203,6 @@ INSTALLED_APPS = (
 # In development
     'wintersession',
     'django_tables2',
-    'import_export'
 
 )
 

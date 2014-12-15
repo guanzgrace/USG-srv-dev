@@ -1,12 +1,11 @@
 from django.contrib import admin
 from wintersession.models import Student,Instructor,Course,Registration
 from django import forms
-from import_export.admin import ImportExportModelAdmin
 
 class RegistrationInline(admin.TabularInline):
     model = Registration
 
-class StudentAdmin(ImportExportModelAdmin):
+class StudentAdmin(admin.ModelAdmin):
     inlines = [RegistrationInline]
     list_display = ('netID','first_name','last_name')
 #    list_filter = ['last_name']
@@ -18,7 +17,7 @@ class CourseInstructorInline(admin.TabularInline):
     model = Course.instructors.through #@UndefinedVariable
     extra = 2
 
-class InstructorAdmin(ImportExportModelAdmin):
+class InstructorAdmin(admin.ModelAdmin):
     inlines = [CourseInstructorInline]
     list_display = ('netID','first_name','last_name','billable')
 #    list_filter = ['last_name']
@@ -40,7 +39,7 @@ class BlocksModelForm( forms.ModelForm ):
     class Meta:
         model = Course
 
-class CourseAdmin(ImportExportModelAdmin):
+class CourseAdmin(admin.ModelAdmin):
     list_display = ('courseID','title','schedule','room','current_enroll',
                     'max_enroll', 'meets_min_requirements','cancelled')
     exclude = ('instructors', 'other_section',)
@@ -51,7 +50,7 @@ class CourseAdmin(ImportExportModelAdmin):
 
 admin.site.register(Course, CourseAdmin)
 
-class RegistrationAdmin(ImportExportModelAdmin):
+class RegistrationAdmin(admin.ModelAdmin):
 #   fields = ['student', 'course', 'timestamp']
     list_display = ('course','student')
 #    list_filter = ['course','student']
