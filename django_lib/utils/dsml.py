@@ -8,82 +8,33 @@
 # Info :  DSML lookup utilities
 ################################################################
 
-import sys, os, urllib, urllib2, re
-from xml.etree import ElementTree
+import urllib2
+import ldap
 from xml.dom.minidom import parseString
 
 #Code adapted from:	http://github.com/benadida/auth-django-app/blob/master/auth_systems/cas.py#
 #Robustness added by Michael Yaroshefsky
 def gdi(netid):
 	""" Get Directory Info (gdi) returns a dictionary of information from the LDAP for a user """
-	url = 'http://dsml.princeton.edu/' #This is not a permanent server to use -- contact OIT-SDP for better server
-	headers = {'SOAPAction': "#searchRequest", 'Content-Type': 'text/xml'}
-	request_body = """<?xml version='1.0' encoding='UTF-8'?>
-	<soap-env:Envelope
-		xmlns:xsd='http://www.w3.org/2001/XMLSchema'
-		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-		xmlns:soap-env='http://schemas.xmlsoap.org/soap/envelope/'>
-		<soap-env:Body>
-			<batchRequest xmlns='urn:oasis:names:tc:DSML:2:0:core'
-			requestID='searching'>
-				<searchRequest
-				dn='o=Princeton University, c=US'
-				scope='wholeSubtree'
-				derefAliases='neverDerefAliases'
-				sizeLimit='200'>
-					<filter>
-						<equalityMatch name='uid'>
-							<value>%s</value>
-						</equalityMatch>
-					</filter>
-					<attributes>
-						<attribute name="campusid"/>
-						<attribute name="cn"/>
-						<attribute name="displayName"/>
-						<attribute name="emailbox"/>
-						<attribute name="emailrewrite"/>
-						<attribute name="gecos"/>
-						<attribute name="gidnumber"/>
-						<attribute name="givenName"/>
-						<attribute name="homedirectory"/>
-						<attribute name="loginshell"/>
-						<attribute name="mail"/>
-						<attribute name="mailalternateaddress"/>
-						<attribute name="mailquota"/>
-						<attribute name="sn"/>
-						<attribute name="universityid"/>
-						<attribute name="ou"/>
-						<attribute name="pustatus"/>
-						<attribute name="puclassyear"/>
-						<attribute name="puacademiclevel"/>
-						<attribute name="purescollege"/>
-						<attribute name="universityidref"/>
-						<attribute name="puhomedepartmentnumber"/>
-						<attribute name="street"/>
-						<attribute name="telephone"/>
-					</attributes>
-				</searchRequest>
-			</batchRequest>
-		</soap-env:Body>
-	</soap-env:Envelope>
-	""" % netid
+	attributes = ['cn', 'displayName', 'emailbox', 'emailrewrite', 'gecos',
+				  'gidnumber', 'givenName', 'homedirectory', 'loginshell',
+				  'mail', 'mailalternateaddress', 'mailquota', 'sn',
+				  'universityid', 'ou', 'pustatus', 'puclassyear',
+				  'puacademiclevel', 'purescollege', 'universityidref',
+				  'puhomedepartmentnumber', 'street', 'telephone']
 
-	req = urllib2.Request(url, request_body, headers)
-	response = urllib2.urlopen(req).read()
-	print response
-	# parse the result
-	response_doc = parseString(response)
-	
-	# get all returned attributes
-	search_result = response_doc.getElementsByTagName('attr')
-	
+	l = ldap.initialize('ldap://ldap.princeton.edu')
+	search_result = l.search_s('uid=%s,o=Princeton University,c=US' % netid, ldap.SCOPE_SUBTREE, '(sn=*)', attributes)
+
 	user_info = {}
 	
 	# for each attribute, store the attribute-value pair in user_info
-	for attribute in search_result:
-		for element in attribute.getElementsByTagName('value'):
-			if element.firstChild is not None: # handle cases where data is empty
-				user_info[attribute.getAttribute('name')] = element.firstChild.data
+	if len(search_result) > 0:
+		# search_result: list of tuples (dn, attrs) where attrs is a dict
+		for attribute, data in search_result[0][1].iteritems():
+			# attribute: string with name of attribute
+			# data: list containing attribute values
+			user_info[attribute] = data[0]
 
 	return user_info
 
