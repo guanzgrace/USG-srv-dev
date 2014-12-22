@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib import admin
+from django.views.generic import RedirectView
 from wintersession import views
 
 admin.autodiscover()
@@ -19,10 +20,12 @@ urlpatterns = patterns('',
     url(r'^about/$', views.about, name='about'),
     url(r'^events/$', views.events, name='events'),
     url(r'^$', views.home, name='home'),
-    
-    url(r'^admin/?$', 'django_cas.views.login', kwargs={'next_page': '/djadmin/'}),
+
+    url(r'^admin/$', views.admin, name='admin'),
+    url(r'^admin/email$', views.admin_email, name='admin_email'),
+    url(r'^admin$', RedirectView.as_view(url='/admin/')),
     (r'^djadmin/', include(admin.site.urls)),
-    
+
     # login/logout
     url(r'^login/?$', 'django_cas.views.login', name='login'),
     url(r'^logout/?$', 'django_cas.views.logout', name='logout'),

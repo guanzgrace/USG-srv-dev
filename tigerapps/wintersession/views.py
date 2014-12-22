@@ -1,7 +1,9 @@
 #from django.http import HttpResponse
+from django.core.mail import send_mass_mail, EmailMessage
 from django.http import HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from wintersession.models import Course, Student, Registration, Instructor
 from django_tables2 import RequestConfig
 from wintersession.tables import LtdCourseTable, CourseTable#, AttendanceTable#, StudentTable,
@@ -10,9 +12,14 @@ from django.core.urlresolvers import reverse
 from wintersession.forms import AttendanceForm, AgendaPrivacyForm, FriendAgendaForm
 from django.forms.models import modelformset_factory, modelform_factory
 from django_cas.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test as django_user_passes_test
 from utils.dsml import gdi
 import datetime
 import collections
+from django.contrib.admin.forms import AdminAuthenticationForm
+from django.contrib.auth.views import login
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.conf import settings
 
 # Wintersession registration start
 REGSTART = datetime.date(2015, 01, 8)
@@ -323,3 +330,33 @@ def friend_agenda(request):
 
 def events(request):
     return render(request, 'wintersession/events.html', {})
+
+def admin(request):
+    if not request.user.is_superuser:
+        defaults = {
+            'template_name': 'admin/login.html',
+            'authentication_form': AdminAuthenticationForm,
+            'extra_context': {
+                'title': 'Log in',
+                'app_path': request.get_full_path(),
+                REDIRECT_FIELD_NAME: request.get_full_path(),
+                },
+            }
+        return login(request, **defaults)
+
+    context = {
+        'user': request.user
+    }
+    return render(request, 'wintersession/admin.html', context)
+
+@django_user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def admin_email(request):
+    to_emails = [netID + '@princeton.edu' for netID in Student.objects.all().values_list('netID', flat=True)]
+    email = EmailMessage(subject=request.POST['subject'],
+                         body=request.POST['message'],
+                         from_email=settings.DEFAULT_FROM_EMAIL,
+                         to=[settings.DEFAULT_FROM_EMAIL],
+                         bcc=to_emails)
+    email.send()
+    return redirect('admin')
