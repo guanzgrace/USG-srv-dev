@@ -1,1 +1,1 @@
-templates/robots.txt
+../templates/robots.txt
