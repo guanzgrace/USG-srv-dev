@@ -96,6 +96,9 @@ class Course(models.Model):
     students = models.ManyToManyField(Student, through='Registration')
     instructors = models.ManyToManyField(Instructor)
 
+    class Meta:
+        ordering = ['title']
+
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.courseID
 
