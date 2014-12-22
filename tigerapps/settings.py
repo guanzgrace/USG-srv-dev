@@ -107,7 +107,7 @@ FILE_UPLOAD_PERMISSIONS = 0664
 # Absolute path to the directory that holds static files (must be diff from MEDIA_ROOT)
 # Note: STATIC_ROOT is used when `manage.py collectstatic` is used,
 #   STATICFILES_DIRS is used otherwise
-#STATIC_ROOT = CURRENT_DIR + "/media/"
+STATIC_ROOT = CURRENT_DIR + "/../tigerapps_static/"
 STATICFILES_DIRS = (CURRENT_DIR + "/static/",)
 # URL for static files served from STATIC_ROOT (need trailing slash)
 # Note that since Django 1.4, admin media files are automatically stored at STATIC_URL/admin/
