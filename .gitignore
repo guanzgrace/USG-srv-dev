@@ -67,3 +67,8 @@ tmp/
 ######################
 .DS_Store*
 *.db
+
+
+# Static files #
+################
+/tigerapps_static/
