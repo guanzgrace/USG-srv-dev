@@ -1,0 +1,99 @@
+{% extends "wintersession/base.html" %}
+{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% block head %}
+    <title>Agenda - Wintersession 2014</title>
+{% endblock %}
+
+{% block menu %}
+    <li id='pg276867464249989051'><a href='{% url 'home' %}'>Home</a></li>
+    <li id='pg721251121132996039'><a href='{% url 'courses' %}'>Courses</a></li>
+    <li id='active'><a href='{% url 'enroll' %}'>Enroll</a></li>
+    <li id='pg263206575262786359'><a href='{% url 'teach' %}'>Teach</a></li>
+    <li id='pg263206575262786359'><a href='{% url 'about' %}'>About</a></li>
+{% endblock %}
+
+{% block banner %}
+    What are you planning to learn?
+{% endblock %}
+
+
+{% block content %}
+
+    <p>
+        Welcome to the agenda page, <strong> {{ user_identity.1 }} {{ user_identity.2 }} </strong>.
+        (<a href='{%url 'logout' %}'>Not {{ user_identity.0 }}?</a>)
+    </p>
+
+    <p>
+        You're looking at
+        {% if own_agenda %}
+            your own
+        {% else %}
+            {{ selected_identity.1 }} {{ selected_identity.2 }}'s
+        {% endif %}
+        agenda.
+        Search for a friend's agenda:
+    <form action="{% url 'friend_agenda' %}" method="post">
+        {% csrf_token %}
+        {{ friend_form.as_table }}
+        <input type="submit" value="Submit" />
+    </form>
+    </p>
+
+    {% if own_agenda %}
+        <form action="{% url 'agenda' user_identity.0 %}" method="post">{% csrf_token %}
+            {{ privacy_form.as_p }}
+            <input type="submit" value="Submit" />
+        </form>
+    {% endif %}
+
+    {% if agenda_visibility %}
+
+        <h2> Monday </h2>
+        {% for key, entry in agenda.1.items %}
+            {{ entry.1 }} to {{ entry.2}} <br />
+            {{ entry.0.courseID }}: {{ entry.0.title }} at {{entry.0.room}}
+            <br /> <br/>
+
+        {% endfor %}
+
+        <h2> Tuesday </h2>
+        {% for key, entry in agenda.2.items %}
+            {{ entry.1 }} to {{ entry.2}} <br />
+            {{ entry.0.courseID }}: {{ entry.0.title }} at {{entry.0.room}}
+            <br /> <br/>
+
+        {% endfor %}
+
+        <h2> Wednesday </h2>
+        {% for key, entry in agenda.3.items %}
+            {{ entry.1 }} to {{ entry.2}} <br />
+            {{ entry.0.courseID }}: {{ entry.0.title }} at {{entry.0.room}}
+            <br /> <br/>
+
+        {% endfor %}
+
+        <h2> Thursday </h2>
+        {% for key, entry in agenda.4.items %}
+            {{ entry.1 }} to {{ entry.2}} <br />
+            {{ entry.0.courseID }}: {{ entry.0.title }} at {{entry.0.room}}
+            <br /> <br/>
+
+        {% endfor %}
+
+        <h2> Friday </h2>
+        {% for key, entry in agenda.5.items %}
+            {{ entry.1 }} to {{ entry.2}} <br />
+            {{ entry.0.courseID }}: {{ entry.0.title }} at {{entry.0.room}}
+            <br /> <br/>
+
+        {% endfor %}
+
+    {% else %}
+        <p>The agenda is not publicly visible. </p>
+    {% endif %}
+
+{% endblock %}
