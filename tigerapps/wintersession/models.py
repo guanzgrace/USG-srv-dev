@@ -1,5 +1,8 @@
+import collections
 from django.db import models
 import ast
+from wintersession.time import decode_time
+
 
 class ListField(models.TextField):
     __metaclass__ = models.SubfieldBase
@@ -115,9 +118,66 @@ class Course(models.Model):
     
     def get_instructors(self):
         return ", ".join([i.full_name() for i in self.instructors.all()])
+
+    def this_section(self):
+        return Section(self.blocks)
+
+    def all_sections(self):
+        sections = [Section(self.blocks)]
+        if self.other_section:
+            for section in self.other_section.all():
+                sections.append(Section(section.blocks))
+        return sections
     
     is_full.boolean = True
     meets_min_requirements.boolean = True
+
+class Section:
+    def __init__(self, blocks):
+        self.blocks = blocks
+
+    def as_dict(self):
+        agend = {}
+        for i in range(1,6):
+            agend[i] = []
+        # We're going to make a dict with five entries. Values will be dicts for
+        # each day of the week. the subdicts will map start timecodes to tuples
+        # with format (start time, end time)
+        prev_blk = start_blk = self.blocks[0]
+        # for each block in that course
+        for n in xrange(1, len(self.blocks) + 1):
+            # if block continues from previous, or past last block
+            if n == len(self.blocks) or self.blocks[n] != prev_blk + 5:
+                # record the previous session
+                dow = int(str(start_blk)[0])
+                start_time = decode_time(start_blk % 1000)
+                end_time = decode_time((prev_blk+5) % 1000)
+                info = (start_time, end_time)
+                agend[dow].append(info)
+
+                # and start a new one
+                if n != len(self.blocks):
+                    start_blk = prev_blk = self.blocks[n]
+            else:
+                prev_blk = self.blocks[n]
+
+        return agend
+
+    def as_string(self):
+        dow = {1: "M", 2: "T", 3: "W", 4: "Th", 5: "F"}
+        # First group all sessions by time (start and end)
+        times = {}
+        for day, day_sessions in self.as_dict().iteritems():
+            for session_tuple in day_sessions:
+                session_string = session_tuple[0] + "-" + session_tuple[1]
+                if session_string not in times:
+                    times[session_string] = []
+                times[session_string].append(dow[day])
+        # Build string
+        times_grouped = []
+        for time, days in times.iteritems():
+            times_grouped.append("/".join(days) + " " + time)
+        return ", ".join(times_grouped)
 
 class Registration(models.Model):
     student = models.ForeignKey(Student)
