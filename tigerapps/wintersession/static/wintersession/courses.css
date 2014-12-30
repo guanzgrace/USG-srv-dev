@@ -1,0 +1,115 @@
+#main-wrap {
+  position: absolute;
+  top: 171px;
+  bottom: 0;
+  background-color: white; }
+  #main-wrap .container {
+    padding: 0 !important;
+    height: 100%; }
+    #main-wrap .container #wsite-content {
+      text-align: left !important;
+      height: 100%; }
+      #main-wrap .container #wsite-content * {
+        box-sizing: border-box; }
+
+#footer-wrap {
+  display: none; }
+
+#courses_left {
+  position: absolute;
+  width: 50%;
+  top: 0;
+  bottom: 0; }
+  #courses_left #course_schedule {
+    overflow: auto;
+    height: 300px;
+    background-color: #276CA1;
+    color: white; }
+    #courses_left #course_schedule .course_schedule_day {
+      text-align: center;
+      float: left;
+      width: 20%; }
+
+#courses_right {
+  position: absolute;
+  left: 50%;
+  width: 50%;
+  top: 0;
+  bottom: 0; }
+  #courses_right #courses_list_filter {
+    position: absolute;
+    top: 0;
+    height: 30px;
+    width: 100%;
+    line-height: 30px;
+    vertical-align: middle;
+    padding: 0 30px; }
+  #courses_right #courses_list {
+    width: 100%;
+    padding: 30px;
+    overflow: auto;
+    position: absolute;
+    top: 30px;
+    bottom: 0; }
+    #courses_right #courses_list .course_item {
+      margin-bottom: 30px; }
+      #courses_right #courses_list .course_item .course_info {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        padding: 10px;
+        background-color: white;
+        z-index: 1000;
+        position: relative;
+        border-radius: 3px; }
+        #courses_right #courses_list .course_item .course_info .course_star {
+          display: block;
+          float: right; }
+      #courses_right #courses_list .course_item .course_section {
+        margin: 0 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        background-color: white;
+        padding: 7px;
+        position: relative; }
+        #courses_right #courses_list .course_item .course_section:nth-child(1) {
+          z-index: 999; }
+        #courses_right #courses_list .course_item .course_section:nth-child(2) {
+          z-index: 998; }
+        #courses_right #courses_list .course_item .course_section:nth-child(3) {
+          z-index: 997; }
+        #courses_right #courses_list .course_item .course_section:nth-child(4) {
+          z-index: 996; }
+        #courses_right #courses_list .course_item .course_section:nth-child(5) {
+          z-index: 995; }
+        #courses_right #courses_list .course_item .course_section:nth-child(6) {
+          z-index: 994; }
+        #courses_right #courses_list .course_item .course_section:nth-child(7) {
+          z-index: 993; }
+        #courses_right #courses_list .course_item .course_section:nth-child(8) {
+          z-index: 992; }
+        #courses_right #courses_list .course_item .course_section:nth-child(9) {
+          z-index: 991; }
+        #courses_right #courses_list .course_item .course_section:nth-child(10) {
+          z-index: 990; }
+        #courses_right #courses_list .course_item .course_section:nth-child(11) {
+          z-index: 989; }
+        #courses_right #courses_list .course_item .course_section:nth-child(12) {
+          z-index: 988; }
+        #courses_right #courses_list .course_item .course_section:nth-child(13) {
+          z-index: 987; }
+        #courses_right #courses_list .course_item .course_section:nth-child(14) {
+          z-index: 986; }
+        #courses_right #courses_list .course_item .course_section:nth-child(15) {
+          z-index: 985; }
+        #courses_right #courses_list .course_item .course_section:nth-child(16) {
+          z-index: 984; }
+        #courses_right #courses_list .course_item .course_section:nth-child(17) {
+          z-index: 983; }
+        #courses_right #courses_list .course_item .course_section:nth-child(18) {
+          z-index: 982; }
+        #courses_right #courses_list .course_item .course_section:nth-child(19) {
+          z-index: 981; }
+        #courses_right #courses_list .course_item .course_section:nth-child(20) {
+          z-index: 980; }
+        #courses_right #courses_list .course_item .course_section .course_section_add {
+          float: right; }
+
+/*# sourceMappingURL=courses.css.map */

@@ -5,74 +5,61 @@
 {% get_static_prefix as STATIC_PREFIX %}
 
 {% block head %}
-<title>Courses - Wintersession 2015</title>
+    <title>Courses - Wintersession 2015</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}wintersession/courses.css" />
+{% endblock %}
+
+{% block banner %}
+    Course Listing & Registration
 {% endblock %}
 
 {% block menu %}
-	<li id='pg721251121132996039'><a href='{% url 'home' %}'>Home</a></li>
-	<li id='active'><a href='{% url 'courses' %}'>Courses</a></li>
-	<li id='pg263206575262786359'><a href='{% url 'enroll' %}'>Enroll</a></li>
-	<li id='pg276867464249989051'><a href='{% url 'teach' %}'>Teach</a></li>
-	<li id='pg373026107483497366'><a href='{% url 'about' %}'>About</a></li>
+    <li id='pg721251121132996039'><a href='{% url 'home' %}'>Home</a></li>
+    <li id='active'><a href='{% url 'courses' %}'>Courses</a></li>
+    <li id='pg263206575262786359'><a href='{% url 'enroll' %}'>Enroll</a></li>
+    <li id='pg276867464249989051'><a href='{% url 'teach' %}'>Teach</a></li>
+    <li id='pg373026107483497366'><a href='{% url 'about' %}'>About</a></li>
 {% endblock %}
 
 {% block content %}
-	  </div>
-      <div class="button-wrap"><div style="text-align:center;"><div style="height: 0px; overflow: hidden;"></div>
-
-    <!--div style="color:black;">REGISTRATION OPENING SOON</div-->
-<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'enroll' %}">
-    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
-    Enrollment home page<br>
-    </span>
-</a>
-
-<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'student' %}">
-    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
-    Student schedule + add/drop<br>
-    </span>
-</a>
-
-<a class="wsite-button wsite-button-large wsite-button-highlight" style="margin:auto 10px;background:#071b34;" href="{% url 'instructor' %}">
-    <span class="wsite-button-inner" style="color:white !important;background:#071b34;">
-    Instructor portal<br>
-    </span>
-</a>
-
-<div style="height: 0px; overflow: hidden;"></div></div></div>
-
-            <div id="course_offerings">
-                <h1>{{num_c}} Course Offerings</h1>
-                <hr>
+    <div id="courses_left">
+        <div id="course_schedule">
+            <div class="course_schedule_day">M
+                <div class="course_schedule_item">ABC</div>
             </div>
+            <div class="course_schedule_day">T</div>
+            <div class="course_schedule_day">W</div>
+            <div class="course_schedule_day">Th</div>
+            <div class="course_schedule_day">F</div>
+        </div>
+        <div id="courses_queue">
+            <div class="queue_item"></div>
+        </div>
+    </div>
+    <div id="courses_right">
+        <div id="courses_list_filter">
+            Filter
+            <input type="text" placeholder="Course title/instructor/description">
+            <label><input type="checkbox">Starred</label>
+        </div>
+        <div id="courses_list">
+            {% for course in courses %}
+                <section class="course_item">
+                    <div class="course_info">
+                        <btn class="course_star">*</btn>
+                        <h1>{{ course.title }}</h1>
+                        <h2>Instructors: {{ course.get_instructors }}</h2>
+                        {{ course.description|safe }}
+                    </div>
 
-{% if courses %}
-<table class="courses">
-	{% for course in courses %}
-        
-		<tr><td><div><h2>
-		{{course.title}}
-		</h2><h4>
-		Instructors:
-			{{course.get_instructors}}
-		</h4>
-		{{course.description|safe}} 
-		<h4>
-		{{course.schedule}}<!--
-	 -->{% if course.other_section %}<!--
-		 -->{% for os in course.other_section.all %}<!-- 
-			 -->, {{os.schedule}}<!--
-		 -->{% endfor %}
-		{% endif %}
-		</h4></div></td></tr>
-        
-    {% endfor %}
-</table>
-{% else %}
-    <p>No courses are currently available.</p>
-{% endif %}
-
-<br />
-<br />
-<div id='wsite-content' style="text-align:center;" class='wsite-elements wsite-not-footer'>
+                    {% for section in course.all_sections %}
+                        <div class="course_section">
+                            {{ section.as_string }}
+                            <btn class="course_section_add">+</btn>
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
