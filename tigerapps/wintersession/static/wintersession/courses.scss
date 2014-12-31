@@ -1,5 +1,6 @@
 $colorA: #276CA1;
 $colorB: #071b34;
+$card-border-radius: 3px;
 
 #main-wrap {
   position: absolute;
@@ -32,16 +33,53 @@ $colorB: #071b34;
   top: 0;
   bottom: 0;
 
-  #courses_schedule {
+  #course_schedule_wrap {
+    $number-of-hours: 13;
+    $schedule-height: 400px;
+    $left-labels-width: 40px;
+
     overflow: auto;
-    height: 300px;
-    background-color: $colorA;
+    background-color: $colorB;
     color: white;
 
-    .courses_schedule_day {
-      text-align: center;
+    #course_schedule_labels_top {
+      overflow: auto;
+      line-height: 20px;
+      margin-left: $left-labels-width;
+
+      .course_schedule_labels_top_day {
+        text-align: center;
+        float: left;
+        width: 20%;
+      }
+    }
+
+    #course_schedule_labels_left {
       float: left;
-      width: 20%;
+      width: $left-labels-width;
+      padding: 0 5px;
+      line-height: $schedule-height / $number-of-hours;
+    }
+
+    #course_schedule {
+      margin-left: $left-labels-width;
+      overflow: auto;
+
+      .course_schedule_day {
+        float: left;
+        width: 20%;
+        height: $schedule-height;
+
+        .course_schedule_item {
+          position: relative;
+          top: 30%;
+          background-color: $colorA;
+          padding: 5px;
+          margin: 5px;
+          height: 50%;
+          border-radius: $card-border-radius;
+        }
+      }
     }
   }
 }
@@ -63,8 +101,6 @@ $colorB: #071b34;
     line-height: $courses_list_filter_height;
     vertical-align: middle;
     padding: 0 30px;
-//    background-color: $colorA;
-//    color: white;
   }
 
   #courses_list {
@@ -84,7 +120,7 @@ $colorB: #071b34;
         background-color: white;
         z-index: 1000;
         position: relative;
-        border-radius: 3px;
+        border-radius: $card-border-radius;
 
         .course_star {
           display: block;
