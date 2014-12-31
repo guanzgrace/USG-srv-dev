@@ -11,6 +11,9 @@ $card-border-radius: 3px;
   .container {
     padding: 0 !important;
     height: 100%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    background-color: white;
+    overflow: hidden;
 
     #wsite-content {
       text-align: left !important;
@@ -27,7 +30,29 @@ $card-border-radius: 3px;
   display: none;
 }
 
+$column-header-height: 40px;
+@mixin column-header() {
+  > h1 {
+    padding: 0 10px;
+    font-size: 20px;
+    line-height: $column-header-height;
+    color: white;
+    background-color: $colorA;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2000;
+
+    > span {
+      display: block;
+      float: right;
+      font-weight: normal;
+    }
+  }
+}
+
 #courses_left {
+  @include column-header();
+
   $number-of-hours: 13;
   $schedule-height: 300px;
   $left-labels-width: 40px;
@@ -38,11 +63,16 @@ $card-border-radius: 3px;
   top: 0;
   bottom: 0;
 
+  border-right: 2px solid $colorB;
+
   #course_schedule_wrap {
     overflow: auto;
     background-color: $colorB;
     color: white;
     font-size: small;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 1000;
 
     #course_schedule_labels_top {
       overflow: auto;
@@ -87,7 +117,7 @@ $card-border-radius: 3px;
 
   #course_list {
     position: absolute;
-    top: $schedule-height;
+    top: $column-header-height + $schedule-height;
     bottom: 0;
     overflow: auto;
     padding: 30px 30px 0;
@@ -99,22 +129,26 @@ $card-border-radius: 3px;
 }
 
 #courses_right {
+  @include column-header();
+
   position: absolute;
   left: 50%;
   width: 50%;
   top: 0;
   bottom: 0;
 
-  $courses_list_filter_height: 30px;
+  $courses_list_filter_height: 40px;
 
   #courses_list_filter {
     position: absolute;
-    top: 0;
+    top: $column-header-height;
     height: $courses_list_filter_height;
     width: 100%;
     line-height: $courses_list_filter_height;
     vertical-align: middle;
-    padding: 0 30px;
+    padding: 0 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1001;
   }
 
   #course_catalog {
@@ -122,7 +156,7 @@ $card-border-radius: 3px;
     padding: 30px 30px 0;
     overflow: auto;
     position: absolute;
-    top: $courses_list_filter_height;
+    top: $column-header-height + $courses_list_filter_height;
     bottom: 0;
   }
 }
@@ -130,14 +164,14 @@ $card-border-radius: 3px;
 @mixin card_headers() {
   h1, h2 {
     padding-top: 0;
+    line-height: 1em;
   }
   h1 {
     font-size: 1.5em;
-    line-height: 1em;
   }
   h2 {
     font-size: 1.2em;
-    line-height: 1em;
+    font-weight: normal;
   }
 }
 
