@@ -1,7 +1,7 @@
 #main-wrap {
   position: absolute;
   top: 171px;
-  bottom: 0;
+  bottom: 1px;
   background-color: white; }
   #main-wrap .container {
     padding: 0 !important;
@@ -97,7 +97,7 @@
     line-height: 1em; }
   .course_mini_item h2 {
     font-size: 1.2em;
-    line-height: 1.2em; }
+    line-height: 1em; }
 
 .course_item {
   margin-bottom: 30px; }
@@ -108,7 +108,7 @@
     line-height: 1em; }
   .course_item h2 {
     font-size: 1.2em;
-    line-height: 1.2em; }
+    line-height: 1em; }
   .course_item .course_info {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 10px;
