@@ -28,23 +28,25 @@ $card-border-radius: 3px;
 }
 
 #courses_left {
+  $number-of-hours: 13;
+  $schedule-height: 300px;
+  $left-labels-width: 40px;
+  $top-labels-height: 20px;
+
   position: absolute;
   width: 50%;
   top: 0;
   bottom: 0;
 
   #course_schedule_wrap {
-    $number-of-hours: 13;
-    $schedule-height: 400px;
-    $left-labels-width: 40px;
-
     overflow: auto;
     background-color: $colorB;
     color: white;
+    font-size: small;
 
     #course_schedule_labels_top {
       overflow: auto;
-      line-height: 20px;
+      line-height: $top-labels-height;
       margin-left: $left-labels-width;
 
       .course_schedule_labels_top_day {
@@ -58,7 +60,7 @@ $card-border-radius: 3px;
       float: left;
       width: $left-labels-width;
       padding: 0 5px;
-      line-height: $schedule-height / $number-of-hours;
+      line-height: ($schedule-height - $top-labels-height) / $number-of-hours;
     }
 
     #course_schedule {
@@ -68,18 +70,30 @@ $card-border-radius: 3px;
       .course_schedule_day {
         float: left;
         width: 20%;
-        height: $schedule-height;
+        height: $schedule-height - $top-labels-height;
 
         .course_schedule_item {
           position: relative;
           top: 30%;
           background-color: $colorA;
           padding: 5px;
-          margin: 5px;
+          margin: 5px 5px 5px 0;
           height: 50%;
           border-radius: $card-border-radius;
         }
       }
+    }
+  }
+
+  #course_list {
+    position: absolute;
+    top: $schedule-height;
+    bottom: 0;
+    overflow: auto;
+    padding: 30px 30px 0;
+
+    .course_section_add, .course_section_remove {
+      float: right;
     }
   }
 }
@@ -103,47 +117,77 @@ $card-border-radius: 3px;
     padding: 0 30px;
   }
 
-  #courses_list {
+  #course_catalog {
     width: 100%;
-    padding: 30px;
+    padding: 30px 30px 0;
     overflow: auto;
     position: absolute;
     top: $courses_list_filter_height;
     bottom: 0;
+  }
+}
 
-    .course_item {
-      margin-bottom: 30px;
+@mixin card_headers() {
+  h1, h2 {
+    padding-top: 0;
+  }
+  h1 {
+    font-size: 1.5em;
+    line-height: 1em;
+  }
+  h2 {
+    font-size: 1.2em;
+    line-height: 1em;
+  }
+}
 
-      .course_info {
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        padding: 10px;
-        background-color: white;
-        z-index: 1000;
-        position: relative;
-        border-radius: $card-border-radius;
+.course_mini_item {
+  @include card_headers();
 
-        .course_star {
-          display: block;
-          float: right;
-        }
-      }
-      .course_section {
-        margin: 0 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        background-color: white;
-        padding: 7px;
-        position: relative;
+  margin-bottom: 30px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  background-color: white;
+  position: relative;
+}
 
-        @for $i from 1 through 20 {
-          &:nth-child(#{$i}) {
-            z-index: 1000 - $i
-          };
-        }
+.course_item {
+  @include card_headers();
 
-        .course_section_add {
-          float: right;
-        }
-      }
+  margin-bottom: 30px;
+
+  .course_info {
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    padding: 10px;
+    background-color: white;
+    z-index: 1000;
+    position: relative;
+    border-radius: $card-border-radius;
+
+    .course_star {
+      display: block;
+      float: right;
+    }
+
+    p {
+      padding: 0 !important;
+    }
+  }
+  .course_section {
+    margin: 0 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    background-color: white;
+    padding: 7px;
+    position: relative;
+
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        z-index: 1000 - $i
+      };
+    }
+
+    .course_section_add, .course_section_remove {
+      float: right;
     }
   }
 }

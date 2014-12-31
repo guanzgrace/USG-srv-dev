@@ -64,8 +64,18 @@
                 </div>
             </div>
         </div>
-        <div id="courses_queue">
-            <div class="queue_item"></div>
+        <div id="course_list">
+            {% for course in courses %}
+                <section class="course_mini_item">
+                    <div class="course_info">
+                        <h1>{{ course.title }}</h1>
+                    </div>
+                    <div class="course_section">
+                        {{ course.this_section.as_string }}
+                        <btn class="course_section_remove">+</btn>
+                    </div>
+                </section>
+            {% endfor %}
         </div>
     </div>
     <div id="courses_right">
@@ -74,7 +84,7 @@
             <input type="text" placeholder="Course title/instructor/description">
             <label><input type="checkbox">Starred</label>
         </div>
-        <div id="courses_list">
+        <div id="course_catalog">
             {% for course in courses %}
                 <section class="course_item">
                     <div class="course_info">
