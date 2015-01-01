@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
-from wintersession import views
+from wintersession import views, api
 
 admin.autodiscover()
 
@@ -29,4 +29,6 @@ urlpatterns = patterns('',
     # login/logout
     url(r'^login/?$', 'django_cas.views.login', name='login'),
     url(r'^logout/?$', 'django_cas.views.logout', name='logout'),
+
+    url(r'^api/', include(api.router.urls, namespace='api')),
 )

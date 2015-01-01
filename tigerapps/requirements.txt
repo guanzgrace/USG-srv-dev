@@ -5,3 +5,4 @@ django-paypal==0.1.2
 django-html-sanitizer==0.1.4
 python-dateutil==1.5
 twilio==3.3.6
+djangorestframework==2.3.14

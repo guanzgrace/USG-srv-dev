@@ -122,6 +122,12 @@ class Course(models.Model):
     def this_section(self):
         return Section(self.blocks)
 
+    def all_section_ids(self):
+        section_ids = [self.id]
+        for section in self.other_section.all():
+            section_ids.append(section.id)
+        return section_ids
+
     def all_sections(self):
         sections = [Section(self.blocks)]
         if self.other_section:
