@@ -76,7 +76,7 @@
                     </div>
                     <div class="course_section">
                         {{ registration.section.schedule_string }}
-                        <btn class="course_section_remove">+</btn>
+                        <btn class="course_section_remove" {{ action "unregisterSection" registration.section }}>x</btn>
                     </div>
                 </section>
             {{ /each }}
@@ -106,7 +106,9 @@
                         {{ #if section.isRegistered }}
                             <btn class="course_section_remove" {{ action "unregisterSection" section }}>x</btn>
                         {{ else }}
-                            <btn class="course_section_add" {{ action "registerSection" section }}>+</btn>
+                            {{ #unless section.isConflicting }}
+                                <btn class="course_section_add" {{ action "registerSection" section }}>+</btn>
+                            {{ /unless }}
                         {{ /if }}
                     </div>
                     {{ /each }}

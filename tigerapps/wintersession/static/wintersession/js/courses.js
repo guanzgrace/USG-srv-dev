@@ -103,9 +103,17 @@ App.Section = DS.Model.extend({
         return this.get('registration') != null;
     }.property('registration'),
     isConflicting: function() {
+        // Not conflicting if already registered
         if (this.get('isRegistered')) {
             return false;
         }
+
+        // Conflicting if already registered in another section
+        if (this.get('course').get('isRegistered')) {
+            return true;
+        }
+
+        // Check time conflicts
         var isConflicting = false;
         this.get('blocks').forEach(function(block) {
             if (block.get('isRegistered')) {
@@ -113,7 +121,7 @@ App.Section = DS.Model.extend({
             }
         });
         return isConflicting;
-    }.property('blocks.@each.isRegistered')
+    }.property('blocks.@each.isRegistered', 'course.isRegistered')
 });
 
 App.Registration = DS.Model.extend({
