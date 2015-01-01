@@ -14,6 +14,14 @@ App.Router.map(function() {
     this.resource('courses', { path: '/' });
 });
 
+App.ApplicationRoute = Ember.Route.extend({
+    model: function() {
+        this.store.find('course');
+        this.store.find('section');
+        this.store.find('block');
+    }
+});
+
 App.CoursesRoute = Ember.Route.extend({
     model: function() {
         return Ember.RSVP.hash({
@@ -29,9 +37,16 @@ App.CoursesController = Ember.ObjectController.extend({
             var newReg = this.store.createRecord('registration', {
                 section: section
             });
-            newReg.save().then(null, function() {
+            newReg.save().then(null, function(err) {
+                alert(err.responseJSON.registration.error);
                 newReg.rollback();
                 newReg.unloadRecord();
+            });
+        },
+        unregisterSection: function(section) {
+            section.get('registration').destroyRecord().then(null, function(err) {
+                alert(err.responseJSON.registration.error);
+                newReg.rollback();
             });
         }
     },
@@ -66,17 +81,60 @@ App.Course = DS.Model.extend({
     cancelled: DS.attr('boolean'),
     room: DS.attr('string'),
     instructors: DS.attr(),
-    sections: DS.hasMany('sections', {async: true})
+    sections: DS.hasMany('sections', {async: true}),
+    isRegistered: function() {
+        var isRegistered = false;
+        this.get('sections').forEach(function(section) {
+            if (section.get('registration') != null) {
+                isRegistered = true;
+            }
+        });
+        return isRegistered;
+    }.property('sections.@each.registration')
 });
 
 App.Section = DS.Model.extend({
     course: DS.belongsTo('course', {async: true}),
-    blocks: DS.attr(),
+    blocks: DS.hasMany('blocks', {async: true}),
     schedule: DS.attr(),
     schedule_string: DS.attr('string'),
-    registration: DS.belongsTo('registration')
+    registration: DS.belongsTo('registration'),
+    isRegistered: function() {
+        return this.get('registration') != null;
+    }.property('registration'),
+    isConflicting: function() {
+        if (this.get('isRegistered')) {
+            return false;
+        }
+        var isConflicting = false;
+        this.get('blocks').forEach(function(block) {
+            if (block.get('isRegistered')) {
+                isConflicting = true;
+            }
+        });
+        return isConflicting;
+    }.property('blocks.@each.isRegistered')
 });
 
 App.Registration = DS.Model.extend({
     section: DS.belongsTo('section', {async: true})
+});
+
+App.BlockAdapter = DS.FixtureAdapter;
+
+App.Block = DS.Model.extend({
+    sections: DS.hasMany('sections', {async: true}),
+    isRegistered: function() {
+        var isRegistered = false;
+        this.get('sections').forEach(function(section) {
+            if (section.get('isRegistered')) {
+                isRegistered = true;
+            }
+        });
+        return isRegistered;
+    }.property('sections.@each.isRegistered')
+});
+
+App.Block.reopenClass({
+    FIXTURES: []
 });

@@ -73,6 +73,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
                           viewsets.mixins.RetrieveModelMixin,
+                          viewsets.mixins.DestroyModelMixin,
                           viewsets.mixins.ListModelMixin,
                           viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
@@ -85,6 +86,9 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
         return student.registration_set.all()
 
     def pre_save(self, obj):
+        obj.student = Student.objects.get(netID=self.request.user)
+
+    def pre_delete(self, obj):
         obj.student = Student.objects.get(netID=self.request.user)
 
     def create(self, request, *args, **kwargs):
@@ -137,6 +141,18 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
 
         # If we've made it to here, we can enroll
         return super(RegistrationViewSet, self).create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        error_message = None
+
+        today = datetime.date.today()
+        if not (views.REGSTART <= today <= views.REGEND):
+            error_message = "It is not time to enroll."
+
+        if error_message is not None:
+            return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super(RegistrationViewSet, self).destroy(request, *args, **kwargs)
 
 
 # Routers provide an easy way of automatically determining the URL conf.
