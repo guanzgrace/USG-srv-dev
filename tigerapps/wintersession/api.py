@@ -42,10 +42,11 @@ class ScheduleField(serializers.Field):
 class SectionSerializer(serializers.ModelSerializer):
     schedule = ScheduleField(source='this_section.as_dict')
     blocks = serializers.Field(source='blocks')
+    schedule_string = serializers.Field(source='this_section.as_string')
 
     class Meta:
         model = Course
-        fields = ('id', 'blocks', 'schedule')
+        fields = ('id', 'blocks', 'schedule', 'schedule_string')
 
 
 class SectionViewSet(viewsets.ReadOnlyModelViewSet):

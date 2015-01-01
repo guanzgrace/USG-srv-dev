@@ -14,6 +14,8 @@
       height: 100%; }
       #main-wrap .container #wsite-content * {
         box-sizing: border-box; }
+      #main-wrap .container #wsite-content > span, #main-wrap .container #wsite-content > img {
+        display: none; }
 
 #footer-wrap {
   display: none; }

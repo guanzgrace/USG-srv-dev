@@ -22,6 +22,10 @@ $card-border-radius: 3px;
       * {
         box-sizing: border-box;
       }
+
+      > span, > img {
+        display: none;
+      }
     }
   }
 }

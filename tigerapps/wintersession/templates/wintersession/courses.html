@@ -3,6 +3,7 @@
 {% load url from future %}
 {% load static %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% load verbatim %}
 
 {% block head %}
     <title>Courses - Wintersession 2015</title>
@@ -22,8 +23,10 @@
 {% endblock %}
 
 {% block content %}
+{% verbatim %}
+<script type="text/x-handlebars" data-template-name="courses">
     <div id="courses_left">
-        <h1>My Courses<span>{{ num_c }}</span></h1>
+        <h1>My Courses<span>##</span></h1>
         <div id="course_schedule_wrap">
             <div id="course_schedule_labels_top">
                 <div class="course_schedule_labels_top_day">M</div>
@@ -66,49 +69,52 @@
             </div>
         </div>
         <div id="course_list">
-            {% for course in courses %}
+            {{#each course in controller}}
                 <section class="course_mini_item">
                     <div class="course_info">
                         <h1>{{ course.title }}</h1>
                     </div>
                     <div class="course_section">
-                        {{ course.this_section.as_string }}
+                        {{ course.sections.[0].schedule_string }}
                         <btn class="course_section_remove">+</btn>
                     </div>
                 </section>
-            {% endfor %}
+            {{/each}}
         </div>
     </div>
     <div id="courses_right">
-        <h1>Course Catalog<span>{{ num_c }}</span></h1>
+        <h1>Course Catalog<span>##</span></h1>
         <div id="courses_list_filter">
             Filter
-            <input type="text" placeholder="Course title/instructor/description">
+            {{input type='text' value=filter placeholder='Course title ...'}}
             <label><input type="checkbox">Starred</label>
         </div>
         <div id="course_catalog">
-            {% for course in courses %}
+            {{ #each course in filteredContent }}
                 <section class="course_item">
                     <div class="course_info">
                         <btn class="course_star">*</btn>
                         <h1>{{ course.title }}</h1>
-                        <h2>Instructors: {{ course.get_instructors }}</h2>
-                        {{ course.description|safe }}
+                        <h2>Instructors: {{ course.instructors }}</h2>
+                        {{ course.description }}
                     </div>
 
-                    {% for section in course.all_sections %}
-                        <div class="course_section">
-                            {{ section.as_string }}
-                            <btn class="course_section_add">+</btn>
-                        </div>
-                    {% endfor %}
+                    {{ #each section in course.sections }}
+                    <div class="course_section">
+                        {{ section.schedule_string }}
+                        <btn class="course_section_add">+</btn>
+                    </div>
+                    {{ /each }}
                 </section>
-            {% endfor %}
+            {{ /each }}
         </div>
     </div>
+</script>
+{% endverbatim %}
 
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/jquery-1.11.1.min.js"></script>
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/handlebars-v1.3.0.js"></script>
+    <script src="{{ STATIC_PREFIX }}wintersession/js/libs/bitapsearcher.js"></script>
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/ember.js"></script>
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/ember-data.js"></script>
     <script src="{{ STATIC_PREFIX }}wintersession/js/courses.js"></script>

@@ -204,6 +204,7 @@ INSTALLED_APPS = (
     'wintersession',
     'django_tables2',
     'rest_framework',
+    'django_verbatim',
 
 )
 
