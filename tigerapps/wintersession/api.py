@@ -54,6 +54,7 @@ class SectionViewSet(viewsets.ReadOnlyModelViewSet):
     renderer_classes = EMBER_RENDERER_CLASSES
     queryset = Course.objects.all()
     serializer_class = SectionSerializer
+    resource_name = 'section'
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
