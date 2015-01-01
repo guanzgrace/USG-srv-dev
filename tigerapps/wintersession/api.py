@@ -1,8 +1,12 @@
-from rest_framework import routers, serializers, viewsets, permissions
+import datetime
+from rest_framework import routers, serializers, viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_ember.parsers import EmberJSONParser
 from rest_framework_ember.renderers import JSONRenderer
+from rest_framework.response import Response
+from wintersession import views
 from wintersession.models import Student, Course, Registration
+from wintersession.time import decode
 
 
 EMBER_PARSER_CLASSES = (EmberJSONParser, FormParser, MultiPartParser)
@@ -66,7 +70,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ('id', 'section')
 
 
-class RegistrationViewSet(viewsets.ModelViewSet):
+
+class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
+                          viewsets.mixins.RetrieveModelMixin,
+                          viewsets.mixins.ListModelMixin,
+                          viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     parser_classes = EMBER_PARSER_CLASSES
     renderer_classes = EMBER_RENDERER_CLASSES
@@ -75,6 +83,60 @@ class RegistrationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         student = Student.objects.get(netID=self.request.user)
         return student.registration_set.all()
+
+    def pre_save(self, obj):
+        obj.student = Student.objects.get(netID=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        error_message = None
+
+        try:
+            selected_course = Course.objects.get(id=request.DATA['section'])
+        except (KeyError, Course.DoesNotExist):
+            error_message = "That course does not exist."
+        else:
+            today = datetime.date.today()
+            if not (views.REGSTART <= today <= views.REGEND):
+                error_message = "It is not time to enroll."
+            selected_student = Student.objects.get(netID=request.user)
+            ss_courses = selected_student.course_set.all()
+            # Can't enroll in a class we're already in
+            if selected_course in ss_courses:
+                error_message = "Already enrolled in "+selected_course.title
+            # Can't enroll in a full class
+            if selected_course.is_full():
+                error_message = selected_course.title+" is at maximum capacity."
+            # Can't enroll in a cancelled class
+            if selected_course.cancelled:
+                error_message = selected_course.title+" is cancelled."
+            # Can't enroll in two section of same class
+            if selected_course.other_section.count() != 0:
+                other_sections = selected_course.other_section.all()
+                my_courses = selected_student.course_set.all()
+                for course in my_courses:
+                    for section in other_sections:
+                        if course.courseID == section.courseID:
+                            error_message = "You are already in "+section.courseID+", which is an alternative section of "+course.title
+            # Can't enroll in a class with time conflicts
+            ssb = selected_student.blocks()
+            overlap = False
+            for blk in selected_course.blocks:
+                if blk in ssb:
+                    overlap = True
+                    break
+            if overlap:
+                for course in selected_student.course_set.all():
+                    for blk in course.blocks:
+                        if blk in selected_course.blocks:
+                            error_message = selected_course.title \
+                                            +" conflicts with "+course.title+" at " \
+                                            +decode(blk)
+
+        if error_message is not None:
+            return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If we've made it to here, we can enroll
+        return super(RegistrationViewSet, self).create(request, *args, **kwargs)
 
 
 # Routers provide an easy way of automatically determining the URL conf.
