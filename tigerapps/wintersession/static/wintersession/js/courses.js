@@ -1,7 +1,14 @@
 window.App = Ember.Application.create({
     rootElement: '#wsite-content'
 });
+
 App.ApplicationAdapter = DS.FixtureAdapter;
+
+DS.RESTAdapter.reopen({
+    headers: {
+        "X-CSRFToken": window.CSRF_TOKEN
+    }
+});
 
 App.Router.map(function() {
     this.resource('courses', { path: '/' });
@@ -9,15 +16,29 @@ App.Router.map(function() {
 
 App.CoursesRoute = Ember.Route.extend({
     model: function() {
-        return this.store.find('course');
+        return Ember.RSVP.hash({
+            courses: this.store.find('course'),
+            registrations: this.store.find('registration')
+        });
     }
 });
 
-App.CoursesController = Ember.ArrayController.extend({
+App.CoursesController = Ember.ObjectController.extend({
+    actions: {
+        registerSection: function(section) {
+            var newReg = this.store.createRecord('registration', {
+                section: section
+            });
+            newReg.save().then(null, function() {
+                newReg.rollback();
+                newReg.unloadRecord();
+            });
+        }
+    },
     filter: '',
     filteredContent: function() {
         var filter = this.get('filter');
-        var courses = this.get('arrangedContent');
+        var courses = this.get('courses');
         if (filter == '') {
             return courses;
         } else {
@@ -30,7 +51,7 @@ App.CoursesController = Ember.ArrayController.extend({
                 return a.get('score') - b.get('score');
             });
         }
-    }.property('filter', 'arrangedContent')
+    }.property('filter', 'courses')
 });
 
 App.ApplicationAdapter = DS.RESTAdapter.extend({
@@ -52,7 +73,8 @@ App.Section = DS.Model.extend({
     course: DS.belongsTo('course', {async: true}),
     blocks: DS.attr(),
     schedule: DS.attr(),
-    schedule_string: DS.attr('string')
+    schedule_string: DS.attr('string'),
+    registration: DS.belongsTo('registration')
 });
 
 App.Registration = DS.Model.extend({

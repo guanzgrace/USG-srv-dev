@@ -1,8 +1,10 @@
 #from django.http import HttpResponse
+from django.core.context_processors import csrf
 from django.core.mail import send_mass_mail, EmailMessage
 from django.http import HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from wintersession.models import Course, Student, Registration, Instructor
 from django_tables2 import RequestConfig
@@ -73,6 +75,7 @@ def student(request, error_message=None):
     }
     return render(request, 'wintersession/student.html', context)
 
+@csrf_protect
 def courses(request):
     courses = Course.objects.filter(cancelled=False).exclude(courseID__regex=r'^.*\.[^a].*$')
     course_count = courses.count()

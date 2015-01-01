@@ -26,7 +26,7 @@
 {% verbatim %}
 <script type="text/x-handlebars" data-template-name="courses">
     <div id="courses_left">
-        <h1>My Courses<span>##</span></h1>
+        <h1>My Courses<span>{{ registrations.length }}</span></h1>
         <div id="course_schedule_wrap">
             <div id="course_schedule_labels_top">
                 <div class="course_schedule_labels_top_day">M</div>
@@ -69,21 +69,21 @@
             </div>
         </div>
         <div id="course_list">
-            {{#each course in controller}}
+            {{ #each registration in registrations }}
                 <section class="course_mini_item">
                     <div class="course_info">
-                        <h1>{{ course.title }}</h1>
+                        <h1>{{ registration.section.course.title }}</h1>
                     </div>
                     <div class="course_section">
-                        {{ course.sections.[0].schedule_string }}
+                        {{ registration.section.schedule_string }}
                         <btn class="course_section_remove">+</btn>
                     </div>
                 </section>
-            {{/each}}
+            {{ /each }}
         </div>
     </div>
     <div id="courses_right">
-        <h1>Course Catalog<span>##</span></h1>
+        <h1>Course Catalog<span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
             Filter
             {{input type='text' value=filter placeholder='Course title ...'}}
@@ -101,8 +101,8 @@
 
                     {{ #each section in course.sections }}
                     <div class="course_section">
-                        {{ section.schedule_string }}
-                        <btn class="course_section_add">+</btn>
+                        {{ section.schedule_string }} {{ section.registration }}
+                        <btn class="course_section_add" {{ action "registerSection" section }}>+</btn>
                     </div>
                     {{ /each }}
                 </section>
@@ -111,6 +111,10 @@
     </div>
 </script>
 {% endverbatim %}
+
+    <script>
+        window.CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
 
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/jquery-1.11.1.min.js"></script>
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/handlebars-v1.3.0.js"></script>
