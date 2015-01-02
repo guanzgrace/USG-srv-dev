@@ -130,10 +130,6 @@ $column-header-height: 40px;
     overflow: auto;
     padding: 30px 30px 0;
     width: 100%;
-
-    .course_section_add, .course_section_remove {
-      float: right;
-    }
   }
 }
 
@@ -205,8 +201,11 @@ $column-header-height: 40px;
   margin-bottom: 30px;
 
   &.is-cancelled {
-    text-decoration: line-through;
     font-style: italic;
+
+    h1 {
+      text-decoration: line-through;
+    }
   }
 
   .course_info {
@@ -250,12 +249,13 @@ $column-header-height: 40px;
       font-style: italic;
     }
 
-    .course_section_add, .course_section_remove {
-      float: right;
-    }
-
     .conflict-text {
       font-weight: normal;
     }
   }
+}
+
+.course_section_add, .course_section_remove {
+  float: right;
+  padding: 4px;
 }

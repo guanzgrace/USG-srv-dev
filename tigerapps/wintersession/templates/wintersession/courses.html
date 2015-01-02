@@ -8,6 +8,7 @@
 {% block head %}
     <title>Courses - Wintersession 2015</title>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}wintersession/courses.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}wintersession/font-awesome/css/font-awesome.min.css" />
 {% endblock %}
 
 {% block banner %}
@@ -96,7 +97,7 @@
                     </div>
                     <div class="course_section">
                         {{ registration.section.schedule_string }}
-                        <btn class="course_section_remove" {{ action "unregisterSection" registration.section }}>x</btn>
+                        <button class="course_section_remove" {{ action "unregisterSection" registration.section }}><i class="fa fa-times"></i></button>
                     </div>
                 </section>
             {{ /each }}
@@ -116,10 +117,15 @@
                     <div class="course_info">
                         <btn class="course_star">*</btn>
                         <h1>{{ course.title }}</h1>
-                        <h2>Instructors: {{ course.instructors }}</h2>
-                        {{{ course.description }}}
+                        {{ #if course.cancelled }}
+                            Course is cancelled.
+                        {{ else }}
+                            <h2>Instructors: {{ course.instructors }}</h2>
+                            {{{ course.description }}}
+                        {{ /if }}
                     </div>
 
+                    {{ #unless course.cancelled }}
                     {{ #each section in course.sections }}
                     <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting" }}>
                         {{ section.schedule_string }}
@@ -129,14 +135,15 @@
                         {{ /if }}
 
                         {{ #if section.isRegistered }}
-                            <btn class="course_section_remove" {{ action "unregisterSection" section }}>x</btn>
+                            <button class="course_section_remove" {{ action "unregisterSection" section }}><i class="fa fa-times"></i></button>
                         {{ else }}
                             {{ #unless section.isConflicting }}
-                                <btn class="course_section_add" {{ action "registerSection" section }}>+</btn>
+                                <button class="course_section_add" {{ action "registerSection" section }}><i class="fa fa-plus"></i></button>
                             {{ /unless }}
                         {{ /if }}
                     </div>
                     {{ /each }}
+                    {{ /unless }}
                 </section>
             {{ /each }}
         </div>

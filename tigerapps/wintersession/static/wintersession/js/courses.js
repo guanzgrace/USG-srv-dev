@@ -143,7 +143,11 @@ App.Section = DS.Model.extend({
 App.Registration = DS.Model.extend({
     section: DS.belongsTo('section', {async: true}),
     courseTitle: function() {
-        return this.get('section').get('course').get('title');
+        try {
+            return this.get('section').get('course').get('title');
+        } catch (e) {
+            return '';
+        }
     }.property('section.course.title')
 });
 
