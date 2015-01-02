@@ -91,7 +91,7 @@
         </div>
         <div id="course_list">
             {{ #each registration in sortedRegistrations }}
-                <section class="course_mini_item">
+                <section {{ bind-attr class=":course_mini_item registration.isDirty" }}>
                     <div class="course_info">
                         <h1>{{ registration.section.course.title }}</h1>
                     </div>
@@ -127,7 +127,7 @@
 
                     {{ #unless course.cancelled }}
                     {{ #each section in course.sections }}
-                    <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting" }}>
+                    <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting section.registration.isDirty" }}>
                         {{ section.schedule_string }}
 
                         {{ #if section.isConflicting }}
