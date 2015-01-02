@@ -169,9 +169,6 @@
     z-index: 1000;
     position: relative;
     border-radius: 3px; }
-    .course_item .course_info .course_star {
-      display: block;
-      float: right; }
     .course_item .course_info p {
       padding: 0 !important; }
   .course_item .course_section {
