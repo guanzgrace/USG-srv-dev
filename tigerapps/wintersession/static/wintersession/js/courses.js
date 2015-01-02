@@ -71,7 +71,10 @@ App.CoursesController = Ember.ObjectController.extend({
                 return a.get('score') - b.get('score');
             });
         }
-    }.property('filter', 'courses.@each.title')
+    }.property('filter', 'courses.@each.title'),
+    sortedRegistrations: function() {
+        return this.get('registrations').sortBy('courseTitle');
+    }.property('registrations.@each.courseTitle')
 });
 
 App.ApplicationAdapter = DS.RESTAdapter.extend({
@@ -134,7 +137,10 @@ App.Section = DS.Model.extend({
 });
 
 App.Registration = DS.Model.extend({
-    section: DS.belongsTo('section', {async: true})
+    section: DS.belongsTo('section', {async: true}),
+    courseTitle: function() {
+        return this.get('section').get('course').get('title');
+    }.property('section.course.title')
 });
 
 App.BlockAdapter = DS.FixtureAdapter.extend({
