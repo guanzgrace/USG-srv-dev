@@ -105,9 +105,10 @@
     <div id="courses_right">
         <h1>Course Catalog<span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
-            Filter
-            {{ input type='text' value=filterValue placeholder='Course title ...' action='doFilter' }}
-            <label><input type="checkbox">Starred</label>
+            <label>Search: {{ input type='text' value=filterValue placeholder='Course title' action='doFilter' }}</label>
+            {{ #if filter }}
+            <a href="#" {{ action 'clearFilter' }}>Show all courses</a>
+            {{ /if }}
         </div>
         <div id="course_catalog">
             {{ #each course in filteredContent }}

@@ -52,6 +52,10 @@ App.CoursesController = Ember.ObjectController.extend({
         },
         doFilter: function() {
             this.set('filter', this.get('filterValue'));
+        },
+        clearFilter: function() {
+            this.set('filterValue', '');
+            this.set('filter', '');
         }
     },
     filter: '',
