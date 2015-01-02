@@ -137,7 +137,10 @@ App.Registration = DS.Model.extend({
     section: DS.belongsTo('section', {async: true})
 });
 
-App.BlockAdapter = DS.FixtureAdapter;
+App.BlockAdapter = DS.FixtureAdapter.extend({
+    simulateRemoteResponse: false,
+    latency: 0
+});
 
 App.Block = DS.Model.extend({
     sections: DS.hasMany('sections', {async: true}),
