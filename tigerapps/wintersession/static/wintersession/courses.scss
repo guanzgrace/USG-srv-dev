@@ -118,6 +118,16 @@ $column-header-height: 40px;
           font-size: 10px;
           line-height: normal;
           border: 1px solid $colorB;
+          -webkit-animation: scheduleShow 0.1s;
+
+          @-webkit-keyframes scheduleShow {
+            from {
+              transform: scale(0.8);
+            }
+            to {
+              transform: scale(1);
+            }
+          }
         }
       }
     }
