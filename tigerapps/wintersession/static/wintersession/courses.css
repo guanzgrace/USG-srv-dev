@@ -66,15 +66,19 @@
       #courses_left #course_schedule_wrap #course_schedule .course_schedule_day {
         float: left;
         width: 20%;
-        height: 280px; }
+        height: 280px;
+        position: relative; }
         #courses_left #course_schedule_wrap #course_schedule .course_schedule_day .course_schedule_item {
-          position: relative;
-          top: 30%;
+          position: absolute;
           background-color: #276CA1;
-          padding: 5px;
+          padding: 2px;
+          width: 100%;
           margin: 5px 5px 5px 0;
-          height: 50%;
-          border-radius: 3px; }
+          border-radius: 3px;
+          overflow: hidden;
+          font-size: 10px;
+          line-height: normal;
+          border: 1px solid #071b34; }
   #courses_left #course_list {
     position: absolute;
     top: 340px;

@@ -151,3 +151,14 @@ App.Block = DS.Model.extend({
 App.Block.reopenClass({
     FIXTURES: []
 });
+
+window.AppConstants = {
+    START_TIME: 10, // 10a
+    END_TIME:   22  // 10p
+};
+
+Ember.Handlebars.helper('courseScheduleItem', function(courseTitle, startTime, endTime) {
+    var top = (startTime - AppConstants.START_TIME) / (AppConstants.END_TIME - AppConstants.START_TIME) * 100;
+    var height = (endTime - startTime) / (AppConstants.END_TIME - AppConstants.START_TIME) * 100;
+    return new Ember.Handlebars.SafeString('<div class="course_schedule_item" style="top: ' + top + '%; height: ' + height + '%">' + courseTitle + '</div>');
+});

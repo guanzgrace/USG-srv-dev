@@ -105,15 +105,19 @@ $column-header-height: 40px;
         float: left;
         width: 20%;
         height: $schedule-height - $top-labels-height;
+        position: relative;
 
         .course_schedule_item {
-          position: relative;
-          top: 30%;
+          position: absolute;
           background-color: $colorA;
-          padding: 5px;
+          padding: 2px;
+          width: 100%;
           margin: 5px 5px 5px 0;
-          height: 50%;
           border-radius: $card-border-radius;
+          overflow: hidden;
+          font-size: 10px;
+          line-height: normal;
+          border: 1px solid $colorB;
         }
       }
     }

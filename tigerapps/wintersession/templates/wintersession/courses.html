@@ -51,20 +51,40 @@
                 10p<br/>
             </div>
             <div id="course_schedule">
-                <div class="course_schedule_day" id="course_schedule_monday">
-
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #each time in r.section.schedule.[0] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /each }}
                 </div>
-                <div class="course_schedule_day" id="course_schedule_tuesday">
-                    <div class="course_schedule_item">Course Name</div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #each time in r.section.schedule.[1] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /each }}
                 </div>
-                <div class="course_schedule_day" id="course_schedule_wednesday">
-                    <div class="course_schedule_item">Course Name</div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #each time in r.section.schedule.[2] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /each }}
                 </div>
-                <div class="course_schedule_day" id="course_schedule_thursday">
-                    <div class="course_schedule_item">Course Name</div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #each time in r.section.schedule.[3] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /each }}
                 </div>
-                <div class="course_schedule_day" id="course_schedule_friday">
-                    <div class="course_schedule_item">Course Name</div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #each time in r.section.schedule.[4] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /each }}
                 </div>
             </div>
         </div>
@@ -118,7 +138,7 @@
     </div>
 </script>
 
-<script type="text/x-handlebars" data-template-name="course-schedule-item">
+<script type="text/x-handlebars" data-template-name="components/course-schedule-item">
     <div class="course_schedule_item">Course Name</div>
 </script>
 {% endverbatim %}
