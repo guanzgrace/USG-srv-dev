@@ -237,6 +237,7 @@
 
 .is-dirty {
   opacity: 0.7;
-  background-image: url("files/stripes.gif"); }
+  background: white url("files/stripes.gif") !important;
+  color: black !important; }
 
 /*# sourceMappingURL=courses.css.map */
