@@ -108,24 +108,28 @@ App.Section = DS.Model.extend({
         return this.get('registration') != null;
     }.property('registration'),
     isConflicting: function() {
+        return this.get('conflictText') != null;
+    }.property('conflictText'),
+    conflictText: function() {
         // Not conflicting if already registered
         if (this.get('isRegistered')) {
-            return false;
+            return null;
         }
 
         // Conflicting if already registered in another section
         if (this.get('course').get('isRegistered')) {
-            return true;
+            return 'Already registered for course';
         }
 
         // Check time conflicts
-        var isConflicting = false;
+        var conflictText = null;
         this.get('blocks').forEach(function(block) {
             if (block.get('isRegistered')) {
-                isConflicting = true;
+                conflictText = 'Conflicts with course ' + block.get('registeredSection').get('course').get('title');
             }
         });
-        return isConflicting;
+
+        return conflictText;
     }.property('blocks.@each.isRegistered', 'course.isRegistered')
 });
 
@@ -138,13 +142,16 @@ App.BlockAdapter = DS.FixtureAdapter;
 App.Block = DS.Model.extend({
     sections: DS.hasMany('sections', {async: true}),
     isRegistered: function() {
-        var isRegistered = false;
+        return this.get('registeredSection') != null;
+    }.property('registeredSection'),
+    registeredSection: function() {
+        var registeredSection = null;
         this.get('sections').forEach(function(section) {
             if (section.get('isRegistered')) {
-                isRegistered = true;
+                registeredSection = section;
             }
         });
-        return isRegistered;
+        return registeredSection;
     }.property('sections.@each.isRegistered')
 });
 

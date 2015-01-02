@@ -227,6 +227,7 @@ $column-header-height: 40px;
     background-color: white;
     padding: 7px;
     position: relative;
+    font-weight: bold;
 
     @for $i from 1 through 20 {
       &:nth-child(#{$i}) {
@@ -235,7 +236,8 @@ $column-header-height: 40px;
     }
 
     &.is-registered {
-      background-color: #4b8049;
+      background-color: $colorA;
+      color: white;
     }
 
     &.is-conflicting {
@@ -245,6 +247,10 @@ $column-header-height: 40px;
 
     .course_section_add, .course_section_remove {
       float: right;
+    }
+
+    .conflict-text {
+      font-weight: normal;
     }
   }
 }

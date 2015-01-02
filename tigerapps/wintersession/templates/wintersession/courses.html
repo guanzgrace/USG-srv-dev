@@ -116,12 +116,16 @@
                         <btn class="course_star">*</btn>
                         <h1>{{ course.title }}</h1>
                         <h2>Instructors: {{ course.instructors }}</h2>
-                        {{ course.description }}
+                        {{{ course.description }}}
                     </div>
 
                     {{ #each section in course.sections }}
                     <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting" }}>
-                        {{ section.schedule_string }} {{ section.registration }} {{ section.isConflicting }}
+                        {{ section.schedule_string }}
+
+                        {{ #if section.isConflicting }}
+                            <span class="conflict-text">{{ section.conflictText }}</span>
+                        {{ /if }}
 
                         {{ #if section.isRegistered }}
                             <btn class="course_section_remove" {{ action "unregisterSection" section }}>x</btn>

@@ -171,7 +171,8 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     background-color: white;
     padding: 7px;
-    position: relative; }
+    position: relative;
+    font-weight: bold; }
     .course_item .course_section:nth-child(1) {
       z-index: 999; }
     .course_item .course_section:nth-child(2) {
@@ -213,11 +214,14 @@
     .course_item .course_section:nth-child(20) {
       z-index: 980; }
     .course_item .course_section.is-registered {
-      background-color: #4b8049; }
+      background-color: #276CA1;
+      color: white; }
     .course_item .course_section.is-conflicting {
       color: gray;
       font-style: italic; }
     .course_item .course_section .course_section_add, .course_item .course_section .course_section_remove {
       float: right; }
+    .course_item .course_section .conflict-text {
+      font-weight: normal; }
 
 /*# sourceMappingURL=courses.css.map */
