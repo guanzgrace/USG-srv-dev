@@ -178,6 +178,8 @@
     padding: 7px;
     position: relative;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
     transition: background linear 0.1s, color linear 0.1s; }
     .course_item .course_section:nth-child(1) {
       z-index: 999; }
