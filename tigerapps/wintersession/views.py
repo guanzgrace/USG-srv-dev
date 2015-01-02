@@ -76,20 +76,20 @@ def student(request, error_message=None):
     return render(request, 'wintersession/student.html', context)
 
 @csrf_protect
+@login_required
 def courses(request):
-    courses = Course.objects.filter(cancelled=False).exclude(courseID__regex=r'^.*\.[^a].*$')
-    course_count = courses.count()
-#     cl = []
-#     prev_c = Course(title=None)
-#     for c in courses:
-#         if c.title != prev_c.title:
-#             cl.append(c)
-#         prev_c = c
-    context = {
-        'courses' : courses,
-        'num_c' : course_count,
-    }
-    return render(request, 'wintersession/courses.html', context)
+    user_name = request.user
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login')) # Send to CAS
+    if Student.objects.filter(netID=user_name).count() != 1:
+        info = gdi(user_name) # get personal info from LDAP
+        s = Student(netID=user_name, first_name=info.get('givenName'),
+                    last_name=info.get('sn')) # need to include other fields, too!
+        s.save()
+        # Add the special event
+        c = Course.objects.get(courseID='S1499')
+        Registration(course=c, student=s).save()
+    return render(request, 'wintersession/courses.html')
 
 @login_required
 def instructor(request):
