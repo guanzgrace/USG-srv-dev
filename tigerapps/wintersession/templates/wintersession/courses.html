@@ -127,7 +127,6 @@
             {{ #each course in filteredContent }}
                 <section {{ bind-attr class=":course_item course.isRegistered course.cancelled:is-cancelled" }}>
                     <div class="course_info">
-                        <btn class="course_star">*</btn>
                         <h1>{{ course.title }}</h1>
                         {{ #if course.cancelled }}
                             Course is cancelled.
