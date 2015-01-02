@@ -37,20 +37,25 @@ App.CoursesController = Ember.ObjectController.extend({
             var newReg = this.store.createRecord('registration', {
                 section: section
             });
-            newReg.save().then(null, function(err) {
-                alert(err.responseJSON.registration.error);
+            newReg.save().catch(function(err) {
+                alert(err['responseJSON']['registration']['error']);
                 newReg.rollback();
                 newReg.unloadRecord();
             });
         },
         unregisterSection: function(section) {
-            section.get('registration').destroyRecord().then(null, function(err) {
-                alert(err.responseJSON.registration.error);
-                newReg.rollback();
+            var reg = section.get('registration');
+            reg.destroyRecord().catch(function(err) {
+                alert(err['responseJSON']['registration']['error']);
+                reg.rollback();
             });
+        },
+        doFilter: function() {
+            this.set('filter', this.get('filterValue'));
         }
     },
     filter: '',
+    filterValue: '',
     filteredContent: function() {
         var filter = this.get('filter');
         var courses = this.get('courses');
@@ -66,7 +71,7 @@ App.CoursesController = Ember.ObjectController.extend({
                 return a.get('score') - b.get('score');
             });
         }
-    }.property('filter', 'courses')
+    }.property('filter', 'courses.@each.title')
 });
 
 App.ApplicationAdapter = DS.RESTAdapter.extend({

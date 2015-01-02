@@ -142,7 +142,7 @@ class Section:
     def __init__(self, blocks):
         self.blocks = blocks
 
-    def as_dict(self):
+    def as_dict(self, human_readable=False):
         agend = {}
         for i in range(1,6):
             agend[i] = []
@@ -156,8 +156,12 @@ class Section:
             if n == len(self.blocks) or self.blocks[n] != prev_blk + 5:
                 # record the previous session
                 dow = int(str(start_blk)[0])
-                start_time = decode_time(start_blk % 1000)
-                end_time = decode_time((prev_blk+5) % 1000)
+                if human_readable:
+                    start_time = decode_time(start_blk % 1000)
+                    end_time = decode_time((prev_blk+5) % 1000)
+                else:
+                    start_time = (start_blk / 10.0) % 100
+                    end_time = ((prev_blk + 5) / 10.0) % 100
                 info = (start_time, end_time)
                 agend[dow].append(info)
 
@@ -173,9 +177,9 @@ class Section:
         dow = {1: "M", 2: "T", 3: "W", 4: "Th", 5: "F"}
         # First group all sessions by time (start and end)
         times = {}
-        for day, day_sessions in self.as_dict().iteritems():
+        for day, day_sessions in self.as_dict(human_readable=True).iteritems():
             for session_tuple in day_sessions:
-                session_string = session_tuple[0] + "-" + session_tuple[1]
+                session_string = str(session_tuple[0]) + "-" + str(session_tuple[1])
                 if session_string not in times:
                     times[session_string] = []
                 times[session_string].append(dow[day])

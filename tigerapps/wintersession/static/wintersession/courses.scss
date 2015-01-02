@@ -125,6 +125,7 @@ $column-header-height: 40px;
     bottom: 0;
     overflow: auto;
     padding: 30px 30px 0;
+    width: 100%;
 
     .course_section_add, .course_section_remove {
       float: right;
@@ -194,6 +195,11 @@ $column-header-height: 40px;
 
   margin-bottom: 30px;
 
+  &.is-cancelled {
+    text-decoration: line-through;
+    font-style: italic;
+  }
+
   .course_info {
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     padding: 10px;
@@ -222,6 +228,15 @@ $column-header-height: 40px;
       &:nth-child(#{$i}) {
         z-index: 1000 - $i
       };
+    }
+
+    &.is-registered {
+      background-color: #4b8049;
+    }
+
+    &.is-conflicting {
+      color: gray;
+      font-style: italic;
     }
 
     .course_section_add, .course_section_remove {

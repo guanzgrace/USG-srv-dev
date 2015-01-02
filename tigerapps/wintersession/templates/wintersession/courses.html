@@ -51,19 +51,19 @@
                 10p<br/>
             </div>
             <div id="course_schedule">
-                <div class="course_schedule_day">
+                <div class="course_schedule_day" id="course_schedule_monday">
+
+                </div>
+                <div class="course_schedule_day" id="course_schedule_tuesday">
                     <div class="course_schedule_item">Course Name</div>
                 </div>
-                <div class="course_schedule_day">
+                <div class="course_schedule_day" id="course_schedule_wednesday">
                     <div class="course_schedule_item">Course Name</div>
                 </div>
-                <div class="course_schedule_day">
+                <div class="course_schedule_day" id="course_schedule_thursday">
                     <div class="course_schedule_item">Course Name</div>
                 </div>
-                <div class="course_schedule_day">
-                    <div class="course_schedule_item">Course Name</div>
-                </div>
-                <div class="course_schedule_day">
+                <div class="course_schedule_day" id="course_schedule_friday">
                     <div class="course_schedule_item">Course Name</div>
                 </div>
             </div>
@@ -86,12 +86,12 @@
         <h1>Course Catalog<span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
             Filter
-            {{input type='text' value=filter placeholder='Course title ...'}}
+            {{ input type='text' value=filterValue placeholder='Course title ...' action='doFilter' }}
             <label><input type="checkbox">Starred</label>
         </div>
         <div id="course_catalog">
             {{ #each course in filteredContent }}
-                <section {{ bind-attr class=":course_item course.isRegistered" }}>
+                <section {{ bind-attr class=":course_item course.isRegistered course.cancelled:is-cancelled" }}>
                     <div class="course_info">
                         <btn class="course_star">*</btn>
                         <h1>{{ course.title }}</h1>
@@ -100,7 +100,7 @@
                     </div>
 
                     {{ #each section in course.sections }}
-                    <div {{ bind-attr class=":course_section section.isRegistered" }}>
+                    <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting" }}>
                         {{ section.schedule_string }} {{ section.registration }} {{ section.isConflicting }}
 
                         {{ #if section.isRegistered }}
@@ -116,6 +116,10 @@
             {{ /each }}
         </div>
     </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="course-schedule-item">
+    <div class="course_schedule_item">Course Name</div>
 </script>
 {% endverbatim %}
 
