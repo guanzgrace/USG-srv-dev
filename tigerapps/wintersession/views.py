@@ -77,7 +77,7 @@ def student(request, error_message=None):
 
 @csrf_protect
 @login_required
-def courses(request):
+def register(request):
     user_name = request.user
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('login')) # Send to CAS
@@ -89,7 +89,7 @@ def courses(request):
         # Add the special event
         c = Course.objects.get(courseID='S1499')
         Registration(course=c, student=s).save()
-    return render(request, 'wintersession/courses.html')
+    return render(request, 'wintersession/register.html')
 
 @login_required
 def instructor(request):
