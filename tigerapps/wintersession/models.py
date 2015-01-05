@@ -156,6 +156,8 @@ class Section:
             if n == len(self.blocks) or self.blocks[n] != prev_blk + 5:
                 # record the previous session
                 dow = int(str(start_blk)[0])
+                if dow not in agend:
+                    continue  # skip blocks which are not valid days
                 if human_readable:
                     start_time = decode_time(start_blk % 1000)
                     end_time = decode_time((prev_blk+5) % 1000)
@@ -178,6 +180,8 @@ class Section:
         # First group all sessions by time (start and end)
         times = {}
         for day, day_sessions in self.as_dict(human_readable=True).iteritems():
+            if day not in dow:
+                continue  # skip sessions which are not on valid days
             for session_tuple in day_sessions:
                 session_string = str(session_tuple[0]) + "-" + str(session_tuple[1])
                 if session_string not in times:
