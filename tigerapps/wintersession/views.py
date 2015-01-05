@@ -75,6 +75,21 @@ def student(request, error_message=None):
     }
     return render(request, 'wintersession/student.html', context)
 
+def courses(request):
+    courses = Course.objects.filter(cancelled=False).exclude(courseID__regex=r'^.*\.[^a].*$')
+    course_count = courses.count()
+    #     cl = []
+    #     prev_c = Course(title=None)
+    #     for c in courses:
+    #         if c.title != prev_c.title:
+    #             cl.append(c)
+    #         prev_c = c
+    context = {
+        'courses' : courses,
+        'num_c' : course_count,
+        }
+    return render(request, 'wintersession/courses.html', context)
+
 @csrf_protect
 @login_required
 def register(request):
