@@ -110,6 +110,7 @@ App.Section = DS.Model.extend({
     blocks: DS.hasMany('blocks', {async: true}),
     schedule: DS.attr(),
     schedule_string: DS.attr('string'),
+    is_full: DS.attr('boolean'),
     registration: DS.belongsTo('registration'),
     isRegistered: function() {
         return this.get('registration') != null;
@@ -126,6 +127,11 @@ App.Section = DS.Model.extend({
         // Conflicting if already registered in another section
         if (this.get('course').get('isRegistered')) {
             return 'Already registered for course';
+        }
+
+        // Check if full
+        if (this.get('is_full')) {
+            return 'Section is full';
         }
 
         // Check time conflicts
