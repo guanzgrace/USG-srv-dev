@@ -107,7 +107,7 @@
                         <h1>{{ registration.section.course.title }}</h1>
                     </div>
                     <div class="course_section">
-                        {{ registration.section.schedule_string }}
+                        {{ registration.section.schedule_string }} @ {{ registration.section.room }}
                         {{ #if isTimeToEnroll }}
                         <button class="course_section_remove" {{ action "unregisterSection" registration.section }}><i class="fa fa-times"></i></button>
                         {{ /if }}
@@ -139,7 +139,7 @@
                         {{ #if course.cancelled }}
                             Course is cancelled.
                         {{ else }}
-                            <h2>Instructors: {{ course.instructors }}</h2>
+                            <h2>Instructors: {{ course.instructors_string }}</h2>
                             {{{ course.description }}}
                         {{ /if }}
                     </div>
@@ -147,7 +147,7 @@
                     {{ #unless course.cancelled }}
                     {{ #each section in course.sections }}
                     <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting section.registration.isDirty" }}>
-                        {{ section.schedule_string }}
+                        {{ section.schedule_string }} @ {{ section.room }}
 
                         {{ #if section.isConflicting }}
                             <span class="conflict-text">{{ section.conflictText }}</span>

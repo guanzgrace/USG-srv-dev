@@ -51,7 +51,7 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'blocks', 'schedule', 'schedule_string', 'is_full')
+        fields = ('id', 'blocks', 'schedule', 'schedule_string', 'room', 'is_full')
 
 
 class SectionViewSet(viewsets.ReadOnlyModelViewSet):

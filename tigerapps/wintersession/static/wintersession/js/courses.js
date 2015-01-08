@@ -105,7 +105,10 @@ App.Course = DS.Model.extend({
             }
         });
         return isRegistered;
-    }.property('sections.@each.registration')
+    }.property('sections.@each.registration'),
+    instructors_string: function() {
+        return this.get('instructors').join(', ')
+    }.property('instructors')
 });
 
 App.Section = DS.Model.extend({
@@ -113,6 +116,7 @@ App.Section = DS.Model.extend({
     blocks: DS.hasMany('blocks', {async: true}),
     schedule: DS.attr(),
     schedule_string: DS.attr('string'),
+    room: DS.attr('string'),
     is_full: DS.attr('boolean'),
     registration: DS.belongsTo('registration'),
     isRegistered: function() {
