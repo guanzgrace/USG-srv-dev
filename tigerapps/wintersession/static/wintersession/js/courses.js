@@ -78,7 +78,10 @@ App.CoursesController = Ember.ObjectController.extend({
     }.property('filter', 'courses.@each.title'),
     sortedRegistrations: function() {
         return this.get('registrations').sortBy('courseTitle');
-    }.property('registrations.@each.courseTitle')
+    }.property('registrations.@each.courseTitle'),
+    isTimeToEnroll: function() {
+        return (window.REGSTART <= new Date() && new Date() <= window.REGEND);
+    }.property()
 });
 
 App.ApplicationAdapter = DS.RESTAdapter.extend({

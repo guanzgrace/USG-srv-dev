@@ -108,12 +108,18 @@
                     </div>
                     <div class="course_section">
                         {{ registration.section.schedule_string }}
+                        {{ #if isTimeToEnroll }}
                         <button class="course_section_remove" {{ action "unregisterSection" registration.section }}><i class="fa fa-times"></i></button>
+                        {{ /if }}
                     </div>
                 </section>
             {{ /unless }}
             {{ else }}
-            You are not currently registered for any courses.
+                {{ #if isTimeToEnroll }}
+                Course enrollment is not currently open.
+                {{ else }}
+                You are not currently registered for any courses.
+                {{ /if }}
             {{ /each }}
         </div>
     </div>
@@ -147,12 +153,14 @@
                             <span class="conflict-text">{{ section.conflictText }}</span>
                         {{ /if }}
 
+                        {{ #if isTimeToEnroll }}
                         {{ #if section.isRegistered }}
                             <button class="course_section_remove" {{ action "unregisterSection" section }}><i class="fa fa-times"></i></button>
                         {{ else }}
                             {{ #unless section.isConflicting }}
                                 <button class="course_section_add" {{ action "registerSection" section }}><i class="fa fa-plus"></i></button>
                             {{ /unless }}
+                        {{ /if }}
                         {{ /if }}
                     </div>
                     {{ /each }}
@@ -170,6 +178,8 @@
 
     <script>
         window.CSRF_TOKEN = '{{ csrf_token }}';
+        window.REGSTART = new Date('{{ REGSTART|date:"SHORT_DATE_FORMAT" }}');
+        window.REGEND = new Date('{{ REGEND|date:"SHORT_DATE_FORMAT" }}');
     </script>
 
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/jquery-1.11.1.min.js"></script>

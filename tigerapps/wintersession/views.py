@@ -104,7 +104,11 @@ def register(request):
         # Add the special event
         c = Course.objects.get(courseID='S1499')
         Registration(course=c, student=s).save()
-    return render(request, 'wintersession/register.html')
+    context = {
+        'REGSTART': REGSTART,
+        'REGEND': REGEND
+    }
+    return render(request, 'wintersession/register.html', context)
 
 @login_required
 def instructor(request):
