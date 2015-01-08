@@ -24,8 +24,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 
 # Wintersession registration start
-REGSTART = datetime.date(2015, 01, 8)
-REGEND = datetime.date(2015,01,21)
+REGSTART = datetime.date(2015, 01, 9)
+REGEND = datetime.date(2015, 01, 23)
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
