@@ -33,7 +33,7 @@ class ListField(models.TextField):
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    netID = models.CharField(max_length=8, unique=True)
+    netID = models.CharField(max_length=16, unique=True)
     agenda_visibility = models.BooleanField(default=False)
 
     def blocks(self):
@@ -67,7 +67,7 @@ class Student(models.Model):
 class Instructor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    netID = models.CharField(max_length=8, unique=True)
+    netID = models.CharField(max_length=16, unique=True)
     faculty = models.BooleanField(default=False)
 
     def __unicode__(self):  # Python 3: def __str__(self):
