@@ -259,7 +259,7 @@ def agenda(request, student_id):
     ss_courses = selected_student.course_set.all()
 #    ss_blocks = selected_student.blocks().sort()
     agend = {}
-    for i in range(1,6):
+    for i in range(0, 7):
         agend[i] = {}
     # We're going to make a dict with five entries. Values will be dicts for
     # each day of the week. the subdicts will map start timecodes to tuples
@@ -276,7 +276,7 @@ def agenda(request, student_id):
                 prev_blk = blk 
                 continue
             # but if so, record the previous session
-            dow = int(str(first_blk)[0])
+            dow = first_blk / 1000
             start_time = decode_time(first_blk % 1000)
             end_time = decode_time((prev_blk+5) % 1000)
             info = (c, start_time, end_time)
@@ -297,12 +297,14 @@ def agenda(request, student_id):
         agend[i] = od
         
     dow = {}
+    dow[0] = "Sunday"
     dow[1] = "Monday"
     dow[2] = "Tuesday"
     dow[3] = "Wednesday"
     dow[4] = "Thursday"
     dow[5] = "Friday"
-    
+    dow[6] = "Saturday"
+
     # Prepare the privacy option form if user is looking at own agenda
     if own_agenda:
         privacy_form = AgendaPrivacyForm(instance=user_student)

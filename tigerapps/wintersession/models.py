@@ -144,9 +144,9 @@ class Section:
 
     def as_dict(self, human_readable=False):
         agend = {}
-        for i in range(1,6):
+        for i in range(0, 7):
             agend[i] = []
-        # We're going to make a dict with five entries. Values will be dicts for
+        # We're going to make a dict with seven entries. Values will be dicts for
         # each day of the week. the subdicts will map start timecodes to tuples
         # with format (start time, end time)
         prev_blk = start_blk = self.blocks[0]
@@ -155,12 +155,10 @@ class Section:
             # if block continues from previous, or past last block
             if n == len(self.blocks) or self.blocks[n] != prev_blk + 5:
                 # record the previous session
-                dow = int(str(start_blk)[0])
-                if dow not in agend:
-                    continue  # skip blocks which are not valid days
+                dow = start_blk / 1000
                 if human_readable:
                     start_time = decode_time(start_blk % 1000)
-                    end_time = decode_time((prev_blk+5) % 1000)
+                    end_time = decode_time((prev_blk + 5) % 1000)
                 else:
                     start_time = (start_blk / 10.0) % 100
                     end_time = ((prev_blk + 5) / 10.0) % 100
@@ -176,12 +174,10 @@ class Section:
         return agend
 
     def as_string(self):
-        dow = {1: "M", 2: "T", 3: "W", 4: "Th", 5: "F"}
+        dow = {0: "S", 1: "M", 2: "T", 3: "W", 4: "Th", 5: "F", 6: "Sa"}
         # First group all sessions by time (start and end)
         times = {}
         for day, day_sessions in self.as_dict(human_readable=True).iteritems():
-            if day not in dow:
-                continue  # skip sessions which are not on valid days
             for session_tuple in day_sessions:
                 session_string = str(session_tuple[0]) + "-" + str(session_tuple[1])
                 if session_string not in times:

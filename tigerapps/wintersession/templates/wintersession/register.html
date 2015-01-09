@@ -30,13 +30,17 @@
         <h1>My Courses<span>{{ registrations.length }}</span></h1>
         <div id="course_schedule_wrap">
             <div id="course_schedule_labels_top">
+                <div class="course_schedule_labels_top_day">S</div>
                 <div class="course_schedule_labels_top_day">M</div>
                 <div class="course_schedule_labels_top_day">T</div>
                 <div class="course_schedule_labels_top_day">W</div>
                 <div class="course_schedule_labels_top_day">Th</div>
                 <div class="course_schedule_labels_top_day">F</div>
+                <div class="course_schedule_labels_top_day">Sa</div>
             </div>
             <div id="course_schedule_labels_left">
+                8a<br/>
+                9a<br/>
                 10a<br/>
                 11a<br/>
                 12p<br/>
@@ -92,6 +96,24 @@
                     {{ #each r in registrations }}
                     {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[4] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /unless }}
+                    {{ /each }}
+                </div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
+                    {{ #each time in r.section.schedule.[5] }}
+                    {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
+                    {{ /each }}
+                    {{ /unless }}
+                    {{ /each }}
+                </div>
+                <div class="course_schedule_day">
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
+                    {{ #each time in r.section.schedule.[6] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
                     {{ /unless }}

@@ -54,18 +54,19 @@
       #courses_left #course_schedule_wrap #course_schedule_labels_top .course_schedule_labels_top_day {
         text-align: center;
         float: left;
-        width: 20%; }
+        width: 14.28571%; }
     #courses_left #course_schedule_wrap #course_schedule_labels_left {
       float: left;
       width: 40px;
       padding: 0 5px;
-      line-height: 21.53846px; }
+      line-height: 18.66667px;
+      font-size: smaller; }
     #courses_left #course_schedule_wrap #course_schedule {
       margin-left: 40px;
       overflow: auto; }
       #courses_left #course_schedule_wrap #course_schedule .course_schedule_day {
         float: left;
-        width: 20%;
+        width: 14.28571%;
         height: 280px;
         position: relative; }
         #courses_left #course_schedule_wrap #course_schedule .course_schedule_day .course_schedule_item {

@@ -190,12 +190,12 @@ App.Block.reopenClass({
 });
 
 window.AppConstants = {
-    START_TIME: 10, // 10a
+    START_TIME: 8, // 8a
     END_TIME:   22  // 10p
 };
 
 Ember.Handlebars.helper('courseScheduleItem', function(courseTitle, startTime, endTime) {
-    var top = (startTime - AppConstants.START_TIME) / (AppConstants.END_TIME - AppConstants.START_TIME) * 100;
-    var height = (endTime - startTime) / (AppConstants.END_TIME - AppConstants.START_TIME) * 100;
+    var top = (startTime - AppConstants.START_TIME) / (AppConstants.END_TIME - AppConstants.START_TIME + 1) * 100;
+    var height = (endTime - startTime) / (AppConstants.END_TIME - AppConstants.START_TIME + 1) * 100;
     return new Ember.Handlebars.SafeString('<div class="course_schedule_item" style="top: ' + top + '%; height: ' + height + '%">' + courseTitle + '</div>');
 });

@@ -8,7 +8,9 @@ def decode(timecode):
     time = timecode % 1000
     dowc = (timecode - (time))/1000
     dow = "X"
-    if dowc == 1: 
+    if dowc == 0:
+        dow = "Sunday"
+    elif dowc == 1:
         dow = "Monday"
     elif dowc == 2:
         dow = "Tuesday"
@@ -18,6 +20,8 @@ def decode(timecode):
         dow = "Thursday"
     elif dowc == 5:
         dow = "Friday"
+    elif dowc == 6:
+        dow = "Saturday"
     
     if str(time)[-1] == '5':
         half = ":30"
