@@ -76,9 +76,9 @@ App.CoursesController = Ember.ObjectController.extend({
             });
         }
     }.property('filter', 'courses.@each.title'),
-    sortedRegistrations: function() {
-        return this.get('registrations').sortBy('courseTitle');
-    }.property('registrations.@each.courseTitle'),
+    filteredRegistrations: function() {
+        return this.get('registrations').filterBy('isDirty', false).sortBy('courseTitle');
+    }.property('registrations.@each.courseTitle', 'registrations.@each.isDirty'),
     isTimeToEnroll: function() {
         return (window.REGSTART <= new Date() && new Date() <= window.REGEND);
     }.property()
