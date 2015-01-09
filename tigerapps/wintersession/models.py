@@ -146,6 +146,11 @@ class Section:
         agend = {}
         for i in range(0, 7):
             agend[i] = []
+
+        # If temporary list, return empty dict
+        if self.blocks == [0]:
+            return agend
+
         # We're going to make a dict with seven entries. Values will be dicts for
         # each day of the week. the subdicts will map start timecodes to tuples
         # with format (start time, end time)
