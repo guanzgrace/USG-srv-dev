@@ -179,7 +179,7 @@ class Section:
         return agend
 
     def as_string(self):
-        dow = {0: "S", 1: "M", 2: "T", 3: "W", 4: "Th", 5: "F", 6: "Sa"}
+        dow = {0: "Su", 1: "M", 2: "Tu", 3: "W", 4: "Th", 5: "F", 6: "Sa"}
         # First group all sessions by time (start and end)
         times = {}
         for day, day_sessions in self.as_dict(human_readable=True).iteritems():
