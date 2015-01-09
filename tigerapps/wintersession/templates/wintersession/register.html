@@ -204,8 +204,8 @@
 
     <script>
         window.CSRF_TOKEN = '{{ csrf_token }}';
-        window.REGSTART = new Date('{{ REGSTART|date:"SHORT_DATE_FORMAT" }}');
-        window.REGEND = new Date('{{ REGEND|date:"SHORT_DATE_FORMAT" }}');
+        window.REGSTART = new Date('{{ REGSTART|date:"c" }}');
+        window.REGEND = new Date('{{ REGEND|date:"c" }}');
     </script>
 
     <script src="{{ STATIC_PREFIX }}wintersession/js/libs/jquery-1.11.1.min.js"></script>

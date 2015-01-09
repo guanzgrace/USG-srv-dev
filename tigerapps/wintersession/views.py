@@ -17,6 +17,7 @@ from django_cas.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test as django_user_passes_test
 from utils.dsml import gdi
 import datetime
+from pytz import timezone
 import collections
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.views import login
@@ -24,8 +25,20 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 
 # Wintersession registration start
-REGSTART = datetime.date(2015, 01, 9)
-REGEND = datetime.date(2015, 01, 23)
+REGSTART = datetime.datetime(year=2015,
+                             month=1,
+                             day=12,
+                             hour=12,
+                             minute=0,
+                             second=0,
+                             tzinfo=timezone('US/Eastern'))
+REGEND   = datetime.datetime(year=2015,
+                             month=1,
+                             day=23,
+                             hour=23,
+                             minute=59,
+                             second=59,
+                             tzinfo=timezone('US/Eastern'))
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
