@@ -121,11 +121,13 @@
                     </div>
                 </section>
             {{ else }}
+                <div id="course_list_message">
                 {{ #if isTimeToEnroll }}
                 You are not currently registered for any courses.
                 {{ else }}
                 Course enrollment is not currently open.
                 {{ /if }}
+                </div>
             {{ /each }}
         </div>
     </div>

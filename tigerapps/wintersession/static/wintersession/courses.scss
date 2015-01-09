@@ -142,6 +142,12 @@ $column-header-height: 40px;
     overflow: auto;
     padding: 30px 30px 0;
     width: 100%;
+
+    #course_list_message {
+      text-align: center;
+      color: #555;
+      font-style: italic;
+    }
   }
 }
 
@@ -205,6 +211,16 @@ $column-header-height: 40px;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   background-color: white;
   position: relative;
+  -webkit-animation: courseShow 0.1s;
+
+  @-webkit-keyframes courseShow {
+    from {
+      transform: scale(0.8);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
 }
 
 .course_item {
