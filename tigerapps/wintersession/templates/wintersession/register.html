@@ -57,58 +57,73 @@
             </div>
             <div id="course_schedule">
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[0] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[1] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[2] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[3] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[4] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[5] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
                 <div class="course_schedule_day">
-                    {{ #each r in filteredRegistrations }}
+                    {{ #each r in registrations }}
+                    {{ #unless r.isDirty }}
                     {{ #each time in r.section.schedule.[6] }}
                     {{ courseScheduleItem r.section.course.title time.[0] time.[1] }}
                     {{ /each }}
+                    {{ /unless }}
                     {{ /each }}
                 </div>
             </div>
         </div>
         <div id="course_list">
-            {{ #each registration in filteredRegistrations }}
+            {{ #each registration in sortedRegistrations }}
+            {{ #unless registration.isDirty }}
                 <section {{ bind-attr class=":course_mini_item registration.isDirty" }}>
                     <div class="course_info">
                         <h1>{{ registration.section.course.title }}</h1>
@@ -120,7 +135,10 @@
                         {{ /if }}
                     </div>
                 </section>
-            {{ else }}
+            {{ /unless }}
+            {{ /each }}
+
+            {{ #unless filteredRegistrations }}
                 <div id="course_list_message">
                 {{ #if isTimeToEnroll }}
                 You are not currently registered for any courses.
@@ -128,7 +146,7 @@
                 Course enrollment is not currently open.
                 {{ /if }}
                 </div>
-            {{ /each }}
+            {{ /unless }}
         </div>
     </div>
     <div id="courses_right">
