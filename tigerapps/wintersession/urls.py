@@ -6,8 +6,8 @@ from wintersession import views, api
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^enroll/$', views.enroll, name='enroll'),
-    url(r'^student/$', views.student, name='student'),
+    url(r'^enroll/$', RedirectView.as_view(url='/register/'), name='enroll'),
+    url(r'^student/$', RedirectView.as_view(url='/register/'), name='student'),
     url(r'^courses/$', views.courses, name='courses'),
     url(r'^register/$', views.register, name='register'),
     url(r'^instructor/$', views.instructor, name='instructor'),
