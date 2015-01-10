@@ -176,7 +176,7 @@
                         {{ section.schedule_string }} @ {{ section.room }}
 
                         {{ #if section.isConflicting }}
-                            <span class="conflict-text">{{ section.conflictText }}</span>
+                            <span class="conflict-text">{{{ section.conflictText }}}</span>
                         {{ /if }}
 
                         {{ #if isTimeToEnroll }}
