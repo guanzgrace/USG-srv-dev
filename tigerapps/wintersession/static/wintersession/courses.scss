@@ -201,6 +201,11 @@ $column-header-height: 40px;
     position: absolute;
     top: $column-header-height + $courses_list_filter_height;
     bottom: 0;
+    transition: 0.1s linear opacity;
+
+    &.is-searching {
+      opacity: 0.5;
+    }
   }
 }
 

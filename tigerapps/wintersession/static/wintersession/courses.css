@@ -147,7 +147,10 @@
     overflow: auto;
     position: absolute;
     top: 80px;
-    bottom: 0; }
+    bottom: 0;
+    transition: 0.1s linear opacity; }
+    #courses_right #course_catalog.is-searching {
+      opacity: 0.5; }
 
 .course_mini_item {
   margin-bottom: 30px;

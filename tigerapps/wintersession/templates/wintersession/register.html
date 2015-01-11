@@ -157,7 +157,7 @@
             <a href="#" id="clear-filter" {{ action 'clearFilter' }}>Show all courses</a>
             {{ /if }}
         </div>
-        <div id="course_catalog">
+        <div id="course_catalog" {{ bind-attr class="isSearching" }}>
             {{ #each course in filteredContent }}
                 <section {{ bind-attr class=":course_item course.isRegistered course.cancelled:is-cancelled" }}>
                     <div class="course_info">

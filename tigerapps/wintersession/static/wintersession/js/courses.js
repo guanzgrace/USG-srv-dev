@@ -51,6 +51,7 @@ App.CoursesController = Ember.ObjectController.extend({
             });
         },
         doFilter: function() {
+            this.set('isSearching', false);
             this.set('filter', this.get('filterValue'));
         },
         clearFilter: function() {
@@ -58,12 +59,15 @@ App.CoursesController = Ember.ObjectController.extend({
             this.set('filter', '');
         }
     },
+    isSearching: false,
     filter: '',
     filterValue: '',
     filterUpdate: function() {
+        this.set('isSearching', true);
         Ember.run.debounce(this, this.doFilter, 500);
     }.observes('filterValue'),
     doFilter: function() {
+        this.set('isSearching', false);
         this.set('filter', this.get('filterValue'));
     },
     filteredContent: function() {
