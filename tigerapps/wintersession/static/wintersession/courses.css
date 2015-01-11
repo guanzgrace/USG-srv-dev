@@ -128,8 +128,19 @@
     padding: 0 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1001; }
+    #courses_right #courses_list_filter i {
+      position: relative;
+      padding: 5px;
+      color: #aaa; }
     #courses_right #courses_list_filter input {
-      font-size: 14px; }
+      font-size: 14px;
+      height: 25px;
+      border-radius: 100px;
+      margin-left: -30px;
+      border: 1px inset #ddd;
+      padding: 0 25px; }
+    #courses_right #courses_list_filter #clear-filter {
+      float: right; }
   #courses_right #course_catalog {
     width: 100%;
     padding: 30px 30px 0;

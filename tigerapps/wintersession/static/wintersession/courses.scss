@@ -174,8 +174,23 @@ $column-header-height: 40px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     z-index: 1001;
 
+    i {
+      position: relative;
+      padding: 5px;
+      color: #aaa;
+    }
+
     input {
       font-size: 14px;
+      height: 25px;
+      border-radius: 100px;
+      margin-left: -30px;
+      border: 1px inset #ddd;
+      padding: 0 25px;
+    }
+
+    #clear-filter {
+      float: right;
     }
   }
 
