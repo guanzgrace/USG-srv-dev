@@ -51,7 +51,6 @@ App.CoursesController = Ember.ObjectController.extend({
             });
         },
         doFilter: function() {
-            this.set('isSearching', false);
             this.set('filter', this.get('filterValue'));
         },
         clearFilter: function() {
@@ -67,10 +66,12 @@ App.CoursesController = Ember.ObjectController.extend({
         Ember.run.debounce(this, this.doFilter, 500);
     }.observes('filterValue'),
     doFilter: function() {
-        this.set('isSearching', false);
         this.set('filter', this.get('filterValue'));
     },
     filteredContent: function() {
+        this.set('isSearching', false);
+        $("#course_catalog").scrollTop(0);
+
         var filter = this.get('filter');
         var courses = this.get('courses');
         if (filter == '') {
