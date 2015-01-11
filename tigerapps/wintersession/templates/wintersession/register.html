@@ -152,7 +152,7 @@
     <div id="courses_right">
         <h1>Course Catalog<span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
-            <label><i class="fa fa-search"></i> {{ input type='text' value=filterValue placeholder='Course title' action='doFilter' }}</label>
+            <label><i class="fa fa-search"></i> {{ input type='text' value=filterValue placeholder='Course title' action='doFilter' maxlength='30' }}</label>
             {{ #if filter }}
             <a href="#" id="clear-filter" {{ action 'clearFilter' }}>Show all courses</a>
             {{ /if }}
