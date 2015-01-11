@@ -140,7 +140,7 @@ App.Section = DS.Model.extend({
     conflictText: function() {
         // Hack to handle OA courses
         if (this.get('course').get('title').substring(0,3) == 'OA ') {
-            return '&nbsp;<b><a href="https://oa.princeton.edu/TripStore"><i class="fa fa-external-link"></i> Register on OA site</a></b>';
+            return '&nbsp;<b><a href="https://oa.princeton.edu/TripStore" target="_blank"><i class="fa fa-external-link"></i> Register on OA site</a></b>';
         }
 
         // Not conflicting if already registered
