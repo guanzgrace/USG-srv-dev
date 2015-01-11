@@ -60,6 +60,12 @@ App.CoursesController = Ember.ObjectController.extend({
     },
     filter: '',
     filterValue: '',
+    filterUpdate: function() {
+        Ember.run.debounce(this, this.doFilter, 500);
+    }.observes('filterValue'),
+    doFilter: function() {
+        this.set('filter', this.get('filterValue'));
+    },
     filteredContent: function() {
         var filter = this.get('filter');
         var courses = this.get('courses');
