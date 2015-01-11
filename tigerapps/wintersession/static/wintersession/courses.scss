@@ -26,6 +26,19 @@ $card-border-radius: 3px;
       > span, > img {
         display: none;
       }
+
+      > .ember-view {
+        -webkit-animation: viewShow 0.1s;
+
+        @-webkit-keyframes viewShow {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      }
     }
   }
 }

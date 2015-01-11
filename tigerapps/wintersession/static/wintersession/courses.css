@@ -16,7 +16,13 @@
         box-sizing: border-box; }
       #main-wrap .container #wsite-content > span, #main-wrap .container #wsite-content > img {
         display: none; }
-
+      #main-wrap .container #wsite-content > .ember-view {
+        -webkit-animation: viewShow 0.1s; }
+@-webkit-keyframes viewShow {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 #footer-wrap {
   display: none; }
 
