@@ -150,7 +150,7 @@
         </div>
     </div>
     <div id="courses_right">
-        <h1>Course Catalog<span>{{ filteredContent.length }}</span></h1>
+        <h1>Course Catalog <a href="#" {{ action 'refresh' }}><i {{ bind-attr class=":fa :fa-refresh isRefreshing:fa-spin" }}></i></a><span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
             <label><i class="fa fa-search"></i> {{ input type='text' value=filterValue placeholder='Course title' action='doFilter' maxlength='30' }}</label>
             {{ #if filter }}

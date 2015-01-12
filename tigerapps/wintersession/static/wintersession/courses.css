@@ -123,6 +123,9 @@
       display: block;
       float: right;
       font-weight: normal; }
+  #courses_right > h1 > a {
+    color: white !important;
+    margin: 0 5px; }
   #courses_right #courses_list_filter {
     position: absolute;
     top: 40px;

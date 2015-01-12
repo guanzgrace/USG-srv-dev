@@ -56,8 +56,19 @@ App.CoursesController = Ember.ObjectController.extend({
         clearFilter: function() {
             this.set('filterValue', '');
             this.set('filter', '');
+        },
+        refresh: function() {
+            this.set('isRefreshing', true);
+            var self = this;
+            Ember.RSVP.hash({
+                courses: this.store.find('course'),
+                registrations: this.store.find('registration')
+            }).then(function() {
+                self.set('isRefreshing', false);
+            });
         }
     },
+    isRefreshing: false,
     isSearching: false,
     filter: '',
     filterValue: '',

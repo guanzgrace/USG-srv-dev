@@ -167,6 +167,11 @@ $column-header-height: 40px;
 #courses_right {
   @include column-header();
 
+  > h1 > a {
+    color: white !important;
+    margin: 0 5px;
+  }
+
   position: absolute;
   left: 50%;
   width: 50%;
