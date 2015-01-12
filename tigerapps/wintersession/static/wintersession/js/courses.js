@@ -84,7 +84,7 @@ App.CoursesController = Ember.ObjectController.extend({
         $("#course_catalog").scrollTop(0);
 
         var filter = this.get('filter');
-        var courses = this.get('courses');
+        var courses = this.get('courses').filterBy('cancelled', false);
         if (filter == '') {
             return courses;
         } else {
