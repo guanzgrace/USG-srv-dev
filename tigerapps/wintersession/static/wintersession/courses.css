@@ -257,7 +257,7 @@
     .course_item .course_section.is-conflicting {
       color: gray;
       font-style: italic; }
-    .course_item .course_section .conflict-text {
+    .course_item .course_section .conflict-text, .course_item .course_section .enrollment-count-text {
       font-weight: normal; }
 
 .course_section_add, .course_section_remove {

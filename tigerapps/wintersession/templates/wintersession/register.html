@@ -175,8 +175,12 @@
                     <div {{ bind-attr class=":course_section section.isRegistered section.isConflicting section.registration.isDirty" }}>
                         {{ section.schedule_string }} @ {{ section.room }}
 
+                        <br />
+
                         {{ #if section.isConflicting }}
                             <span class="conflict-text">{{{ section.conflictText }}}</span>
+                        {{ else }}
+                            <span class="enrollment-count-text">(Enrollment: {{ section.current_enroll }} / {{ section.max_enroll }})</span>
                         {{ /if }}
 
                         {{ #if isTimeToEnroll }}

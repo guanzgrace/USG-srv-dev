@@ -187,8 +187,8 @@ def drop(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
-        today = datetime.date.today()
-        if not (REGSTART <= today <= REGEND):
+        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        if not (REGSTART <= now <= REGEND):
             error_message = "It is not time to enroll."
             return student(request, error_message)
         selected_student = Student.objects.get(netID=request.user)
@@ -207,8 +207,8 @@ def add(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
-        today = datetime.date.today()
-        if not (REGSTART <= today <= REGEND):
+        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        if not (REGSTART <= now <= REGEND):
             error_message = "It is not time to enroll."
             return student(request, error_message)
         selected_student = Student.objects.get(netID=request.user)

@@ -104,8 +104,6 @@ App.ApplicationAdapter = DS.RESTAdapter.extend({
 App.Course = DS.Model.extend({
     title: DS.attr('string'),
     description: DS.attr('string'),
-    min_enroll: DS.attr('number'),
-    max_enroll: DS.attr('number'),
     cancelled: DS.attr('boolean'),
     room: DS.attr('string'),
     instructors: DS.attr(),
@@ -130,6 +128,11 @@ App.Section = DS.Model.extend({
     schedule: DS.attr(),
     schedule_string: DS.attr('string'),
     room: DS.attr('string'),
+    current_enroll_other_students: DS.attr('number'),
+    current_enroll: function() {
+        return this.get('current_enroll_other_students') + (this.get('isRegistered') ? 1 : 0);
+    }.property('isRegistered'),
+    max_enroll: DS.attr('number'),
     is_full: DS.attr('boolean'),
     registration: DS.belongsTo('registration'),
     isRegistered: function() {

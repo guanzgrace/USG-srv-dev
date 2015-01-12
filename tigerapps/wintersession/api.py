@@ -1,4 +1,5 @@
 import datetime
+from pytz import timezone
 from rest_framework import routers, serializers, viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_ember.parsers import EmberJSONParser
@@ -24,7 +25,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'title', 'description', 'min_enroll', 'max_enroll', 'cancelled', 'room', 'instructors', 'sections')
+        fields = ('id', 'title', 'description', 'cancelled', 'room', 'instructors', 'sections')
 
 
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
@@ -47,11 +48,17 @@ class SectionSerializer(serializers.ModelSerializer):
     schedule = ScheduleField(source='this_section.as_dict')
     blocks = serializers.Field(source='blocks')
     schedule_string = serializers.Field(source='this_section.as_string')
+    current_enroll_other_students = serializers.SerializerMethodField('current_enroll_other_students_method')
+    max_enroll = serializers.Field(source='max_enroll_with_extra')
     is_full = serializers.Field(source='is_full')
+
+    def current_enroll_other_students_method(self, obj):
+        request = self.context.get('request', None)
+        return obj.current_enroll_exclude(netID=request.user)
 
     class Meta:
         model = Course
-        fields = ('id', 'blocks', 'schedule', 'schedule_string', 'room', 'is_full')
+        fields = ('id', 'blocks', 'schedule', 'schedule_string', 'room', 'current_enroll_other_students', 'max_enroll', 'is_full')
 
 
 class SectionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -100,8 +107,8 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
         except (KeyError, Course.DoesNotExist):
             error_message = "That course does not exist."
         else:
-            today = datetime.date.today()
-            if not (views.REGSTART <= today <= views.REGEND):
+            now = datetime.datetime.now(tz=timezone('US/Eastern'))
+            if not (views.REGSTART <= now <= views.REGEND):
                 error_message = "It is not time to enroll."
             selected_student = Student.objects.get(netID=request.user)
             ss_courses = selected_student.course_set.all()
@@ -146,8 +153,8 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
     def destroy(self, request, *args, **kwargs):
         error_message = None
 
-        today = datetime.date.today()
-        if not (views.REGSTART <= today <= views.REGEND):
+        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        if not (views.REGSTART <= now <= views.REGEND):
             error_message = "It is not time to enroll."
 
         if error_message is not None:
