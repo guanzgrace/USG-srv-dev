@@ -110,7 +110,8 @@ class Course(models.Model):
 
     def is_full(self):
         num_enroll = self.current_enroll()
-        return num_enroll >= self.max_enroll
+        # Hack to allow 30% over-registration
+        return num_enroll >= 1.3 * self.max_enroll
 
     def meets_min_requirements(self):
         num_enroll = self.current_enroll()
