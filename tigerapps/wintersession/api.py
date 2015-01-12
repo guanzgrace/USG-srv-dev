@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from wintersession import views
 from wintersession.models import Student, Course, Registration
 from wintersession.time import decode
+from wintersession.views import TIMEZONE
 
 
 EMBER_PARSER_CLASSES = (EmberJSONParser, FormParser, MultiPartParser)
@@ -107,7 +108,7 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
         except (KeyError, Course.DoesNotExist):
             error_message = "That course does not exist."
         else:
-            now = datetime.datetime.now(tz=timezone('US/Eastern'))
+            now = TIMEZONE.localize(datetime.datetime.now())
             if not (views.REGSTART <= now <= views.REGEND):
                 error_message = "It is not time to enroll."
             selected_student = Student.objects.get(netID=request.user)
@@ -153,7 +154,7 @@ class RegistrationViewSet(viewsets.mixins.CreateModelMixin,
     def destroy(self, request, *args, **kwargs):
         error_message = None
 
-        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        now = TIMEZONE.localize(datetime.datetime.now())
         if not (views.REGSTART <= now <= views.REGEND):
             error_message = "It is not time to enroll."
 

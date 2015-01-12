@@ -25,20 +25,19 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 
 # Wintersession registration start
-REGSTART = datetime.datetime(year=2015,
-                             month=1,
-                             day=12,
-                             hour=12,
-                             minute=0,
-                             second=0,
-                             tzinfo=timezone('US/Eastern'))
-REGEND   = datetime.datetime(year=2015,
-                             month=1,
-                             day=23,
-                             hour=23,
-                             minute=59,
-                             second=59,
-                             tzinfo=timezone('US/Eastern'))
+TIMEZONE = timezone('US/Eastern')
+REGSTART = TIMEZONE.localize(datetime.datetime(year=2015,
+                                               month=1,
+                                               day=12,
+                                               hour=12,
+                                               minute=0,
+                                               second=0))
+REGEND   = TIMEZONE.localize(datetime.datetime(year=2015,
+                                               month=1,
+                                               day=23,
+                                               hour=23,
+                                               minute=59,
+                                               second=59))
 
 def home(request):
     return render(request, 'wintersession/home.html', {})
@@ -187,7 +186,7 @@ def drop(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
-        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        now = TIMEZONE.localize(datetime.datetime.now())
         if not (REGSTART <= now <= REGEND):
             error_message = "It is not time to enroll."
             return student(request, error_message)
@@ -207,7 +206,7 @@ def add(request):
         error_message = "That course does not exist."
         return student(request, error_message)
     else:
-        now = datetime.datetime.now(tz=timezone('US/Eastern'))
+        now = TIMEZONE.localize(datetime.datetime.now())
         if not (REGSTART <= now <= REGEND):
             error_message = "It is not time to enroll."
             return student(request, error_message)
