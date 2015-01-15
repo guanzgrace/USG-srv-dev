@@ -82,7 +82,8 @@ def gdi(netid):
 	# for each attribute, store the attribute-value pair in user_info
 	for attribute in search_result:
 		for element in attribute.getElementsByTagName('value'):
-			user_info[attribute.getAttribute('name')] = element.firstChild.data
+			if element.firstChild is not None: # handle cases where data is empty
+				user_info[attribute.getAttribute('name')] = element.firstChild.data
 
 	return user_info
 
