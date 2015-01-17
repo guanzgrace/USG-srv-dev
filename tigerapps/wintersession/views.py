@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from wintersession.models import Course, Student, Registration, Instructor
 from django_tables2 import RequestConfig
 from wintersession.tables import LtdCourseTable, CourseTable#, AttendanceTable#, StudentTable,
@@ -23,6 +23,7 @@ from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.views import login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
+from models import Section
 
 # Wintersession registration start
 TIMEZONE = timezone('US/Eastern')
@@ -381,6 +382,7 @@ def admin(request):
         return login(request, **defaults)
 
     context = {
+        'courses': Course.objects.all(),
         'user': request.user
     }
     return render(request, 'wintersession/admin.html', context)
@@ -395,4 +397,60 @@ def admin_email(request):
                          to=[settings.DEFAULT_FROM_EMAIL],
                          bcc=to_emails)
     email.send()
+    return redirect('admin')
+
+
+def course_conflicts(course, new_blocks):
+    conflicting_students = []
+    non_conflicting_students = []
+    for student in course.students.all():
+        ssb = student.blocks()
+        overlap = False
+        for blk in new_blocks:
+            if blk in ssb:
+                overlap = True
+                break
+        if overlap:
+            for course in student.course_set.all():
+                for blk in course.blocks:
+                    if blk in course.blocks:
+                        conflicting_students.append((student, course))
+        else:
+            non_conflicting_students.append(student)
+    return conflicting_students, non_conflicting_students
+
+@require_GET
+def admin_reschedule_check(request):
+    courseID = request.GET['courseID']
+    course = Course.objects.get(courseID=courseID)
+    new_blocks_text = request.GET['new_blocks']
+    new_blocks = [int(x) for x in new_blocks_text.replace("[", "").replace("]", "").replace(" ", "").split(",")]
+
+    conflicting_students, non_conflicting_students = course_conflicts(course, new_blocks)
+
+    context = {
+        'courseID': courseID,
+        'new_blocks_text': new_blocks_text,
+        'course': course,
+        'new_section': Section(new_blocks),
+        'conflicting_students': conflicting_students,
+        'non_conflicting_students': non_conflicting_students
+    }
+    return render(request, 'wintersession/admin_reschedule_check.html', context)
+
+@require_POST
+def admin_reschedule(request):
+    courseID = request.POST['courseID']
+    course = Course.objects.get(courseID=courseID)
+    new_blocks_text = request.POST['new_blocks_text']
+    new_blocks = [int(x) for x in new_blocks_text.replace("[", "").replace("]", "").replace(" ", "").split(",")]
+
+    conflicting_students, non_conflicting_students = course_conflicts(course, new_blocks)
+
+    for student, other_course in conflicting_students:
+        Registration.objects.filter(student=student, course=course).delete()
+
+    course.blocks = new_blocks_text
+    course.save()
+
     return redirect('admin')

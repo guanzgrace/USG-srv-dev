@@ -24,6 +24,8 @@ urlpatterns = patterns('',
 
     url(r'^admin/$', views.admin, name='admin'),
     url(r'^admin/email$', views.admin_email, name='admin_email'),
+    url(r'^admin/reschedule_check', views.admin_reschedule_check, name='admin_reschedule_check'),
+    url(r'^admin/reschedule', views.admin_reschedule, name='admin_reschedule'),
     url(r'^admin$', RedirectView.as_view(url='/admin/')),
     (r'^djadmin/', include(admin.site.urls)),
 

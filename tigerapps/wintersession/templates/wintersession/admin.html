@@ -46,6 +46,30 @@
 
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
+    <h1>Reschedule a Course</h1>
+    <p>Use this tool to check and resolve course conflicts with a rescheduled course.</p>
+
+    <form action="{% url 'admin_reschedule_check' %}" method="get">
+        {% csrf_token %}
+        <label>
+            <strong>Course</strong><br/>
+            <select name="courseID">
+                {% for course in courses %}
+                    <option value="{{ course.courseID }}" >
+                        {{ course.title }} ({{ course.this_section.as_string }})
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <br/>
+        <label>
+            <strong>New Block Schedule</strong><br/>
+            <input type="text" name="new_blocks" style="width: 300px;" required>
+        </label>
+        <br/>
+        <input type="submit" value="Check Course" />
+    </form>
+
     <h1>Bulk Emailer</h1>
     <p>Use this tool to send a mass email to the entire list of users.</p>
 

@@ -1,0 +1,49 @@
+{% extends "wintersession/base.html" %}
+{% load render_table from django_tables2 %}
+{% load url from future %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% block head %}
+    <title>Admin Panel - Wintersession 2015</title>
+{% endblock %}
+
+{% block menu %}
+    <li id='pg721251121132996039'><a href='{% url 'home' %}'>Home</a></li>
+    <li id='pg263206575262786359'><a href='{% url 'courses' %}'>Courses</a></li>
+    <li id='pg263206575262786359'><a href='{% url 'enroll' %}'>Enroll</a></li>
+    <li id='pg276867464249989051'><a href='{% url 'teach' %}'>Teach</a></li>
+    <li id='pg373026107483497366'><a href='{% url 'about' %}'>About</a></li>
+{% endblock %}
+
+{% block banner %}
+    Admin Panel
+{% endblock %}
+
+{% block content %}
+    <p>Moving <strong>{{ course.title }}</strong><br/>from <strong>{{ course.this_section.as_string }}</strong> to <strong>{{ new_section.as_string }}</strong></p>
+
+    <p><strong>Conflicting Students</strong><br/>
+        {% for student, course in conflicting_students %}
+            {{ student.netID }} (course.title)<br/>
+        {% endfor %}
+    </p>
+
+    <p><strong>Non-Conflicting Students</strong><br/>
+        {% for student in non_conflicting_students %}
+            {{ student.netID }}<br/>
+        {% endfor %}
+    </p>
+
+    <form action="{% url 'admin_reschedule' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="courseID" value="{{ courseID }}">
+        <input type="hidden" name="new_blocks_text" value="{{ new_blocks_text }}">
+        <input type="submit" value="Reschedule" />
+    </form>
+
+    <br/>
+    <br/>
+
+
+{% endblock %}
