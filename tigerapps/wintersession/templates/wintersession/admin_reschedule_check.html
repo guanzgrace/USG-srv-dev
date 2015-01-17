@@ -25,7 +25,7 @@
 
     <p><strong>Conflicting Students</strong><br/>
         {% for student, course in conflicting_students %}
-            {{ student.netID }} (course.title)<br/>
+            {{ student.netID }} ({{ course.title }})<br/>
         {% endfor %}
     </p>
 
