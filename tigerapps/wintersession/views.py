@@ -437,7 +437,9 @@ def admin_reschedule_check(request):
         'course': course,
         'new_section': Section(new_blocks),
         'conflicting_students': conflicting_students,
-        'non_conflicting_students': non_conflicting_students
+        'conflicting_students_flat': ", ".join([student.netID + "@princeton.edu" for student, courses in conflicting_students]),
+        'non_conflicting_students': non_conflicting_students,
+        'non_conflicting_students_flat': ", ".join([student.netID + "@princeton.edu" for student in non_conflicting_students])
     }
     return render(request, 'wintersession/admin_reschedule_check.html', context)
 

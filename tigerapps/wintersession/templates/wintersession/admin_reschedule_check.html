@@ -31,12 +31,14 @@
             {% endfor %}
             <br/>
         {% endfor %}
+        <textarea readonly>{{ conflicting_students_flat }}</textarea>
     </p>
 
-    <p><strong>Non-Conflicting Students ({{ non_conflicting_students|length }}</strong><br/>
+    <p><strong>Non-Conflicting Students ({{ non_conflicting_students|length }})</strong><br/>
         {% for student in non_conflicting_students %}
             {{ student.netID }}<br/>
         {% endfor %}
+        <textarea readonly>{{ non_conflicting_students_flat }}</textarea>
     </p>
 
     <form action="{% url 'admin_reschedule' %}" method="post">
