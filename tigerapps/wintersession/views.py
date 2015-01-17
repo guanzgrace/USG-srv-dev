@@ -411,10 +411,13 @@ def course_conflicts(course, new_blocks):
                 overlap = True
                 break
         if overlap:
+            conflicting_courses = []
             for course in student.course_set.all():
                 for blk in course.blocks:
                     if blk in course.blocks:
-                        conflicting_students.append((student, course))
+                        conflicting_courses.append(course)
+                        break
+            conflicting_students.append((student, conflicting_courses))
         else:
             non_conflicting_students.append(student)
     return conflicting_students, non_conflicting_students

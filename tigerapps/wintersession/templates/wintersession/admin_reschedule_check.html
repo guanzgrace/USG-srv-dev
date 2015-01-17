@@ -23,13 +23,17 @@
 {% block content %}
     <p>Moving <strong>{{ course.title }}</strong><br/>from <strong>{{ course.this_section.as_string }}</strong> to <strong>{{ new_section.as_string }}</strong></p>
 
-    <p><strong>Conflicting Students</strong><br/>
-        {% for student, course in conflicting_students %}
-            {{ student.netID }} ({{ course.title }})<br/>
+    <p><strong>Conflicting Students ({{ conflicting_students|length }})</strong><br/>
+        {% for student, courses in conflicting_students %}
+            {{ student.netID }} <br/>
+            {% for course in courses %}
+                <em>{{ course.title }}</em><br/>
+            {% endfor %}
+            <br/>
         {% endfor %}
     </p>
 
-    <p><strong>Non-Conflicting Students</strong><br/>
+    <p><strong>Non-Conflicting Students ({{ non_conflicting_students|length }}</strong><br/>
         {% for student in non_conflicting_students %}
             {{ student.netID }}<br/>
         {% endfor %}
