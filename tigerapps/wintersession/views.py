@@ -414,7 +414,7 @@ def course_conflicts(course, new_blocks):
             conflicting_courses = []
             for course in student.course_set.all():
                 for blk in course.blocks:
-                    if blk in course.blocks:
+                    if blk in new_blocks:
                         conflicting_courses.append(course)
                         break
             conflicting_students.append((student, conflicting_courses))
