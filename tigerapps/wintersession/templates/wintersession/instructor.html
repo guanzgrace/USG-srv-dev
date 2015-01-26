@@ -50,9 +50,7 @@
 
 {% render_table course_table %}
 
-<p> Rosters and attendance for each course </p>
-
-{% comment %}
+<p> Rosters for each course </p>
 
 {% for course, registration_table in registration_tables.items %}
 	<h3> {{course}} </h3>
@@ -60,60 +58,6 @@
 {% endfor %}
 
 <br />
-
-{% endcomment %}
-
-{% for course, formset in attendance_formsets.items %}
-<h3> {{formset.2}}: {{course}} </h3>
-<br />
-<div class="table-container">
-<form action="{% url 'instructor' %}" method="post">{% csrf_token %}
-{{ formset.0.management_form }}
-{{ formset.0.non_form_errors.as_ul }}
-<table id="formset" class="paleblue" align="center">
-{% for student, form in formset.1 %}
-  {% if forloop.first %}
-  <thead><tr>
-  	<th>netID</th>
-  	<th>First</th>
-  	<th>Last</th>
-    {% for field in form.visible_fields %}
-    <th>{{ field.label }}</th>
-    {% endfor %}
-  </tr></thead>
-  {% endif %}
-  <tr class="{% cycle odd,even %}">
-  	<td>{{student.netID}}</td>
-  	<td>{{student.first_name}}</td>
-  	<td>{{student.last_name}}</td>
-  {% for field in form.visible_fields %}
-    <td>
-    {# Include the hidden fields in the form #}
-    {% if forloop.first %}
-      {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-      {% endfor %}
-    {% endif %}
-      {{ field.errors.as_ul }}
-      {{ field }}
-    </td>
-  {% endfor %}
-  </tr>
-  {% if forloop.last %}
-  </table>
-  <ul class="pagination">
-  <li class="cardinality">{{ forloop.counter }} registrations</li></ul></div>
-  {% endif %}
-{% endfor %}
-<br />
-<input type="submit" value="Submit Attendance" />
-</form>
-<br />
 <br />
 
-{% endfor %}
-<br />
-<br />
-<br />
-<br />
 {% endblock %}

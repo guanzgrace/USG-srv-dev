@@ -35,8 +35,6 @@ class AttendanceTable(tables.Table):
     class Meta:
         model = Registration
         attrs = {"class": "paleblue"}
-        fields = ('attendance_M', 'attendance_Tu', 'attendance_W',
-                     'attendance_Th', 'attendance_F',)
-        sequence = ('netID', 'first', 'last', 'attendance_M', 'attendance_Tu', 'attendance_W',
-                     'attendance_Th', 'attendance_F',)
+        fields = ('netID', 'first', 'last')
+        sequence = ('netID', 'first', 'last')
         order_by = 'last'

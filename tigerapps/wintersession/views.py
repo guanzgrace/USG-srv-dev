@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST, require_GET
 from wintersession.models import Course, Student, Registration, Instructor
 from django_tables2 import RequestConfig
-from wintersession.tables import LtdCourseTable, CourseTable#, AttendanceTable#, StudentTable,
+from wintersession.tables import LtdCourseTable, CourseTable, AttendanceTable#, StudentTable,
 from wintersession.time import decode, decode_time
 from django.core.urlresolvers import reverse
 from wintersession.forms import AttendanceForm, AgendaPrivacyForm, FriendAgendaForm
@@ -138,8 +138,7 @@ def instructor(request):
     my_courses = selected_instructor.course_set.all()
     course_table = CourseTable(my_courses)
     RequestConfig(request).configure(course_table)
-#     registration_tables = {}
-    attendance_formsets = {}
+    registration_tables = {}
 #     for course in my_courses:
 #         student_table = StudentTable(course.students.all())
 #         RequestConfig(request).configure(student_table)
@@ -148,30 +147,16 @@ def instructor(request):
     for mc in my_courses:
         registrations = Registration.objects.filter(course=mc).order_by('student__last_name')
         students = Student.objects.filter(registration__course=mc).order_by('last_name')
-#         registration_table = AttendanceTable(registrations) 
-#         RequestConfig(request).configure(registration_table)
-#         registration_tables[mc.title] = registration_table
-        AttendanceFormSet = modelformset_factory(Registration, form=AttendanceForm, extra=0)
-        attendance_formset = AttendanceFormSet(queryset=registrations)
-        attendance_formsets[mc.courseID] = (attendance_formset, zip(students, attendance_formset.forms), mc.title)
+        registration_table = AttendanceTable(registrations)
+        RequestConfig(request).configure(registration_table)
+        registration_tables[mc.title] = registration_table
     
     context = {
         'identity' : identity,
 #         'my_courses' : my_courses,
         'course_table' : course_table,
-#         'registration_tables' : registration_tables,
-        'attendance_formsets' : attendance_formsets,
+        'registration_tables' : registration_tables,
     }
-    
-    if request.method == 'POST':
-        attendance_formset = AttendanceFormSet(request.POST, request.FILES)
-        if attendance_formset.is_valid():
-            attendance_formset.save()
-            # ugly hack to get forms to refresh
-            request.method = 'GET'
-            return instructor(request)
-        else:
-            raise RuntimeError("Formset was not valid")   
     
     return render(request, 'wintersession/instructor.html', context)
 
