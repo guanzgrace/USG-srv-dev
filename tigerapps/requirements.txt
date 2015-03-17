@@ -7,13 +7,13 @@ South==0.7.6
 argparse==1.2.1
 beautifulsoup4==4.0.5
 bleach==1.2.2
-chardet==2.0.1
+chardet==2.1.1
 colorama==0.2.4
 configobj==4.7.2
 decorator==3.3.3
 diff-match-patch==20121119
 ## FIXME: could not find svn URL in dependency_links for this package:
-distribute==0.6.24dev-r0
+distribute==0.6.24
 django-cas==2.0.3
 django-extensions==1.2.5
 django-form-utils==1.0.1
@@ -29,10 +29,9 @@ html5lib==0.95
 httplib2==0.7.4
 ipython==0.13.1
 lxml==2.3.3
-mercurial==2.2.2
+mercurial==2.6.2
 pexpect==2.4
 psycopg2==2.4.5
-python-apt==0.8.8.2
 python-dateutil==1.5
 python-ldap==2.4.10
 python-memcached==1.48
