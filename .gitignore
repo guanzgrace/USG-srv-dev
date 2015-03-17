@@ -33,6 +33,7 @@ tigerapps/card/cronjobs/archive/
 tigerapps/media/
 tigerapps/facebook/Stdntdata.txt
 _autogen.html
+EMAIL_SETTINGS.py
 
 
 # Temp files #
