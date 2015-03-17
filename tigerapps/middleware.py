@@ -70,7 +70,7 @@ class SubdomainsMiddleware:
             # CAS URL.
             settings.CAS = 'https://fed.princeton.edu/cas'
             settings.CAS_SERVICE = url_prefix + 'ttrade.tigerapps.org/cas/login/'
-            settings.IAS = 'https://idp.ias.edu/cas'
+            settings.IAS = 'https://cas.ias.edu/cas'
             settings.IAS_SERVICE = url_prefix + 'ttrade.tigerapps.org/ias/login/'    
             
         elif request.subdomain == 'cal':
