@@ -9,7 +9,20 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Removing unique constraint on 'Order', fields ['user']
+        # Removes foreign key constraint first so that the index can be deleted
+        # Uses code snippet from db.alter_column method to handle adding it back
+        storage_order_user_field = self.gf('django.db.models.fields.related.ForeignKey')(related_name='order', to=orm['auth.User'])
+        db.delete_foreign_key('storage_order', 'user_id')
         db.delete_unique('storage_order', ['user_id'])
+        if db.supports_foreign_keys:
+            db.execute(
+                db.foreign_key_sql(
+                    'storage_order',
+                    'user_id',
+                    storage_order_user_field.rel.to._meta.db_table,
+                    storage_order_user_field.rel.to._meta.get_field(storage_order_user_field.rel.field_name).column
+                )
+            )
 
         # Adding field 'Order.year'
         db.add_column('storage_order', 'year',
