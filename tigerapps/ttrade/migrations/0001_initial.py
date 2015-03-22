@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
             ('picture', self.gf('stdimage.fields.StdImageField')(blank=True, max_length=100, upload_to='ttrade/images/upload/', size={'width': 560, 'force': None, 'height': 800})),
             ('posted', self.gf('django.db.models.fields.DateTimeField')()),
             ('expire', self.gf('django.db.models.fields.DateTimeField')()),
-            ('price', self.gf('currencyfield.fields.CurrencyField')(null=True, max_digits=7, decimal_places=2, blank=True)),
+            ('price', self.gf('currencyfield.fields.CurrencyField')(null=True, blank=True)),
             ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal('ttrade', ['Listing'])
@@ -37,7 +37,7 @@ class Migration(SchemaMigration):
         db.create_table('ttrade_offer', (
             ('offerID', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='Offerer', to=orm['auth.User'])),
-            ('price', self.gf('currencyfield.fields.CurrencyField')(null=True, max_digits=7, decimal_places=2, blank=True)),
+            ('price', self.gf('currencyfield.fields.CurrencyField')(null=True, blank=True)),
             ('additional', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('accepted', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
@@ -105,7 +105,7 @@ class Migration(SchemaMigration):
             'offers': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['ttrade.Offer']", 'null': 'True', 'blank': 'True'}),
             'picture': ('stdimage.fields.StdImageField', [], {'blank': 'True', 'max_length': '100', 'upload_to': "'ttrade/images/upload/'", 'size': "{'width': 560, 'force': None, 'height': 800}"}),
             'posted': ('django.db.models.fields.DateTimeField', [], {}),
-            'price': ('currencyfield.fields.CurrencyField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
+            'price': ('currencyfield.fields.CurrencyField', [], {'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Lister'", 'to': "orm['auth.User']"})
         },
@@ -114,7 +114,7 @@ class Migration(SchemaMigration):
             'accepted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'additional': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'offerID': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'price': ('currencyfield.fields.CurrencyField', [], {'null': 'True', 'max_digits': '7', 'decimal_places': '2', 'blank': 'True'}),
+            'price': ('currencyfield.fields.CurrencyField', [], {'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'Offerer'", 'to': "orm['auth.User']"})
         }
     }

@@ -11,11 +11,8 @@ class Migration(SchemaMigration):
         # Deleting field 'EventCluster.cluster_category'
         db.delete_column('cal_eventcluster', 'cluster_category_id')
 
-        # Removing M2M table for field cluster_categories on 'EventCluster'
+        # Renaming M2M table for field cluster_categories on 'EventCluster'
         db.rename_table('cal_eventcluster_cluster_categories', 'cal_eventcluster_cluster_tags')
-
-        # Adding M2M table for field cluster_tags on 'EventCluster'
-        db.create_unique('cal_eventcluster_cluster_tags', ['eventcluster_id', 'eventcategory_id'])
 
 
     def backwards(self, orm):
