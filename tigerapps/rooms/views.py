@@ -24,6 +24,8 @@ def get_user(username):
         info = gdi(username)
         user = User(netid=username, firstname=info.get('givenName'),
                     lastname=info.get('sn'), pustatus=info.get('pustatus'))
+        if user.pustatus is None:
+            user.pustatus = 'undergraduate'
         if info.get('puclassyear'):
             user.puclassyear = int(info.get('puclassyear'))
         if user.pustatus == 'undergraduate':
