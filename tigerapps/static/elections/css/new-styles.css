@@ -109,8 +109,8 @@ h2.officename
 
 .photo
 {
-    float: left;
-    margin: 0 10px 0 0;
+    float: right;
+    margin: 0 0 0 10px;
 }
 
 .statement
