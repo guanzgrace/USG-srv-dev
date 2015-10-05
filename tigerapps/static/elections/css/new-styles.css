@@ -118,6 +118,11 @@ h2.officename
     display: block;
 }
 
+.statementText
+{
+    white-space: pre-wrap;
+}
+
 h3.candidateName
 {
     margin: 0 0 5px 0;
