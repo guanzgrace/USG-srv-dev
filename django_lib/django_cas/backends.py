@@ -2,7 +2,7 @@
 
 import urllib
 from urlparse import urljoin
-from django_cas.urllib2_sslv3 import urllib2
+import urllib2
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist

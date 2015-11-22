@@ -12,7 +12,7 @@ from django.http import *
 from django.contrib.auth import login
 from datetime import datetime
 import re, string, urllib
-from django_cas.urllib2_sslv3 import urllib2
+import urllib2
 from django.core.exceptions import ObjectDoesNotExist
 
 from utils.dsml import gdi

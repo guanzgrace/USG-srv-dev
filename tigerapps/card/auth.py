@@ -16,7 +16,7 @@ from django.conf import settings
 
 from os import environ
 from urllib import urlencode
-from django_cas.urllib2_sslv3 import urllib2
+import urllib2
 import re
 
 HOSTNAME = 'http://%scard.tigerapps.org:' % settings.CURRENT_HOST_PREFIX
