@@ -5,7 +5,7 @@
 {% get_static_prefix as STATIC_PREFIX %}
 
 {% block head %}
-<title>Courses - Wintersession 2015</title>
+<title>Courses - Wintersession 2016</title>
 {% endblock %}
 
 {% block menu %}
@@ -49,23 +49,23 @@
 {% if courses %}
 <table class="courses">
 	{% for course in courses %}
-        
+
 		<tr><td><div><h2>
 		{{course.title}}
 		</h2><h4>
 		Instructors:
 			{{course.get_instructors}}
 		</h4>
-		{{course.description|safe}} 
+		{{course.description|safe}}
 		<h4>
 		{{course.this_section.as_string}}<!--
 	 -->{% if course.other_section %}<!--
-		 -->{% for os in course.other_section.all %}<!-- 
+		 -->{% for os in course.other_section.all %}<!--
 			 --><br /> {{os.this_section.as_string}}<!--
 		 -->{% endfor %}
 		{% endif %}
 		</h4></div></td></tr>
-        
+
     {% endfor %}
 </table>
 {% else %}

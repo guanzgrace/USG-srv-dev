@@ -27,15 +27,15 @@ from models import Section
 
 # Wintersession registration start
 TIMEZONE = timezone('US/Eastern')
-REGSTART = TIMEZONE.localize(datetime.datetime(year=2015,
+REGSTART = TIMEZONE.localize(datetime.datetime(year=2016,
                                                month=1,
-                                               day=12,
-                                               hour=12,
+                                               day=13,
+                                               hour=0,
                                                minute=0,
-                                               second=0))
-REGEND   = TIMEZONE.localize(datetime.datetime(year=2015,
+                                               second=1))
+REGEND   = TIMEZONE.localize(datetime.datetime(year=2016,
                                                month=1,
-                                               day=25,
+                                               day=22,
                                                hour=23,
                                                minute=59,
                                                second=59))
@@ -143,21 +143,21 @@ def instructor(request):
 #         student_table = StudentTable(course.students.all())
 #         RequestConfig(request).configure(student_table)
 #         student_tables[course.title] = student_table
-    
+
     for mc in my_courses:
         registrations = Registration.objects.filter(course=mc).order_by('student__last_name')
         students = Student.objects.filter(registration__course=mc).order_by('last_name')
         registration_table = AttendanceTable(registrations)
         RequestConfig(request).configure(registration_table)
         registration_tables[mc.title] = registration_table
-    
+
     context = {
         'identity' : identity,
 #         'my_courses' : my_courses,
         'course_table' : course_table,
         'registration_tables' : registration_tables,
     }
-    
+
     return render(request, 'wintersession/instructor.html', context)
 
 # def attendance(request):
@@ -241,7 +241,7 @@ def add(request):
         Registration(student=selected_student, course=selected_course).save()
         error_message = selected_course.title+" successfully added."
         return student(request, error_message)
-    
+
 @login_required
 def my_agenda(request):
     return redirect('agenda', student_id=request.user)
@@ -271,7 +271,7 @@ def agenda(request, student_id):
             # see if the block is beginning of the session
             # if not, go to the next block
             if blk == prev_blk + 5:
-                prev_blk = blk 
+                prev_blk = blk
                 continue
             # but if so, record the previous session
             dow = first_blk / 1000
@@ -280,7 +280,7 @@ def agenda(request, student_id):
             info = (c, start_time, end_time)
             agend[dow][first_blk] = info
             # and start a new one
-            first_blk = blk 
+            first_blk = blk
             prev_blk = blk
         else: # Handle the last session
             dow = int(str(first_blk)[0])
@@ -288,12 +288,12 @@ def agenda(request, student_id):
             end_time = decode_time((prev_blk+5) % 1000)
             info = (c, start_time, end_time)
             agend[dow][first_blk] = info
-            
+
     # now order all of the dictionaries
     for i in range(1,6):
         od = collections.OrderedDict(sorted(agend[i].items()))
         agend[i] = od
-        
+
     dow = {}
     dow[0] = "Sunday"
     dow[1] = "Monday"
@@ -313,7 +313,7 @@ def agenda(request, student_id):
 
     # Preare the search for friend form
     friend_form = FriendAgendaForm()
-    
+
     context = {
                'agenda' : agend,
                'dow' : dow,
@@ -324,7 +324,7 @@ def agenda(request, student_id):
                'agenda_visibility' : agenda_visibility,
                'friend_form' : friend_form,
                }
-    
+
     if request.method == 'POST' and own_agenda:
         privacy_form = AgendaPrivacyForm(request.POST)
         if privacy_form.is_valid():
@@ -335,8 +335,8 @@ def agenda(request, student_id):
             request.method = 'GET'
             return agenda(request, user_student.netID)
         else:
-            raise RuntimeError("Form was not valid") 
-    
+            raise RuntimeError("Form was not valid")
+
     return render(request, 'wintersession/agenda.html', context)
 
 @login_required

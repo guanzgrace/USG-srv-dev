@@ -42,7 +42,7 @@ class Student(models.Model):
             for blk in course.blocks:
                 blks.append(blk)
         return blks
-    
+
     def isScheduleConsistent(self):
         blks = self.blocks()
         return len(blks) == len(set(blks))
@@ -72,7 +72,7 @@ class Instructor(models.Model):
 
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.netID
-    
+
     def billable(self):
         if self.faculty:
             return 0
@@ -81,7 +81,7 @@ class Instructor(models.Model):
         for course in my_courses:
             hours += len(course.blocks)/2.0
         return hours
-    
+
     def full_name(self):
         return self.first_name+" "+self.last_name
 
@@ -112,11 +112,11 @@ class Course(models.Model):
         return len(self.students.exclude(**kwargs))
 
     # Hack to allow 30% over-registration
-    def max_enroll_with_extra(self):
+    # def max_enroll_with_extra(self):
         # Hack to override with exact amounts
-        if self.courseID[0] == 'E':
-            return self.max_enroll
-        return int(1.3 * self.max_enroll)
+        # if self.courseID[0] == 'E':
+            # return self.max_enroll
+        # return int(1.3 * self.max_enroll)
 
     def is_full(self):
         num_enroll = self.current_enroll()
@@ -125,7 +125,7 @@ class Course(models.Model):
     def meets_min_requirements(self):
         num_enroll = self.current_enroll()
         return num_enroll >= self.min_enroll
-    
+
     def get_instructors(self):
         return ", ".join([i.full_name() for i in self.instructors.all()])
 
@@ -144,7 +144,7 @@ class Course(models.Model):
             for section in self.other_section.all():
                 sections.append(Section(section.blocks))
         return sections
-    
+
     is_full.boolean = True
     meets_min_requirements.boolean = True
 
@@ -208,7 +208,7 @@ class Registration(models.Model):
     student = models.ForeignKey(Student)
     course = models.ForeignKey(Course)
     timestamp = models.DateTimeField('Registration timestamp',auto_now_add=True)
-    
+
     attendance_M = models.BooleanField(default=False)
     attendance_Tu = models.BooleanField(default=False)
     attendance_W = models.BooleanField(default=False)
