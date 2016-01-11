@@ -1,3 +1,3 @@
-DATABASE_PASSWORD = ""         # Not used with sqlite3.
+DATABASE_PASSWORD = "TODO"         # Not used with sqlite3.
 
 SECRET_KEY = "TODO"
