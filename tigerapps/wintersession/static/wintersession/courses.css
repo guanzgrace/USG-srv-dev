@@ -36,7 +36,7 @@
     padding: 0 10px;
     font-size: 20px;
     line-height: 40px;
-    color: white;
+    color: black;
     background-color: #276CA1;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
@@ -48,7 +48,7 @@
   #courses_left #course_schedule_wrap {
     overflow: auto;
     background-color: #071b34;
-    color: white;
+    color: black;
     font-size: small;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
@@ -114,7 +114,7 @@
     padding: 0 10px;
     font-size: 20px;
     line-height: 40px;
-    color: white;
+    color: black;
     background-color: #276CA1;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
@@ -124,7 +124,7 @@
       float: right;
       font-weight: normal; }
   #courses_right > h1 > a {
-    color: white !important;
+    color: black !important;
     margin: 0 5px; }
   #courses_right #courses_list_filter {
     position: absolute;
