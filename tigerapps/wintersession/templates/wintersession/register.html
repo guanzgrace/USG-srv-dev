@@ -27,7 +27,7 @@
 {% verbatim %}
 <script type="text/x-handlebars" data-template-name="courses">
     <div id="courses_left">
-        <h1>My Courses<span>{{ registrations.length }}</span></h1>
+        <h1 style="color:white">My Courses<span>{{ registrations.length }}</span></h1>
         <div id="course_schedule_wrap">
             <div id="course_schedule_labels_top">
                 <div class="course_schedule_labels_top_day">Su</div>
@@ -150,7 +150,7 @@
         </div>
     </div>
     <div id="courses_right">
-        <h1>Course Catalog <a href="#" {{ action 'refresh' }}><i {{ bind-attr class=":fa :fa-refresh isRefreshing:fa-spin" }}></i></a><span>{{ filteredContent.length }}</span></h1>
+        <h1 style="color:white">Course Catalog <a href="#" {{ action 'refresh' }}><i {{ bind-attr class=":fa :fa-refresh isRefreshing:fa-spin" }}></i></a><span>{{ filteredContent.length }}</span></h1>
         <div id="courses_list_filter">
             <label><i class="fa fa-search"></i> {{ input type='text' value=filterValue placeholder='Course title' action='doFilter' maxlength='30' }}</label>
             {{ #if filter }}
