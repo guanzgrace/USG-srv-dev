@@ -160,7 +160,7 @@
         <div id="course_catalog" {{ bind-attr class="isSearching" }}>
             {{ #each course in filteredContent }}
                 <section {{ bind-attr class=":course_item course.isRegistered course.cancelled:is-cancelled" }}>
-                    <div class="course_info">
+                    <div class="course_info" style="color: #95C7FA">
                         <h1>{{ course.title }}</h1>
                         {{ #if course.cancelled }}
                             Course is cancelled.
@@ -202,7 +202,7 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="components/course-schedule-item">
-    <div class="course_schedule_item" style="color:black">Course Name</div>
+    <div class="course_schedule_item">Course Name</div>
 </script>
 {% endverbatim %}
 
