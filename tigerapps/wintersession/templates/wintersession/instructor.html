@@ -53,7 +53,7 @@
 <p> Rosters for each course </p>
 
 {% for course, registration_table in registration_tables.items %}
-	<h3> {{course}} </h3>
+	<h3 style="color:black"> {{course}} </h3>
 	{% render_table registration_table %}
 {% endfor %}
 
