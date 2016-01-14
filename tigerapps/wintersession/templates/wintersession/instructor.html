@@ -54,7 +54,7 @@
 
 {% for course, registration_table in registration_tables.items %}
 	<h3> {{course}} </h3>
-	<div style="color:black">{% render_table registration_table %}</div>
+	{% render_table registration_table %}
 {% endfor %}
 
 <br />

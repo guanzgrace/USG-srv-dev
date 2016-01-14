@@ -7,7 +7,7 @@ class CourseTable(tables.Table):
     max_enroll = tables.Column(orderable=False)
     class Meta:
         model = Course
-        attrs = {"class": "paleblue"}
+        attrs = {"class":}
         fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors', 'room',)
         order_by = ('title')
 
@@ -26,8 +26,8 @@ class StudentTable(tables.Table):
         model = Student
         attrs = {"class": "paleblue"}
         fields = ('netID', 'first_name', 'last_name', )
-        ordering = ('last_name',)        
-        
+        ordering = ('last_name',)
+
 class AttendanceTable(tables.Table):
     netID = tables.Column(accessor='student.netID')
     first = tables.Column(accessor='student.first_name')
