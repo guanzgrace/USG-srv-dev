@@ -73,6 +73,7 @@
       margin-left: 40px;
       overflow: auto; }
       #courses_left #course_schedule_wrap #course_schedule .course_schedule_day {
+        color: black;
         float: left;
         width: 14.28571%;
         height: 280px;
