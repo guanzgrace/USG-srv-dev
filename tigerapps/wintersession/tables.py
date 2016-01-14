@@ -17,7 +17,7 @@ class LtdCourseTable(tables.Table):
     max_enroll = tables.Column(orderable=False)
     class Meta:
         model = Course
-        attrs = {"class": "paleblue"}
+        attrs = {"class": "table"}
         fields = ('courseID', 'title', 'schedule', 'current_enroll', 'max_enroll', 'get_instructors',)
         order_by = ('title')
 
