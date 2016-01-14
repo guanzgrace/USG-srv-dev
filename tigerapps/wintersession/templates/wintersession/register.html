@@ -128,7 +128,7 @@
                     <div class="course_info">
                         <h1>{{ registration.section.course.title }}</h1>
                     </div>
-                    <div class="course_section">
+                    <div class="course_section" style="color:black">
                         {{ registration.section.schedule_string }} @ {{ registration.section.room }}
                         {{ #if isTimeToEnroll }}
                         <button class="course_section_remove" {{ action "unregisterSection" registration.section }}><i class="fa fa-times"></i></button>
